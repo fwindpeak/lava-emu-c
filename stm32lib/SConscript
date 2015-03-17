@@ -1,0 +1,60 @@
+import wdconfig
+Import('RTT_ROOT')
+from building import *
+
+# get current directory
+cwd = GetCurrentDir()
+
+# The set of source files associated with this SConscript file.
+src = Split("""
+system_stm32f10x.c
+stm32f10x_crc.c
+stm32f10x_rcc.c
+stm32f10x_wwdg.c
+stm32f10x_pwr.c
+stm32f10x_exti.c
+stm32f10x_bkp.c
+stm32f10x_i2c.c
+stm32f10x_adc.c
+stm32f10x_dac.c
+stm32f10x_rtc.c
+stm32f10x_fsmc.c
+stm32f10x_tim.c
+stm32f10x_iwdg.c
+stm32f10x_spi.c
+stm32f10x_flash.c
+stm32f10x_sdio.c
+stm32f10x_gpio.c
+stm32f10x_usart.c
+stm32f10x_dbgmcu.c
+stm32f10x_dma.c
+stm32f10x_can.c
+stm32f10x_cec.c
+misc.c
+core_cm3.c
+""")
+
+# starupt scripts for each STM32 kind
+startup_scripts = {}
+startup_scripts['STM32F10X_CL']     = 'startup_stm32f10x_cl.s'
+startup_scripts['STM32F10X_HD']     = 'startup_stm32f10x_hd.s'
+startup_scripts['STM32F10X_HD_VL']  = 'startup_stm32f10x_hd_vl.s'
+startup_scripts['STM32F10X_LD']     = 'startup_stm32f10x_ld.s'
+startup_scripts['STM32F10X_LD_VL']  = 'startup_stm32f10x_ld_vl.s'
+startup_scripts['STM32F10X_MD']     = 'startup_stm32f10x_md.s'
+startup_scripts['STM32F10X_MD_VL']  = 'startup_stm32f10x_md_vl.s'
+startup_scripts['STM32F10X_XL']	    = 'startup_stm32f10x_xl.s'
+
+# add for startup script 
+
+#elif wdconfig.CROSS_TOOL == 'keil':
+src = src + ['startup/' + startup_scripts[wdconfig.STM32_TYPE]]
+
+path = [cwd,
+cwd + '/startup']
+
+
+CPPDEFINES = ['USE_STDPERIPH_DRIVER', wdconfig.STM32_TYPE]
+group = DefineGroup('stm32lib', src, depend = [''], CPPPATH = path, CPPDEFINES = CPPDEFINES)
+
+Return('group')

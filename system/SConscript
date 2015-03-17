@@ -1,0 +1,17 @@
+import wdconfig
+Import('RTT_ROOT')
+from building import *
+
+import glob
+
+# get current directory
+cwd = GetCurrentDir()
+
+# The set of source files associated with this SConscript file.
+
+src = [ i for i in glob.glob(cwd+"/*.c")]
+path = [cwd]
+
+group = DefineGroup('system', src, depend = [''], CPPPATH = path)
+
+Return('group')

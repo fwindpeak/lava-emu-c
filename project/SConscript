@@ -1,0 +1,4 @@
+import wdconfig
+Import('RTT_ROOT')
+from building import *
+
