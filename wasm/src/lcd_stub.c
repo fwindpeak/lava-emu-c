@@ -1,7 +1,8 @@
 #include "lcd.h"
 #include "display.h"
-
 #include <string.h>
+
+#define BIT_MASK(x) (0x80 >> ((x) % 8))  // MSB-first，左→右
 
 static LCD_COLOR g_back_color = 0;
 
@@ -24,7 +25,7 @@ void lcd_draw_block(unsigned int x0,unsigned int y0,unsigned int x1,unsigned int
         for(unsigned int x = x0; x <= x1 && x < LAVA_DISPLAY_WIDTH; ++x)
         {
             unsigned int index = y * (LAVA_DISPLAY_WIDTH / 8) + (x / 8);
-            unsigned char mask = 1u << (x % 8);
+            unsigned char mask = BIT_MASK(x);
             if(color != g_back_color)
                 buf[index] |= mask;
             else
@@ -35,28 +36,34 @@ void lcd_draw_block(unsigned int x0,unsigned int y0,unsigned int x1,unsigned int
 
 void lcd_draw_square(unsigned int x,unsigned int y,unsigned int l,LCD_COLOR color)
 {
-    lcd_draw_block(x,y,x+l,y+l,color);
+    lcd_draw_block(x,y,x+l-1,y+l-1,color);
 }
 
-void lcd_draw_bw(unsigned int x,unsigned int y,unsigned int w,unsigned int h,unsigned int scale,const unsigned char *p,LCD_COLOR bcolor,LCD_COLOR fcolor)
+// 按原驱动的 2 色图像绘制方式
+void lcd_draw_bw(unsigned int x,unsigned int y,unsigned int w,unsigned int h,unsigned int scale,
+                 const unsigned char *p,LCD_COLOR bcolor,LCD_COLOR fcolor)
 {
     (void)scale;
+    (void)bcolor;
+    (void)fcolor;
+
     unsigned char *buf = lava_display_buffer();
-    for(unsigned int row = 0; row < h && (y + row) < LAVA_DISPLAY_HEIGHT; ++row)
-    {
-        for(unsigned int col = 0; col < w && (x + col) < LAVA_DISPLAY_WIDTH; ++col)
-        {
-            unsigned int byteIndex = row * ((w + 7)/8) + col/8;
-            unsigned char mask = 1u << (col % 8);
-            unsigned char pixel = (p[byteIndex] & mask) ? 1 : 0;
-            unsigned int dstIndex = (y + row) * (LAVA_DISPLAY_WIDTH / 8) + (x + col)/8;
-            unsigned char dstMask = 1u << ((x + col) % 8);
-            if(pixel)
-                buf[dstIndex] |= dstMask;
+    unsigned int bytesPerLine = (w + 7) / 8;
+
+    for (unsigned int row = 0; row < h && (y + row) < LAVA_DISPLAY_HEIGHT; row++) {
+        for (unsigned int col = 0; col < w && (x + col) < LAVA_DISPLAY_WIDTH; col++) {
+            unsigned int byteIndex = row * bytesPerLine + (col / 8);
+            unsigned char dat = p[byteIndex];
+            unsigned char bit = 0x80 >> (col % 8);
+
+            unsigned int index = (y + row) * (LAVA_DISPLAY_WIDTH / 8) + (x + col) / 8;
+            unsigned char mask = BIT_MASK(x + col);
+
+            if (dat & bit)
+                buf[index] |= mask;
             else
-                buf[dstIndex] &= ~dstMask;
+                buf[index] &= ~mask;
         }
-        p += (w + 7)/8;
     }
 }
 
@@ -64,28 +71,30 @@ unsigned char lcd_get_point(unsigned int x,unsigned int y)
 {
     unsigned char *buf = lava_display_buffer();
     unsigned int index = y * (LAVA_DISPLAY_WIDTH / 8) + (x / 8);
-    unsigned char mask = 1u << (x % 8);
+    unsigned char mask = BIT_MASK(x);
     return (buf[index] & mask) ? 1 : 0;
 }
 
-void lcd_get_bw(unsigned int x0,unsigned int y0,unsigned int w,unsigned int h,unsigned int scale,unsigned char *p,LCD_COLOR fcolor)
+void lcd_get_bw(unsigned int x0,unsigned int y0,unsigned int w,unsigned int h,
+                unsigned int scale,unsigned char *p,LCD_COLOR fcolor)
 {
     (void)scale;
     (void)fcolor;
+
     unsigned char *buf = lava_display_buffer();
-    for(unsigned int row = 0; row < h; ++row)
-    {
-        for(unsigned int col = 0; col < w; ++col)
-        {
-            unsigned int dstIndex = row * ((w + 7)/8) + col/8;
-            unsigned char dstMask = 1u << (col % 8);
-            unsigned int srcIndex = (y0 + row) * (LAVA_DISPLAY_WIDTH / 8) + (x0 + col)/8;
-            unsigned char srcMask = 1u << ((x0 + col) % 8);
-            if(buf[srcIndex] & srcMask)
+    unsigned int bytesPerLine = (w + 7) / 8;
+    memset(p, 0, bytesPerLine * h);
+
+    for (unsigned int row = 0; row < h; row++) {
+        for (unsigned int col = 0; col < w; col++) {
+            unsigned int srcIndex = (y0 + row) * (LAVA_DISPLAY_WIDTH / 8) + (x0 + col) / 8;
+            unsigned char srcMask = BIT_MASK(x0 + col);
+
+            unsigned int dstIndex = row * bytesPerLine + (col / 8);
+            unsigned char dstMask = 0x80 >> (col % 8);
+
+            if (buf[srcIndex] & srcMask)
                 p[dstIndex] |= dstMask;
-            else
-                p[dstIndex] &= ~dstMask;
         }
-        p += (w + 7)/8;
     }
 }

@@ -13,6 +13,16 @@ const screenshotButton = document.getElementById("screenshot-button");
 const imageData = ctx.createImageData(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 const pixelBuffer = new Uint8Array(DISPLAY_BUFFER_SIZE);
 let rootDirectoryHandle = null;
+const pendingFsOps = [];
+
+function chdir(path) {
+  try {
+    if (!wasmModule?.FS) return;
+    wasmModule.FS.chdir(path);
+  } catch (err) {
+    console.warn("chdir error", path, err);
+  }
+}
 
 const KEY_MAP = {
   ArrowUp: 1,
@@ -86,6 +96,7 @@ try {
       syncFileToDisk(path);
     }
   };
+  chdir("/");
 } catch (error) {
   console.warn("未能加载 WASM 模块，使用演示模式。", error);
 }
@@ -216,10 +227,12 @@ async function syncFileToDisk(path) {
 function drawFrame() {
   const data = imageData.data;
   let di = 0;
+
   for (let y = 0; y < DISPLAY_HEIGHT; y++) {
     for (let xb = 0; xb < DISPLAY_WIDTH / 8; xb++) {
       const byte = pixelBuffer[y * (DISPLAY_WIDTH / 8) + xb];
-      for (let bit = 0; bit < 8; bit++) {
+      // 🔸 MSB-first，从bit7开始
+      for (let bit = 7; bit >= 0; bit--) {
         const on = (byte >> bit) & 1;
         const shade = on ? 230 : 20;
         data[di++] = shade;
@@ -229,9 +242,9 @@ function drawFrame() {
       }
     }
   }
+
   ctx.putImageData(imageData, 0, 0);
 }
-
 function setScale(scale) {
   const clamped = Math.max(1, Math.min(8, Number(scale) || 1));
   canvas.style.width = `${DISPLAY_WIDTH * clamped}px`;
@@ -310,7 +323,31 @@ if (fsButton) {
     try {
       const handle = await window.showDirectoryPicker();
       rootDirectoryHandle = handle;
-      await importDirectoryIntoFS(handle);
+      if (wasmModule?.FS) {
+        chdir("/");
+        try {
+          if (!wasmModule.FS.analyzePath("/app").exists) {
+            wasmModule.FS.mkdir("/app");
+          }
+        } catch (err) {
+          console.warn("mkdir app failed", err);
+        }
+        chdir("/app");
+        await importDirectoryIntoFS(handle);
+      } else {
+        pendingFsOps.push(async () => {
+          chdir("/");
+          try {
+            if (!wasmModule.FS.analyzePath("/app").exists) {
+              wasmModule.FS.mkdir("/app");
+            }
+          } catch (err) {
+            console.warn("mkdir app failed", err);
+          }
+          chdir("/app");
+          await importDirectoryIntoFS(handle);
+        });
+      }
       alert("目录已载入虚拟文件系统");
     } catch (error) {
       console.warn("目录授权或读取失败", error);

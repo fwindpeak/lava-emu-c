@@ -327,7 +327,7 @@ sFONT Font6x12 =
     12, /* Height */
 };
 
-//å¤„ç†ä¸­æ–‡å­—ä½“
+//´¦ÀíÖĞÎÄ×ÖÌå
 
 
 const uint8_t Font16x16_GB2312_Table[] = {
@@ -31279,7 +31279,7 @@ sFONT Font12x12_GB2312 =
 
 
 /**
-  * @brief  å­—ä½“åˆå§‹åŒ–
+  * @brief  ×ÖÌå³õÊ¼»¯
   * @param  None
   * @retval None
   */
@@ -31292,10 +31292,10 @@ void font_init(void)
 }
 
 /**
-  * @brief  è¯»å–å¤–éƒ¨spi flashçš„ä¸­æ–‡å­—ä½“æ•°æ®
-  * @param  pBufferï¼šè¯»å–å‡ºæ¥çš„æ•°æ®ç¼“å­˜æŒ‡é’ˆ
-  * @param  ReadAddrï¼šèµ·å§‹åœ°å€
-  * @param  NumByteToReadï¼šéœ€è¦è¯»å–çš„å­—èŠ‚æ•°
+  * @brief  ¶ÁÈ¡Íâ²¿spi flashµÄÖĞÎÄ×ÖÌåÊı¾İ
+  * @param  pBuffer£º¶ÁÈ¡³öÀ´µÄÊı¾İ»º´æÖ¸Õë
+  * @param  ReadAddr£ºÆğÊ¼µØÖ·
+  * @param  NumByteToRead£ºĞèÒª¶ÁÈ¡µÄ×Ö½ÚÊı
   * @retval None
   */
 void font_read_ext(u8* pBuffer, u32 ReadAddr, u16 NumByteToRead)

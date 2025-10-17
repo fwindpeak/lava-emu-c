@@ -23,7 +23,7 @@ LAVA_EXPORT void lava_display_clear(void)
 
 LAVA_EXPORT void lava_display_fill_demo(int frame)
 {
-    /* ç”Ÿæˆä¸€ä¸ªç®€å•çš„æ»‘åŠ¨æ¡çº¹æ•ˆæœï¼Œæ–¹ä¾¿åœ¨æµè§ˆå™¨ç«¯éªŒè¯åˆ·å±é€»è¾‘ã€‚ */
+    /* Éú³ÉÒ»¸ö¼òµ¥µÄ»¬¶¯ÌõÎÆĞ§¹û£¬·½±ãÔÚä¯ÀÀÆ÷¶ËÑéÖ¤Ë¢ÆÁÂß¼­¡£ */
     const int stripe_width = 8;
     for (int y = 0; y < LAVA_DISPLAY_HEIGHT; ++y)
     {

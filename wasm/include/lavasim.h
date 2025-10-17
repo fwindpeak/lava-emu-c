@@ -15,7 +15,7 @@
 
 
 
-//甯搁噺瀹氫箟
+//常量定义
 
 #define SEEK_SET 0
 #define SEEK_CUR 1
@@ -27,12 +27,12 @@
 
 #define LAVA_FP_MAX      10
 
-//LAVA灞忓箷鍙傛暟
+//LAVA屏幕参数
 #define LAVA_X_START        0
-#define LAVA_Y_START        40
+#define LAVA_Y_START        0
 #define LAVA_WIDTH          160
 #define LAVA_HEIGHT         80
-#define LAVA_SCALE          2
+#define LAVA_SCALE          1
 
 
 extern uchar GRAPH_BUF[LAVA_WIDTH*LAVA_HEIGHT/8];
@@ -41,7 +41,7 @@ extern uchar TEXT_BUF[(LAVA_WIDTH/12)*(LAVA_HEIGHT/6)];
 #define _TEXT       TEXT_BUF
 #define _GRAPH      GRAPH_BUF
 
-//LAVA绫诲瀷瀹氫箟
+//LAVA类型定义
 struct TIME
 {
     uint16_t year;
@@ -53,11 +53,11 @@ struct TIME
     uint8_t week;
 };
 
-//鏁板鍑芥暟
+//数学函数
 int lava_rand(void);
 void lava_srand(long x);
 
-//鍥惧舰妯″紡涓嬬殑鐭㈤噺缁樺浘鍑芥暟
+//图形模式下的矢量绘图函数
 void Point(int x,int y,int type);
 int GetPoint(int x,int y);
 void Line(int x0,int y0,int x1,int y1,int type);
@@ -65,7 +65,7 @@ void Box(int x0,int y0,int x1,int y1,int fill,int type);
 void Circle(int x1,int y1,int r,int fill,int type);
 void Ellipse(long Center_x,long Center_y,long a,long b,int fill,int type);
 
-//鍥惧舰妯″紡涓嬬殑鍏夋爡缁樺浘鍑芥暟
+//图形模式下的光栅绘图函数
 void WriteBlock(int x,int y,int width,int height,int type,const addr data);
 void GetBlock(int x,int y,int width,int height,int type,addr data);
 void Block(int x0,int y0,int x1,int y1,int type);

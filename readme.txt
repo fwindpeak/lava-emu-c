@@ -1,3 +1,3 @@
-å·¥ç¨‹æ–‡ä»¶ä¸ºproject/project.uvproj
-é‡‡ç”¨Keil4.71aå¼€å‘
-é‡‡ç”¨sconsæ­å»ºå·¥ç¨‹
+¹¤³ÌÎÄ¼şÎªproject/project.uvproj
+²ÉÓÃKeil4.71a¿ª·¢
+²ÉÓÃscons´î½¨¹¤³Ì
