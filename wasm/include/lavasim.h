@@ -91,16 +91,16 @@ void SetTime(struct TIME *t);
 long Crc16(addr mem,int len);
 void Secret(addr mem,int len,addr string);
 void Beep(void);
-char fopen(const addr filename,const addr mode);
-void fclose(char fp);
-int fread(addr pt,int size,int n,char fp);
-int fwrite(const addr pt,int size,int n,char fp);
-int getc(char fp);
-int putc(char ch,char fp);
-void rewind(char fp);
-long fseek(char fp,long offset,char base);
-long ftell(char fp);
-int feof(char fp);
+char lava_fopen(const addr filename,const addr mode);
+void lava_fclose(char fp);
+int lava_fread(addr pt,int size,int n,char fp);
+int lava_fwrite(const addr pt,int size,int n,char fp);
+int lava_getc(char fp);
+int lava_putc(char ch,char fp);
+void lava_rewind(char fp);
+long lava_fseek(char fp,long offset,char base);
+long lava_ftell(char fp);
+int lava_feof(char fp);
 int ChDir(addr path);
 int MakeDir(const addr path);
 int DeleteFile(addr filename);
@@ -109,11 +109,29 @@ int FindFile(int from,int num,addr buf);
 int FileList(addr filename);
 
 
+#define fopen   lava_fopen
+#define fclose  lava_fclose
+#define fread   lava_fread
+#define fwrite  lava_fwrite
+#define getc    lava_getc
+#define putc    lava_putc
+#define rewind  lava_rewind
+#define fseek   lava_fseek
+#define ftell   lava_ftell
+#define feof    lava_feof
+
 void lava_init(void);
 void lava_demo(void);
 
-//void WriteBlock(int x,int y,int width,int height,int type,const uchar * data);
-
-//void UpdateLCD(char mode);
+#define fopen  lava_fopen
+#define fclose lava_fclose
+#define fread  lava_fread
+#define fwrite lava_fwrite
+#define getc   lava_getc
+#define putc   lava_putc
+#define rewind lava_rewind
+#define fseek  lava_fseek
+#define ftell  lava_ftell
+#define feof   lava_feof
 
 #endif

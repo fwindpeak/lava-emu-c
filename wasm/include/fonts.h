@@ -28,6 +28,6 @@ extern sFONT Font6x12;
 
 void font_init(void);
 
-void font_read_ext(u8* pBuffer, u32 ReadAddr, u16 NumByteToRead);
+void font_read_ext(uint8_t* pBuffer, uint32_t ReadAddr, uint16_t NumByteToRead);
 
 #endif

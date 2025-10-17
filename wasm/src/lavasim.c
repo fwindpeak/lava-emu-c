@@ -667,7 +667,7 @@ void lava_show_cnchar(int x0,int y0,int ch_h,int ch_l,int type)
 
     y=LAVA_cnFont->Height;
     table_size = x*y;
-    address = ((ch_h-0xa1)*(0xfe-0xa1+1)+(ch_l-0xa1))*table_size;
+    address = ((ch_h-0xa1)*(0xfe - 0xa1 + 1)+(ch_l-0xa1))*table_size;
 
 #ifdef USE_INR_CNFONT
 
@@ -1939,7 +1939,7 @@ fopen
 说明　以mode指定的方式打开名为filename的文件
       成功，返回一个文件句柄，否则返回0
 */
-char fopen(const addr filename,const addr mode)
+char lava_fopen(const addr filename,const addr mode)
 {
     int i;
     uint8_t mode_fs=0;
@@ -2003,7 +2003,7 @@ fclose
 
 说明　关闭句柄为fp的文件
 */
-void fclose(char fp)
+void lava_fclose(char fp)
 {
     if(fp>0)
     {
@@ -2026,7 +2026,7 @@ fread
 */
 //f_read有bug，每次读512字节
 #define FREAD_EVERY_BYTE 512
-int fread(addr pt,int size,int n,char fp)
+int lava_fread(addr pt,int size,int n,char fp)
 {
     int i,num,byteleft;
     unsigned int byte_read,byte_read2=0;
@@ -2058,7 +2058,7 @@ fwrite
       注意:fread和fwrite的参数size会被忽略，实际读写的字节数是参数n。之所以保留size是为了与c兼容。建议size值取1。
 
 */
-int fwrite(const addr pt,int size,int n,char fp)
+int lava_fwrite(const addr pt,int size,int n,char fp)
 {
     unsigned int byte_write;
     fp--;
@@ -2078,7 +2078,7 @@ getc
 说明　从句柄为fp的文件中读入一个字符
       返回所读的字符。若文件结束或出错，返回-1。
 */
-int getc(char fp)
+int lava_getc(char fp)
 {
     uchar dat;
     uint byte_read;
@@ -2103,7 +2103,7 @@ putc
 说明　把一个字符ch输出到句柄为fp的文件中
       返回输出的字符ch。若出错，返回-1。
 */
-int putc(char ch,char fp)
+int lava_putc(char ch,char fp)
 {
     uint byte_read;
     fp--;
@@ -2123,7 +2123,7 @@ int putc(char ch,char fp)
 
 说明　将句柄为fp的文件中的位置指针置于文件开头位置
 */
-void rewind(char fp)
+void lava_rewind(char fp)
 {
     fp--;
     f_lseek(&lava_fp[fp],0);
@@ -2138,7 +2138,7 @@ fseek
 说明　将句柄为fp的文件的位置指针移到以base所指出的位置为基准，以offset为位移量的位置
       返回当前位置。若出错，返回-1。
 */
-long fseek(char fp,long offset,char base)
+long lava_fseek(char fp,long offset,char base)
 {
     long pos;
     fp--;
@@ -2165,7 +2165,7 @@ ftell
 
 说明　返回句柄为fp的文件中的读写位置
 */
-long ftell(char fp)
+long lava_ftell(char fp)
 {
     fp--;
     return lava_fp[fp].fptr;
@@ -2180,7 +2180,7 @@ feof
 说明　遇文件结束符返回非0值，否则返回0
 
 */
-int feof(char fp)
+int lava_feof(char fp)
 {
     fp--;
     return (lava_fp[fp].fptr == lava_fp[fp].fsize) ? 1 : 0;
@@ -2237,7 +2237,7 @@ int DeleteFile(addr filename)
 */
 int GetFileNum(addr path)
 {
-    DIR dj;		/* Pointer to the open directory object */
+    FATFS_DIR dj;		/* Pointer to the open directory object */
     FILINFO fno;		/* Pointer to file information to return */
     int i=0;
     if(f_opendir(&dj,"") != FR_OK)return -1;
@@ -2258,7 +2258,7 @@ int GetFileNum(addr path)
 */
 int FindFile(int from,int num,addr buf)
 {
-    DIR dj;		/* Pointer to the open directory object */
+    FATFS_DIR dj;		/* Pointer to the open directory object */
     FILINFO fno;		/* Pointer to file information to return */
     int i;
     if(f_opendir(&dj,"") != FR_OK)return -1;
