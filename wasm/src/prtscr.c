@@ -7,16 +7,21 @@
 #include "lcd.h"
 #include "lavasim.h"
 #include "key.h"
-#include "led.h"
 
 static int fileID = 0;
-LCD_INFO lcd_info;
-char fileName[32];
-const char PrtScrDir[]="/bmp";
-const char BMPHead[66]={0x42,0x4d,0x42,0x58,0x2,0x0,0x0,0x0,0x0,0x0,0x42,0x0,0x0,0x0,0x28,0x0,0x0,0x0,0x40,0x1,0x0,0x0,0xf0,0x0,0x0,0x0,0x1,0x0,0x10,0x0,0x3,0x0,0x0,0x0,0x0,0x58,0x2,0x0,0xc4,0xe,0x0,0x0,0xc4,0xe,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xf8,0x0,0x0,0xe0,0x7,0x0,0x0,0x1f,0x0,0x0,0x0};
+static LCD_INFO lcd_info;
+static uchar fileName[64];
+static const char PrtScrDir[]="Screenshot";
+const char BMPHead[54]={
+    0x42,0x4d,0x36,0x28,0x00,0x00,0x00,0x00,0x00,0x00,
+    0x36,0x00,0x00,0x00,0x28,0x00,0x00,0x00,0x40,0x01,
+    0x00,0x00,0xf0,0x00,0x00,0x00,0x01,0x00,0x01,0x00,
+    0x00,0x00,0x00,0x00,0x00,0x28,0x00,0x00,0x00,0x13,
+    0x0b,0x00,0x00,0x13,0x0b,0x00,0x00,0x00,0x00,0x00,
+    0x00,0x00,0x00,0x00};
 
 //检测文件是否存在,存在返回非0，否则返回0
-int FileExist(const char * fileName)
+static int FileExist(const char * fileName)
 {
     char fp;
     fp = fopen(fileName,"r");
@@ -24,15 +29,15 @@ int FileExist(const char * fileName)
     return (fp?1:0);
 }
 
-char * GetPrtScrFileName()
+static char *GetPrtScrFileName(void)
 {
     while(1)
     {
-        lava_sprintf(fileName,"%s/%d.bmp",PrtScrDir,fileID);
+        lava_sprintf((uchar *)fileName,(uchar *)"%s/%d.bmp",(uchar *)PrtScrDir,fileID);
         if(FileExist((const char *)fileName)==0)break;
         fileID++;
     }
-    return fileName;
+    return (char *)fileName;
 }
 
 /*
@@ -44,10 +49,9 @@ char * GetPrtScrFileName()
  */
 void PrtScr_Init(void)
 {
-    //led_init();
-    //创建目录
-    MakeDir(PrtScrDir);
-    lcd_get_info(&lcd_info);
+    MakeDir((addr)PrtScrDir);
+    lcd_info.length = LAVA_WIDTH;
+    lcd_info.width = LAVA_HEIGHT;
 }
 
 /*
@@ -62,20 +66,20 @@ void PrtScr(int x0,int y0,int x1,int y1)
     int x,y;
     LCD_COLOR dat;
     char fp;
+    const int rowLen = x1 - x0 + 1;
     LCD_COLOR dat_w[320];
-    LED1_ON();
     fp = fopen(GetPrtScrFileName(),"w");
+    if(fp==0) return;
     fwrite(BMPHead,1,sizeof(BMPHead),fp);
     for(y=y0;y<=y1;y++)
     {
         for(x=x0;x<=x1;x++)
         {
-            dat = lcd_get_point(x,239-y);
-            dat_w[x]=dat;
+            dat = lcd_get_point(x,y);
+            dat_w[x-x0]=dat;
         }
-        fwrite((const char *)dat_w,1,sizeof(dat_w),fp);
+        fwrite((const char *)dat_w,1,rowLen*sizeof(LCD_COLOR),fp);
     }
-    LED1_OFF();
     fclose(fp);
 }
 

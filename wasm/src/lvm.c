@@ -9,6 +9,7 @@
 #include <ctype.h>
 #include "lvm.h"
 #include "key.h"
+#include "log.h"
 
 #define         USE_DEBUG
 
@@ -1798,6 +1799,7 @@ int read_keymap(addr fn)
 //载入一个文件
 int file_load(void)
 {
+    lava_log("file_load");
     uchar path[64];
     uchar fn[16];
     path[0]=0;
@@ -1807,6 +1809,7 @@ int file_load(void)
     {
         if(file_select(path,fn))
         {
+            lava_logf("file_select: %s",fn);
             lvm_fp = lava_fopen(fn,"rb");
             if(lava_getc(lvm_fp) =='L' && lava_getc(lvm_fp)=='A' && lava_getc(lvm_fp)=='V')
             {
@@ -1848,6 +1851,8 @@ void lvm_fclose_all(void)
 
 void lvm_main()
 {
+
+    //  lava_demo();
     while(1)
     {
         lvm_fclose_all();

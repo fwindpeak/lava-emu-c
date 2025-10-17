@@ -8,6 +8,7 @@ const scaleInput = document.getElementById("scale-input");
 const scaleValue = document.getElementById("scale-value");
 const keyboardPanel = document.querySelector(".keyboard");
 const fsButton = document.getElementById("fs-button");
+const screenshotButton = document.getElementById("screenshot-button");
 
 const imageData = ctx.createImageData(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 const pixelBuffer = new Uint8Array(DISPLAY_BUFFER_SIZE);
@@ -108,13 +109,6 @@ const wasmExports = {
         this.bufferPtr,
         this.bufferPtr + DISPLAY_BUFFER_SIZE
       );
-    }
-
-    const fillDemo =
-      wasmModule.cwrap?.("lava_display_fill_demo", "void", ["number"]) ??
-      wasmModule._lava_display_fill_demo;
-    if (fillDemo) {
-      fillDemo(performance.now() / 16);
     }
 
     pixelBuffer.set(this.heapView);
@@ -317,9 +311,21 @@ if (fsButton) {
       const handle = await window.showDirectoryPicker();
       rootDirectoryHandle = handle;
       await importDirectoryIntoFS(handle);
-      alert("目录已载入虚拟文件系统，位于 /LAVA");
+      alert("目录已载入虚拟文件系统");
     } catch (error) {
       console.warn("目录授权或读取失败", error);
+    }
+  });
+}
+
+if (screenshotButton) {
+  screenshotButton.addEventListener("click", () => {
+    if (!wasmModule) return;
+    try {
+      wasmModule.ccall("PrtScr_All", "void", [], []);
+      alert("已截取当前画面");
+    } catch (error) {
+      console.warn("截屏失败", error);
     }
   });
 }

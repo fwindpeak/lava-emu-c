@@ -7,6 +7,7 @@
 #include "rtc.h"
 #include "display.h"
 #include "ff.h"
+#include "prtscr.h"
 
 int main(void)
 {
@@ -15,6 +16,7 @@ int main(void)
     font_init();
     lava_init();
     ff_init();
+    PrtScr_Init();
     lvm_main();
     return 0;
 }

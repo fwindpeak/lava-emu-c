@@ -75,7 +75,7 @@ body {
 
 .fs-button {
   display: inline-block;
-  margin-bottom: 1rem;
+  margin: 0 0.5rem 1rem 0;
   padding: 0.6rem 1rem;
   border-radius: 6px;
   border: 1px solid var(--border-color);

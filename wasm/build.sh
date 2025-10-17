@@ -22,12 +22,14 @@ emcc \
   "${SCRIPT_DIR}/src/rtc_stub.c" \
   "${SCRIPT_DIR}/src/lvm.c" \
   "${SCRIPT_DIR}/src/lavasim.c" \
+  "${SCRIPT_DIR}/src/prtscr.c" \
   "${SCRIPT_DIR}/src/fonts.c" \
   "${SCRIPT_DIR}/src/key_stub.c" \
   "${SCRIPT_DIR}/src/spi_flash_stub.c" \
   "${SCRIPT_DIR}/src/ff_stub.c" \
+  "${SCRIPT_DIR}/src/log_stub.c" \
   -O2 \
-  -sEXPORTED_FUNCTIONS="['_main','_lava_display_buffer','_lava_display_clear','_lava_display_fill_demo','_lava_enqueue_key']" \
+  -sEXPORTED_FUNCTIONS="['_main','_lava_display_buffer','_lava_display_clear','_lava_display_fill_demo','_lava_enqueue_key','_PrtScr_All','_PrtScr_Init']" \
   -sEXPORTED_RUNTIME_METHODS="['ccall','cwrap','HEAPU8']" \
   -sASYNCIFY \
   -sALLOW_MEMORY_GROWTH=1 \
