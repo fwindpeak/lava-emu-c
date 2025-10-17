@@ -1,0 +1,142 @@
+:root {
+  color-scheme: dark;
+  --bg-color: #0e1116;
+  --panel-color: #171c24;
+  --accent-color: #00bcd4;
+  --text-color: #e3f2fd;
+  --muted-color: #90a4ae;
+  --border-color: #243040;
+  font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.display-panel,
+.keyboard-panel {
+  background: var(--panel-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+}
+
+.display-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.display-header h1 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.scale-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--muted-color);
+}
+
+#lava-canvas {
+  display: block;
+  width: 480px;
+  height: 240px;
+  margin: 0 auto;
+  background: #11161c;
+  border: 4px solid #0d1a24;
+  border-radius: 8px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.keyboard-panel h2 {
+  margin-top: 0;
+  font-size: 1rem;
+  color: var(--muted-color);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.keyboard-row {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.keyboard-row button {
+  min-width: 2.2rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-color);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.12s ease;
+  text-transform: uppercase;
+}
+
+.keyboard-row button.wide {
+  min-width: 4rem;
+}
+
+.keyboard-row button.space {
+  min-width: 12rem;
+}
+
+.keyboard-row button:focus-visible,
+.keyboard-row button:hover {
+  outline: none;
+  background: rgba(0, 188, 212, 0.18);
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+}
+
+.keyboard-row button.active {
+  background: rgba(0, 188, 212, 0.3);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 8px rgba(0, 188, 212, 0.6);
+}
+
+.hint {
+  margin-top: 1.2rem;
+  font-size: 0.8rem;
+  color: var(--muted-color);
+  text-align: center;
+}
+
+@media (min-width: 1024px) {
+  .layout {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  .display-panel {
+    flex: 0 0 520px;
+  }
+  .keyboard-panel {
+    flex: 1;
+  }
+}

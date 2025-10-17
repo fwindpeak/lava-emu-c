@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lava WASM 原型</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <section class="display-panel">
+        <header class="display-header">
+          <h1>Lava 屏幕</h1>
+          <label class="scale-control">
+            <span>缩放</span>
+            <input
+              id="scale-input"
+              type="range"
+              min="1"
+              max="6"
+              value="3"
+              step="1"
+            />
+            <span id="scale-value">3×</span>
+          </label>
+        </header>
+        <canvas
+          id="lava-canvas"
+          width="160"
+          height="80"
+          aria-label="160×80 黑白像素屏幕"
+        ></canvas>
+      </section>
+
+      <section class="keyboard-panel" aria-label="虚拟键盘">
+        <h2>文曲星 NC2600 键盘布局</h2>
+        <div class="keyboard">
+          <div class="keyboard-row">
+            <button data-key="Escape">Esc</button>
+            <button data-key="F1">F1</button>
+            <button data-key="F2">F2</button>
+            <button data-key="F3">F3</button>
+            <button data-key="F4">F4</button>
+            <button data-key="F5">F5</button>
+            <button data-key="F6">F6</button>
+            <button data-key="F7">F7</button>
+            <button data-key="F8">F8</button>
+            <button data-key="F9">F9</button>
+            <button data-key="F10">F10</button>
+            <button data-key="F11">F11</button>
+            <button data-key="F12">F12</button>
+          </div>
+          <div class="keyboard-row">
+            <button data-key="Tab">Tab</button>
+            <button data-key="KeyQ">Q</button>
+            <button data-key="KeyW">W</button>
+            <button data-key="KeyE">E</button>
+            <button data-key="KeyR">R</button>
+            <button data-key="KeyT">T</button>
+            <button data-key="KeyY">Y</button>
+            <button data-key="KeyU">U</button>
+            <button data-key="KeyI">I</button>
+            <button data-key="KeyO">O</button>
+            <button data-key="KeyP">P</button>
+            <button data-key="BracketLeft">[</button>
+            <button data-key="BracketRight">]</button>
+          </div>
+          <div class="keyboard-row">
+            <button data-key="CapsLock">Caps</button>
+            <button data-key="KeyA">A</button>
+            <button data-key="KeyS">S</button>
+            <button data-key="KeyD">D</button>
+            <button data-key="KeyF">F</button>
+            <button data-key="KeyG">G</button>
+            <button data-key="KeyH">H</button>
+            <button data-key="KeyJ">J</button>
+            <button data-key="KeyK">K</button>
+            <button data-key="KeyL">L</button>
+            <button data-key="Semicolon">;</button>
+            <button data-key="Quote">'</button>
+            <button data-key="Enter">Enter</button>
+          </div>
+          <div class="keyboard-row">
+            <button data-key="ShiftLeft" class="wide">Shift</button>
+            <button data-key="KeyZ">Z</button>
+            <button data-key="KeyX">X</button>
+            <button data-key="KeyC">C</button>
+            <button data-key="KeyV">V</button>
+            <button data-key="KeyB">B</button>
+            <button data-key="KeyN">N</button>
+            <button data-key="KeyM">M</button>
+            <button data-key="Comma">,</button>
+            <button data-key="Period">.</button>
+            <button data-key="Slash">/</button>
+            <button data-key="ShiftRight" class="wide">Shift</button>
+          </div>
+          <div class="keyboard-row">
+            <button data-key="ControlLeft">Ctrl</button>
+            <button data-key="AltLeft">Alt</button>
+            <button data-key="Space" class="space">Space</button>
+            <button data-key="AltRight">Alt</button>
+            <button data-key="ControlRight">Ctrl</button>
+            <button data-key="ArrowLeft">←</button>
+            <button data-key="ArrowUp">↑</button>
+            <button data-key="ArrowDown">↓</button>
+            <button data-key="ArrowRight">→</button>
+            <button data-key="Escape" data-role="back">Back</button>
+            <button data-key="F13" data-role="dict">词汇</button>
+          </div>
+        </div>
+        <p class="hint">
+          鼠标点击或使用真实键盘可触发同样的按键事件，便于调试按键映射。
+        </p>
+      </section>
+    </main>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

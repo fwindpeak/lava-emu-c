@@ -18,6 +18,11 @@
 - `windgui/`
   - `WindGUI.c/h`：建立在 LCD 驱动之上的彩色图形与控件库，提供线、矩形、图片、文本等绘制函数。
   - `fonts.*`、`bmp24to16.c` 等：GUI 所需的字体与转换工具。
+- `wasm/`
+  - `src/`：收敛后的核心 C 源码，包含原 `user/` 的 `lvm.c`、`lavasim.c`、`boshi.c`、`prtscr.c`，以及 Canvas 显示适配器（`display_stub.c`、`main_stub.c`）等。
+  - `include/`：对应头文件（`lvm.h`、`lavasim.h`、`display.h`、`fonts.h`、`key.h` 等）以及后续需要的最小化硬件替代接口。
+  - `windgui/`：复制自原工程的 GUI 组件与字体数据，方便逐步裁剪或直接重用。
+- `web/`：前端原型，包含 `index.html`（画布与控制台）、`styles.css`（暗色主题视觉）、`main.js`（刷新循环与虚拟键盘）。
 - `system/`、`stm32lib/`：包含芯片底层库与启动文件，仅服务于嵌入式版本，WASM 迁移可忽略。
 - 其他文件夹（如 `project/`、`tools/`、`screenshot/`、`bakup/`、`不用/` 等）多为工程配置、历史备份或资源文件，可按需参阅。
 
@@ -48,3 +53,20 @@
 - 虚拟机默认访问 `/LAVA` 目录，浏览器端可模拟该路径或在 UI 中提示用户选择文件。
 - `lvm_run` 会直接操作 WASM 内存中的缓冲区，需要在 JS 侧通过 `HEAPU8` 读取以同步画面。
 - 示例程序如 `boshi.c` 会调用更多图形接口，可根据产品需求决定是否一并迁移。
+
+## 浏览器原型使用说明
+1. 启动本地静态服务器（例如 `npx serve web` 或 `python -m http.server` 后切换到 `web/` 目录），在浏览器中打开 `index.html`。
+2. 画布会尝试调用 WASM 导出的 `lava_display_buffer` 与 `lava_display_fill_demo`，若未加载模块，则退回 JS 内置的条纹动画，方便验证刷新链路。
+3. 使用顶部滑块可将 160×80 的单色画布放大到 1×–8×；虚拟键盘支持鼠标点击或物理键盘映射，未来可通过 `Module.ccall` 往虚拟机下发按键消息。
+
+## Emscripten 构建与调试链路
+1. 安装并激活 Emscripten（参考官方 `emsdk` 指南），确保 `emcc` 命令可用。
+2. 在仓库根目录执行：
+   ```bash
+   chmod +x wasm/build.sh   # 首次需要授予执行权限
+   ./wasm/build.sh
+   ```
+   该脚本会编译 `wasm/src/main_stub.c`、`wasm/src/display_stub.c` 等文件（头文件位于 `wasm/include/`），生成 `web/lava.js` 与同目录下的 `lava.wasm`。
+3. 重新刷新 `web/index.html`，浏览器会通过 ES Module 方式加载 `lava.js`，`main.js` 内的 top-level await 会等待 `createLavaModule()` 完成，随后开始调用 WASM 的显示缓冲接口。
+4. 在开发者工具的 `Console` 中可看到模块加载日志；若需要进一步调试，可在 `wasm/display_stub.c` 中调整演示逻辑或导出更多函数，并在 `main.js` 中通过 `wasmModule.cwrap/ccall` 访问。
+5. 后续接入真实虚拟机时，只需在构建脚本里加入新的 C 源文件，并保持导出接口不变，即可沿用当前前端刷新链路。
