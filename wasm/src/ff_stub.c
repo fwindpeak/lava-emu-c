@@ -6,6 +6,13 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <emscripten/emscripten.h>
+
+EM_JS(void, lava_fs_notify_write, (const char* path), {
+  if (Module.onFileWritten) {
+    Module.onFileWritten(UTF8ToString(path));
+  }
+});
 
 int ff_init(void)
 {
@@ -72,6 +79,7 @@ FRESULT f_close(FIL* fp)
 {
     if (!fp || !fp->handle) return FR_INVALID_OBJECT;
     fclose((FILE*)fp->handle);
+    lava_fs_notify_write(fp->path);
     fp->handle = NULL;
     fp->fptr = fp->fsize = 0;
     return FR_OK;
@@ -93,7 +101,10 @@ FRESULT f_write(FIL* fp, const void* buff, unsigned int btw, unsigned int* bw)
     if (bw) *bw = (unsigned int)written;
     fflush((FILE*)fp->handle);
     update_fil_size(fp);
-    return (written < btw) ? FR_DISK_ERR : FR_OK;
+    if (written < btw)
+        return FR_DISK_ERR;
+    lava_fs_notify_write(fp->path);
+    return FR_OK;
 }
 
 FRESULT f_lseek(FIL* fp, unsigned long ofs)

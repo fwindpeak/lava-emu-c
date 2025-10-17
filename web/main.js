@@ -7,16 +7,84 @@ const ctx = canvas.getContext("2d", { alpha: false });
 const scaleInput = document.getElementById("scale-input");
 const scaleValue = document.getElementById("scale-value");
 const keyboardPanel = document.querySelector(".keyboard");
+const fsButton = document.getElementById("fs-button");
 
 const imageData = ctx.createImageData(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 const pixelBuffer = new Uint8Array(DISPLAY_BUFFER_SIZE);
+let rootDirectoryHandle = null;
+
+const KEY_MAP = {
+  ArrowUp: 1,
+  ArrowDown: 2,
+  ArrowRight: 3,
+  ArrowLeft: 4,
+  Enter: 5,
+  F1: 6,
+  F2: 101,
+  F3: 102,
+  F4: 103,
+  F5: 104,
+  F6: 105,
+  F7: 106,
+  F8: 107,
+  F9: 108,
+  F10: 109,
+  F11: 110,
+  F12: 111,
+  Escape: 7,
+  Space: 32,
+  Tab: 9,
+  Backspace: 8,
+  ShiftLeft: 0,
+  ShiftRight: 0,
+  ControlLeft: 0,
+  ControlRight: 0,
+  AltLeft: 0,
+  AltRight: 0,
+};
+
+function mapKeyToCode(code) {
+  if (Object.prototype.hasOwnProperty.call(KEY_MAP, code)) {
+    return KEY_MAP[code];
+  }
+  if (code.startsWith("Key") && code.length === 4) {
+    return code.charCodeAt(3);
+  }
+  switch (code) {
+    case "Slash":
+      return "/".charCodeAt(0);
+    case "Period":
+      return ".".charCodeAt(0);
+    case "Comma":
+      return ",".charCodeAt(0);
+    case "BracketLeft":
+      return "[".charCodeAt(0);
+    case "BracketRight":
+      return "]".charCodeAt(0);
+    case "Semicolon":
+      return ";".charCodeAt(0);
+    case "Quote":
+      return "'".charCodeAt(0);
+    default:
+      return 0;
+  }
+}
 
 let wasmModule = null;
+let enqueueKey = null;
 
 try {
   const { default: createLavaModule } = await import("./lava.js");
   wasmModule = await createLavaModule();
+  enqueueKey =
+    wasmModule.cwrap?.("lava_enqueue_key", "void", ["number"]) ??
+    wasmModule._lava_enqueue_key;
   console.info("Lava WASM 模块已加载");
+  wasmModule.onFileWritten = (path) => {
+    if (path && rootDirectoryHandle) {
+      syncFileToDisk(path);
+    }
+  };
 } catch (error) {
   console.warn("未能加载 WASM 模块，使用演示模式。", error);
 }
@@ -78,6 +146,79 @@ const fallbackPattern = {
   },
 };
 
+function ensureDirectory(path) {
+  const FS = wasmModule?.FS;
+  if (!FS) return;
+  const normalized = path.startsWith("/") ? path : `/${path}`;
+  const parts = normalized.split("/").filter(Boolean);
+  let current = "";
+  for (const part of parts) {
+    current += `/${part}`;
+    if (!FS.analyzePath(current).exists) {
+      FS.mkdir(current);
+    }
+  }
+}
+
+async function importDirectoryIntoFS(dirHandle, targetPath = "") {
+  if (!wasmModule?.FS) return;
+  if (targetPath) ensureDirectory(targetPath);
+  const basePath = targetPath
+    ? targetPath.startsWith("/")
+      ? targetPath
+      : `/${targetPath}`
+    : "";
+  for await (const entry of dirHandle.values()) {
+    const entryPath = `${basePath}/${entry.name}`.replace(/\/+/g, "/");
+    if (entry.kind === "file") {
+      const file = await entry.getFile();
+      const buffer = await file.arrayBuffer();
+      const data = new Uint8Array(buffer);
+      const FS = wasmModule.FS;
+      if (FS.analyzePath(entryPath).exists) {
+        FS.unlink(entryPath);
+      }
+      FS.writeFile(entryPath, data, { canOwn: true });
+      console.info("已导入文件:", entryPath, data.length, "bytes");
+    } else if (entry.kind === "directory") {
+      ensureDirectory(entryPath);
+      await importDirectoryIntoFS(entry, entryPath);
+    }
+  }
+}
+
+async function getFileHandleFromRoot(relativePath, create = false) {
+  if (!rootDirectoryHandle) return null;
+  const parts = relativePath.split("/").filter(Boolean);
+  let current = rootDirectoryHandle;
+  for (let i = 0; i < parts.length; i++) {
+    const name = parts[i];
+    const isFile = i === parts.length - 1;
+    if (isFile) {
+      return await current.getFileHandle(name, { create });
+    }
+    current = await current.getDirectoryHandle(name, { create });
+  }
+  return current;
+}
+
+async function syncFileToDisk(path) {
+  if (!wasmModule?.FS || !rootDirectoryHandle) return;
+  const normalized = path.replace(/^\/+/, "");
+  const fsPath = path.startsWith("/") ? path : `/${path}`;
+  try {
+    const data = wasmModule.FS.readFile(fsPath, { encoding: "binary" });
+    const fileHandle = await getFileHandleFromRoot(normalized, true);
+    if (!fileHandle) return;
+    const writable = await fileHandle.createWritable();
+    await writable.write(data);
+    await writable.close();
+    console.info("已同步文件到磁盘:", normalized);
+  } catch (error) {
+    console.warn("同步文件失败", path, error);
+  }
+}
+
 function drawFrame() {
   const data = imageData.data;
   let di = 0;
@@ -121,6 +262,8 @@ function handleKeyboardEvent(event) {
   if (button) {
     if (event.type === "keydown") {
       flashButton(button);
+      triggerKey(event.code);
+      event.preventDefault();
     }
   }
 }
@@ -137,7 +280,9 @@ function flashButton(button) {
 const keyboardListeners = new Set();
 
 function triggerKey(code) {
-  const payload = { code, timestamp: performance.now() };
+  const nativeCode = mapKeyToCode(code);
+  if (!nativeCode) return;
+  const payload = { code, nativeCode, timestamp: performance.now() };
   for (const listener of keyboardListeners) {
     try {
       listener(payload);
@@ -148,8 +293,8 @@ function triggerKey(code) {
 }
 
 keyboardListeners.add((payload) => {
-  if (wasmModule?.ccall) {
-    // 预留：将来可以通过 Module.ccall 将按键传递给虚拟机。
+  if (enqueueKey) {
+    enqueueKey(payload.nativeCode);
   }
   console.debug("虚拟按键:", payload.code);
 });
@@ -157,6 +302,27 @@ keyboardListeners.add((payload) => {
 scaleInput.addEventListener("input", handleScaleInput);
 keyboardPanel.addEventListener("click", handleKeyboardClick);
 document.addEventListener("keydown", handleKeyboardEvent);
+
+if (fsButton) {
+  fsButton.addEventListener("click", async () => {
+    if (!window.showDirectoryPicker) {
+      alert("当前浏览器不支持 File System Access API。");
+      return;
+    }
+    if (!wasmModule) {
+      alert("WASM 模块尚未加载完成。");
+      return;
+    }
+    try {
+      const handle = await window.showDirectoryPicker();
+      rootDirectoryHandle = handle;
+      await importDirectoryIntoFS(handle);
+      alert("目录已载入虚拟文件系统，位于 /LAVA");
+    } catch (error) {
+      console.warn("目录授权或读取失败", error);
+    }
+  });
+}
 
 setScale(scaleInput.value);
 

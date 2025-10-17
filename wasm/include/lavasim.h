@@ -8,14 +8,15 @@
 
 #include "lcd.h"
 
+#include <stddef.h>
+
 #define addr  char *
-#define uchar char
+#define uchar unsigned char
 
 
 
 //常量定义
 
-#define NULL 0
 #define SEEK_SET 0
 #define SEEK_CUR 1
 #define SEEK_END 2
@@ -122,16 +123,5 @@ int FileList(addr filename);
 
 void lava_init(void);
 void lava_demo(void);
-
-#define fopen  lava_fopen
-#define fclose lava_fclose
-#define fread  lava_fread
-#define fwrite lava_fwrite
-#define getc   lava_getc
-#define putc   lava_putc
-#define rewind lava_rewind
-#define fseek  lava_fseek
-#define ftell  lava_ftell
-#define feof   lava_feof
 
 #endif

@@ -16,3 +16,6 @@
 *.exe
 *.out
 *.app
+
+web/lava.js
+web/lava.wasm

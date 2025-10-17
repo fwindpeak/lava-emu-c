@@ -67,8 +67,8 @@ void lvm_stk_pop(int n)
 int lvm_read(addr dat,int b)
 {
     int n;
-    fseek(lvm_fp,lvm_pi,SEEK_SET);
-    n=fread(dat,1,b,lvm_fp);
+    lava_fseek(lvm_fp,lvm_pi,SEEK_SET);
+    n=lava_fread(dat,1,b,lvm_fp);
 #ifdef USE_DEBUG
     if(n!=b)
     {
@@ -85,8 +85,8 @@ unsigned char lvm_read1b(void)
 {
     int n;
     char b;
-    fseek(lvm_fp,lvm_pi,SEEK_SET);
-    n=fread(&b,1,1,lvm_fp);
+    lava_fseek(lvm_fp,lvm_pi,SEEK_SET);
+    n=lava_fread(&b,1,1,lvm_fp);
     lvm_pi += n;
     return b;
 }
@@ -96,8 +96,8 @@ unsigned short lvm_read2b(void)
 {
     int n;
     unsigned short b;
-    fseek(lvm_fp,lvm_pi,SEEK_SET);
-    n=fread((char *)&b,1,2,lvm_fp);
+    lava_fseek(lvm_fp,lvm_pi,SEEK_SET);
+    n=lava_fread((char *)&b,1,2,lvm_fp);
     lvm_pi += n;
     return b;
 }
@@ -107,8 +107,8 @@ uint32_t lvm_read4b(void)
 {
     int n;
     uint32_t b;
-    fseek(lvm_fp,lvm_pi,SEEK_SET);
-    n=fread((char *)&b,1,4,lvm_fp);
+    lava_fseek(lvm_fp,lvm_pi,SEEK_SET);
+    n=lava_fread((char *)&b,1,4,lvm_fp);
     lvm_pi += n;
     return b;
 }
@@ -1378,50 +1378,50 @@ int lvm_run(void)
             break;
         case 0xAE://fopen
             lvm_stk_pop(2);
-            lvm_buf[0] = fopen(lvm_dat+lvm_buf[0],lvm_dat+lvm_buf[1]);
+            lvm_buf[0] = lava_fopen(lvm_dat+lvm_buf[0],lvm_dat+lvm_buf[1]);
             lvm_stk_push(1);
             break;
         case 0xAF://fclose
             lvm_stk_pop(1);
-            fclose(lvm_buf[0]);
+            lava_fclose(lvm_buf[0]);
             break;
         case 0xB0://fread
             lvm_stk_pop(4);
-            lvm_buf[0] = fread(lvm_dat+lvm_buf[0],lvm_buf[1],lvm_buf[2],lvm_buf[3]);
+            lvm_buf[0] = lava_fread(lvm_dat+lvm_buf[0],lvm_buf[1],lvm_buf[2],lvm_buf[3]);
             lvm_stk_push(1);
             break;
         case 0xB1://fwrite
             lvm_stk_pop(4);
-            lvm_buf[0] = fwrite(lvm_dat+lvm_buf[0],lvm_buf[1],lvm_buf[2],lvm_buf[3]);
+            lvm_buf[0] = lava_fwrite(lvm_dat+lvm_buf[0],lvm_buf[1],lvm_buf[2],lvm_buf[3]);
             lvm_stk_push(1);
             break;
         case 0xB2://fseek
             lvm_stk_pop(3);
-            lvm_buf[0] = fseek(lvm_buf[0],lvm_buf[1],lvm_buf[2]);
+            lvm_buf[0] = lava_fseek(lvm_buf[0],lvm_buf[1],lvm_buf[2]);
             lvm_stk_push(1);
             break;
         case 0xB3://ftell
             lvm_stk_pop(1);
-            lvm_buf[0] = ftell(lvm_buf[0]);
+            lvm_buf[0] = lava_ftell(lvm_buf[0]);
             lvm_stk_push(1);
             break;
         case 0xB4://feof
             lvm_stk_pop(1);
-            lvm_buf[0] = feof(lvm_buf[0]);
+            lvm_buf[0] = lava_feof(lvm_buf[0]);
             lvm_stk_push(1);
             break;
         case 0xB5://rewind
             lvm_stk_pop(1);
-            rewind(lvm_buf[0]);
+            lava_rewind(lvm_buf[0]);
             break;
         case 0xB6://getc
             lvm_stk_pop(1);
-            lvm_buf[0] = getc(lvm_buf[0]);
+            lvm_buf[0] = lava_getc(lvm_buf[0]);
             lvm_stk_push(1);
             break;
         case 0xB7://putc
             lvm_stk_pop(2);
-            lvm_buf[0] = putc(lvm_buf[0],lvm_buf[1]);
+            lvm_buf[0] = lava_putc(lvm_buf[0],lvm_buf[1]);
             lvm_stk_push(1);
             break;
             //TODO:
@@ -1620,19 +1620,19 @@ int fread_line(char fp,addr dat)
 {
     int c;
     char *p = dat;
-    if(feof(fp))return -1;
-    c=getc(fp);
+    if(lava_feof(fp))return -1;
+    c=lava_getc(fp);
     if(c==-1)return -1;
     do
     {
         if(c==0x0d | c==0x0a)
         {
-            c=getc(fp);
+            c=lava_getc(fp);
             if(c==0x0a | c==0x0d)break;
             else if(c==-1)break;
             else 
             {
-                fseek(fp,-1,SEEK_CUR);
+                lava_fseek(fp,-1,SEEK_CUR);
                 break;
             }
         }
@@ -1640,7 +1640,7 @@ int fread_line(char fp,addr dat)
         {
             *p++=c;
         }
-        c = getc(fp);
+        c = lava_getc(fp);
     }while(c != -1);
     *p = '\0';
     return strlen(dat);
@@ -1714,7 +1714,7 @@ int read_keymap(addr fn)
 
     fn_split(fn,fn1,e);
     strcat(fn1,".kmp");
-    fp = fopen(fn1,"rb");
+    fp = lava_fopen(fn1,"rb");
     if(fp==0)return 0;
     
     ClearScreen();
@@ -1790,7 +1790,7 @@ int read_keymap(addr fn)
             }
         }
     }
-    fclose(fp);
+    lava_fclose(fp);
 
     return 1;
 }
@@ -1807,8 +1807,8 @@ int file_load(void)
     {
         if(file_select(path,fn))
         {
-            lvm_fp = fopen(fn,"rb");
-            if(getc(lvm_fp) =='L' && getc(lvm_fp)=='A' && getc(lvm_fp)=='V')
+            lvm_fp = lava_fopen(fn,"rb");
+            if(lava_getc(lvm_fp) =='L' && lava_getc(lvm_fp)=='A' && lava_getc(lvm_fp)=='V')
             {
 
                 read_keymap(fn);//读取按键映射文件                 
@@ -1818,9 +1818,9 @@ int file_load(void)
                  
 
                 lvm_pi = 0x10;
-                fseek(lvm_fp,0,SEEK_END);
-                lvm_fsize = ftell(lvm_fp);
-                fseek(lvm_fp,0,SEEK_SET);
+                lava_fseek(lvm_fp,0,SEEK_END);
+                lvm_fsize = lava_ftell(lvm_fp);
+                lava_fseek(lvm_fp,0,SEEK_SET);
                 return 1;
             }
             else
@@ -1828,7 +1828,7 @@ int file_load(void)
                 SetScreen(1);
                 lava_printf("不是lava文件");
                 lava_getchar();
-                fclose(lvm_fp);
+                lava_fclose(lvm_fp);
                 continue;
             }
         }
@@ -1842,7 +1842,7 @@ void lvm_fclose_all(void)
     int i;
     for(i=1; i<LAVA_FP_MAX; i++)
     {
-        fclose(i);
+        lava_fclose(i);
     }
 }
 

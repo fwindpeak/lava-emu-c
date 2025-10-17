@@ -22,6 +22,11 @@
   - `src/`：收敛后的核心 C 源码，包含原 `user/` 的 `lvm.c`、`lavasim.c`、`boshi.c`、`prtscr.c`，以及 Canvas 显示适配器（`display_stub.c`、`main_stub.c`）等。
   - `include/`：对应头文件（`lvm.h`、`lavasim.h`、`display.h`、`fonts.h`、`key.h` 等）以及后续需要的最小化硬件替代接口。
   - `windgui/`：复制自原工程的 GUI 组件与字体数据，方便逐步裁剪或直接重用。
+- `wasm` 宿主替代层提供：
+  - `lcd_stub.c`（接入 `lava_display_buffer` 与 Canvas）
+  - `key_stub.c`（暴露 `lava_enqueue_key`，接收浏览器键盘事件）
+  - `delay_stub.c` / `rtc_stub.c`（基于 `emscripten_sleep` 与 `performance.now`）
+  - `spi_flash_stub.c`（当前返回空字体数据，可按需替换为实际资源）
 - `web/`：前端原型，包含 `index.html`（画布与控制台）、`styles.css`（暗色主题视觉）、`main.js`（刷新循环与虚拟键盘）。
 - `system/`、`stm32lib/`：包含芯片底层库与启动文件，仅服务于嵌入式版本，WASM 迁移可忽略。
 - 其他文件夹（如 `project/`、`tools/`、`screenshot/`、`bakup/`、`不用/` 等）多为工程配置、历史备份或资源文件，可按需参阅。
@@ -57,7 +62,8 @@
 ## 浏览器原型使用说明
 1. 启动本地静态服务器（例如 `npx serve web` 或 `python -m http.server` 后切换到 `web/` 目录），在浏览器中打开 `index.html`。
 2. 画布会尝试调用 WASM 导出的 `lava_display_buffer` 与 `lava_display_fill_demo`，若未加载模块，则退回 JS 内置的条纹动画，方便验证刷新链路。
-3. 使用顶部滑块可将 160×80 的单色画布放大到 1×–8×；虚拟键盘支持鼠标点击或物理键盘映射，未来可通过 `Module.ccall` 往虚拟机下发按键消息。
+3. 点击“选择程序目录”按钮授权 File System Access API，浏览器会将所选目录的文件递归复制到虚拟文件系统的 `/LAVA` 目录；之后可在设备 UI 中浏览、加载 `.lav` 程序。
+4. 使用顶部滑块可将 160×80 的单色画布放大到 1×–8×；虚拟键盘支持鼠标点击或物理键盘映射，键值会通过 `lava_enqueue_key()` 注入到虚拟机的输入缓冲。
 
 ## Emscripten 构建与调试链路
 1. 安装并激活 Emscripten（参考官方 `emsdk` 指南），确保 `emcc` 命令可用。
@@ -66,7 +72,7 @@
    chmod +x wasm/build.sh   # 首次需要授予执行权限
    ./wasm/build.sh
    ```
-   该脚本会编译 `wasm/src/main_stub.c`、`wasm/src/display_stub.c` 等文件（头文件位于 `wasm/include/`），生成 `web/lava.js` 与同目录下的 `lava.wasm`。
+   该脚本会编译 `wasm/src/` 下的核心虚拟机与宿主适配代码（头文件位于 `wasm/include/`），生成 `web/lava.js` 与同目录下的 `lava.wasm`（以 ES Module 形式暴露 `createLavaModule` 工厂函数）。
 3. 重新刷新 `web/index.html`，浏览器会通过 ES Module 方式加载 `lava.js`，`main.js` 内的 top-level await 会等待 `createLavaModule()` 完成，随后开始调用 WASM 的显示缓冲接口。
-4. 在开发者工具的 `Console` 中可看到模块加载日志；若需要进一步调试，可在 `wasm/display_stub.c` 中调整演示逻辑或导出更多函数，并在 `main.js` 中通过 `wasmModule.cwrap/ccall` 访问。
+4. 在开发者工具的 `Console` 中可看到模块加载日志；若需要进一步调试，可在 `wasm/src/` 中扩展导出函数（如 `lava_enqueue_key`），并在 `main.js` 里通过 `wasmModule.cwrap` 调用。
 5. 后续接入真实虚拟机时，只需在构建脚本里加入新的 C 源文件，并保持导出接口不变，即可沿用当前前端刷新链路。

@@ -73,6 +73,27 @@ body {
   text-transform: uppercase;
 }
 
+.fs-button {
+  display: inline-block;
+  margin-bottom: 1rem;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: rgba(0, 188, 212, 0.12);
+  color: var(--text-color);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+
+.fs-button:hover,
+.fs-button:focus-visible {
+  outline: none;
+  background: rgba(0, 188, 212, 0.28);
+  border-color: var(--accent-color);
+  transform: translateY(-1px);
+}
+
 .keyboard {
   display: flex;
   flex-direction: column;

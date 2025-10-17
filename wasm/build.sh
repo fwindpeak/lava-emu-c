@@ -15,7 +15,7 @@ mkdir -p "${OUT_DIR}"
 emcc \
   -I"${SCRIPT_DIR}/include" \
   -I"${SCRIPT_DIR}" \
-  "${SCRIPT_DIR}/src/main_stub.c" \
+  "${SCRIPT_DIR}/src/main.c" \
   "${SCRIPT_DIR}/src/display_stub.c" \
   "${SCRIPT_DIR}/src/lcd_stub.c" \
   "${SCRIPT_DIR}/src/delay_stub.c" \
