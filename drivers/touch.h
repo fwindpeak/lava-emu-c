@@ -47,7 +47,7 @@ u16 touch_read_raw_y(void);
 
 TP touch_get_xy(void);
 void touch_wait(void);
-//ÅĞ¶ÏµãtpÊÇ²»ÊÇÔÚboxÖĞ
+//åˆ¤æ–­ç‚¹tpæ˜¯ä¸æ˜¯åœ¨boxä¸­
 u8 touch_is_inbox(TP tp,TBox tb);
 
 /*----- High layer function -----*/

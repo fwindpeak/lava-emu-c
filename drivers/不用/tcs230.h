@@ -9,7 +9,7 @@
 
 void tcs230_init(void);
 u16 tcs_get_color(u8 tunnel);
-//检查是否为某种颜色
+//妫�鏌ユ槸鍚︿负鏌愮棰滆壊
 u8 tcs_is_color(u8 type);
 
 #endif

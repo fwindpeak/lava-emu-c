@@ -450,28 +450,28 @@ void LCD_Clear(uint16_t Color)
 void LCD_SetCursor(uint8_t Xpos, uint16_t Ypos)
 {
     /*
-    ÊúÖ±·´Ïò
+    ç«–ç›´åå‘
     R03H = 1030
     */
     // LCD_WriteReg(LCD_REG_32, Xpos);
     // LCD_WriteReg(LCD_REG_33, Ypos);
 
     /*
-    ÊúÖ±ÕıÏò
+    ç«–ç›´æ­£å‘
     R03H = 1020
     */
     LCD_WriteReg(LCD_REG_32, 239-Xpos);
     LCD_WriteReg(LCD_REG_33, 319-Ypos);
 
     /*
-    ºáÆÁÏò×ó
+    æ¨ªå±å‘å·¦
     R03H = 1018
     */
 //     LCD_WriteReg(LCD_REG_32, Ypos);
 //     LCD_WriteReg(LCD_REG_33, 319-Xpos);
 
     /*
-        ºáÆÁÏòÓÒ
+        æ¨ªå±å‘å³
         R03H = 1008
         */
 //     LCD_WriteReg(LCD_REG_32, 239-Ypos);
@@ -1535,7 +1535,7 @@ void lcd_clr(void)
 
 /**********************************************************
 
-  ×Ö·ûÏÔÊ¾×Óº¯Êı
+  å­—ç¬¦æ˜¾ç¤ºå­å‡½æ•°
 
 **********************************************************/
 #define LCD_SIZE_X 240
@@ -1546,10 +1546,10 @@ void lcd_show_char(u16 x,u16 y,char ch)
 }
 
 /**********************************************************
- ÏÔÊ¾×Ö·û´®×Óº¯Êı
+ æ˜¾ç¤ºå­—ç¬¦ä¸²å­å‡½æ•°
 
- x,y:Æğµã×ø±ê
- *p:×Ö·û´®ÆğÊ¼µØÖ·
+ x,y:èµ·ç‚¹åæ ‡
+ *p:å­—ç¬¦ä¸²èµ·å§‹åœ°å€
 
 **********************************************************/
 void lcd_show_string(u16 x,u16 y,u8 *p)
@@ -1561,8 +1561,8 @@ void lcd_show_string(u16 x,u16 y,u8 *p)
         p++;
     }
 }
-//´òÓ¡Êı×Ö
-void lcd_show_num(u16 x,u16 y,u16 num,uchar wei)//wei Êı×ÖÕ¼µÄÎ»Êı
+//æ‰“å°æ•°å­—
+void lcd_show_num(u16 x,u16 y,u16 num,uchar wei)//wei æ•°å­—å çš„ä½æ•°
 {
     u8 tempstring[6];
     unsigned char n[5];
@@ -1625,15 +1625,15 @@ void lcd_putc(int ch)
 }
 
 /*
- * º¯ÊıÃû£ºitoa
- * ÃèÊö  £º½«ÕûĞÎÊı¾İ×ª»»³É×Ö·û´®
- * ÊäÈë  £º-radix =10 ±íÊ¾10½øÖÆ£¬ÆäËû½á¹ûÎª0
- *         -value Òª×ª»»µÄÕûĞÎÊı
- *         -buf ×ª»»ºóµÄ×Ö·û´®
+ * å‡½æ•°åï¼šitoa
+ * æè¿°  ï¼šå°†æ•´å½¢æ•°æ®è½¬æ¢æˆå­—ç¬¦ä¸²
+ * è¾“å…¥  ï¼š-radix =10 è¡¨ç¤º10è¿›åˆ¶ï¼Œå…¶ä»–ç»“æœä¸º0
+ *         -value è¦è½¬æ¢çš„æ•´å½¢æ•°
+ *         -buf è½¬æ¢åçš„å­—ç¬¦ä¸²
  *         -radix = 10
- * Êä³ö  £ºÎŞ
- * ·µ»Ø  £ºÎŞ
- * µ÷ÓÃ  £º±»lcd_printf()µ÷ÓÃ
+ * è¾“å‡º  ï¼šæ— 
+ * è¿”å›  ï¼šæ— 
+ * è°ƒç”¨  ï¼šè¢«lcd_printf()è°ƒç”¨
  */
 static char *itoa(int value, char *string, int radix)
 {
@@ -1683,7 +1683,7 @@ static char *itoa(int value, char *string, int radix)
 
 } /* NCL_Itoa */
 
-//¸ñÊ½»¯´òÓ¡µ½ÄÚ´æ
+//æ ¼å¼åŒ–æ‰“å°åˆ°å†…å­˜
 void lcd_sprintf(u8 *str,uint8_t *Data,...)
 {
     const char *s;
@@ -1694,18 +1694,18 @@ void lcd_sprintf(u8 *str,uint8_t *Data,...)
     va_list ap;
     va_start(ap, Data);
 
-    while ( *Data != 0)     // ÅĞ¶ÏÊÇ·ñµ½´ï×Ö·û´®½áÊø·û
+    while ( *Data != 0)     // åˆ¤æ–­æ˜¯å¦åˆ°è¾¾å­—ç¬¦ä¸²ç»“æŸç¬¦
     {
         if ( *Data == 0x5c )  //'\'
         {
             switch ( *++Data )
             {
-            case 'r':							          //»Ø³µ·û
+            case 'r':							          //å›è½¦ç¬¦
                 *str++=0x0d;
                 Data ++;
                 break;
 
-            case 'n':							          //»»ĞĞ·û
+            case 'n':							          //æ¢è¡Œç¬¦
                 *str++=0x0a;
                 Data ++;
                 break;
@@ -1720,7 +1720,7 @@ void lcd_sprintf(u8 *str,uint8_t *Data,...)
             //
             switch ( *++Data )
             {
-            case 's':										  //×Ö·û´®
+            case 's':										  //å­—ç¬¦ä¸²
                 s = va_arg(ap, const char *);
                 for ( ; *s; s++)
                 {
@@ -1728,13 +1728,13 @@ void lcd_sprintf(u8 *str,uint8_t *Data,...)
                 }
                 Data++;
                 break;
-            case 'c':										  //×Ö·û
+            case 'c':										  //å­—ç¬¦
                 c = va_arg(ap, int);
                 *str++=(c);
                 Data++;
                 break;
 
-            case 'd':										//Ê®½øÖÆ
+            case 'd':										//åè¿›åˆ¶
                 d = va_arg(ap, int);
                 itoa(d, buf, 10);
                 for (s = buf; *s; s++)
@@ -1752,7 +1752,7 @@ void lcd_sprintf(u8 *str,uint8_t *Data,...)
     }
     *str=0x00;
 }
-//¸ñÊ½»¯´òÓ¡µ½ÆÁÄ»
+//æ ¼å¼åŒ–æ‰“å°åˆ°å±å¹•
 void lcd_printf(uint8_t *Data,...)
 {
     const char *s;
@@ -1763,18 +1763,18 @@ void lcd_printf(uint8_t *Data,...)
     va_list ap;
     va_start(ap, Data);
 
-    while ( *Data != 0)     // ÅĞ¶ÏÊÇ·ñµ½´ï×Ö·û´®½áÊø·û
+    while ( *Data != 0)     // åˆ¤æ–­æ˜¯å¦åˆ°è¾¾å­—ç¬¦ä¸²ç»“æŸç¬¦
     {
         if ( *Data == 0x5c )  //'\'
         {
             switch ( *++Data )
             {
-            case 'r':							          //»Ø³µ·û
+            case 'r':							          //å›è½¦ç¬¦
                 lcd_putc(0x0d);
                 Data ++;
                 break;
 
-            case 'n':							          //»»ĞĞ·û
+            case 'n':							          //æ¢è¡Œç¬¦
                 lcd_putc(0x0a);
                 Data ++;
                 break;
@@ -1789,7 +1789,7 @@ void lcd_printf(uint8_t *Data,...)
             //
             switch ( *++Data )
             {
-            case 's':										  //×Ö·û´®
+            case 's':										  //å­—ç¬¦ä¸²
                 s = va_arg(ap, const char *);
                 for ( ; *s; s++)
                 {
@@ -1797,13 +1797,13 @@ void lcd_printf(uint8_t *Data,...)
                 }
                 Data++;
                 break;
-            case 'c':										  //×Ö·û
+            case 'c':										  //å­—ç¬¦
                 c = va_arg(ap, int);
                 lcd_putc(c);
                 Data++;
                 break;
 
-            case 'd':										//Ê®½øÖÆ
+            case 'd':										//åè¿›åˆ¶
                 d = va_arg(ap, int);
                 itoa(d, buf, 10);
                 for (s = buf; *s; s++)

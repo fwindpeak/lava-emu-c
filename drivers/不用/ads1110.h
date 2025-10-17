@@ -1,10 +1,10 @@
 #ifndef __ADS1110_H_
 #define __ADS1110_H_
 
-//¶ÁÖµ
+//è¯»å€¼
 uint16_t ads1110_read(void);
 
-//³õÊ¼»¯
+//åˆå§‹åŒ–
 void ads1110_init(void);
 
 #endif

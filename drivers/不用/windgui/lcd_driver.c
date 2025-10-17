@@ -1,19 +1,19 @@
 /**
-    @¼ò½é LCDÇı¶¯
+    @ç®€ä»‹ LCDé©±åŠ¨
 
-    @ÓÃ·¨
-    Ìá¹©ÒÔÏÂ¼¸¸öº¯Êıµ÷ÓÃ£º
-    1¡¢void lcd_init(); // ³õÊ¼»¯
-    2¡¢void lcd_get_info(&lcd_info);//»ñÈ¡LCDĞÅÏ¢
-    3¡¢void lcd_set_point(x,y,color);//»­µã
-    4¡¢LCD_COLOR lcd_get_point(x,y);//»ñÈ¡µãÑÕÉ«
-    @ËµÃ÷
-    1¡¢LCD_INFOÖĞµÄwidth´ú±íÆÁÄ»±È½Ï³¤µÄÒ»±ß£¬height´ú±í±È½Ï¶ÌµÄÒ»±ß
-    2¡¢x,yµÄ×ø±ê£¬x±íÊ¾width£¬y±íÊ¾height£¬Ô­µãÔÚ×óÉÏ½Ç
-    @¹ØÓÚÒÆÖ²
-    1¡¢Èç¹ûÊÇstm32²ÉÓÃfsmc·½Ê½£¬ĞèÒª¸ü¸ÄLCD_REG ºÍLCD_REG ºê¶¨Òå£¬ÒÔ¼°lcd_ctl_initº¯ÊıÖĞµÄFSMC_Bank µÈ²ÎÊı
-    2¡¢¿ØÖÆĞ¾Æ¬²»Í¬Ê±»¹ĞèÒªĞŞ¸Älcd_initÖĞ¼Ä´æÆ÷³õÊ¼»¯²¿·Ö
-    3¡¢Ä¿Ç°¼æÈİµÄlcd¿ØÖÆĞ¾Æ¬ÓĞ£º
+    @ç”¨æ³•
+    æä¾›ä»¥ä¸‹å‡ ä¸ªå‡½æ•°è°ƒç”¨ï¼š
+    1ã€void lcd_init(); // åˆå§‹åŒ–
+    2ã€void lcd_get_info(&lcd_info);//è·å–LCDä¿¡æ¯
+    3ã€void lcd_set_point(x,y,color);//ç”»ç‚¹
+    4ã€LCD_COLOR lcd_get_point(x,y);//è·å–ç‚¹é¢œè‰²
+    @è¯´æ˜
+    1ã€LCD_INFOä¸­çš„widthä»£è¡¨å±å¹•æ¯”è¾ƒé•¿çš„ä¸€è¾¹ï¼Œheightä»£è¡¨æ¯”è¾ƒçŸ­çš„ä¸€è¾¹
+    2ã€x,yçš„åæ ‡ï¼Œxè¡¨ç¤ºwidthï¼Œyè¡¨ç¤ºheightï¼ŒåŸç‚¹åœ¨å·¦ä¸Šè§’
+    @å…³äºç§»æ¤
+    1ã€å¦‚æœæ˜¯stm32é‡‡ç”¨fsmcæ–¹å¼ï¼Œéœ€è¦æ›´æ”¹LCD_REG å’ŒLCD_REG å®å®šä¹‰ï¼Œä»¥åŠlcd_ctl_initå‡½æ•°ä¸­çš„FSMC_Bank ç­‰å‚æ•°
+    2ã€æ§åˆ¶èŠ¯ç‰‡ä¸åŒæ—¶è¿˜éœ€è¦ä¿®æ”¹lcd_initä¸­å¯„å­˜å™¨åˆå§‹åŒ–éƒ¨åˆ†
+    3ã€ç›®å‰å…¼å®¹çš„lcdæ§åˆ¶èŠ¯ç‰‡æœ‰ï¼š
     // ili9320 ili9325 ili9328
     // LG4531
 */
@@ -48,7 +48,7 @@ unsigned int LCD_FORCOLOR = 0x0000;
 /* ----------------------------------------------------------------------------------------------------- */
 //private function
 
-//¼òµ¥ÑÓÊ±º¯Êı
+//ç®€å•å»¶æ—¶å‡½æ•°
 void delay(int cnt)
 {
     volatile unsigned int dl;
@@ -58,28 +58,28 @@ void delay(int cnt)
     }
 }
 
-//Ğ´ÃüÁî
+//å†™å‘½ä»¤
 void write_cmd(unsigned short cmd)
 {
     LCD_REG = cmd;
 }
-//¶ÁÊı¾İ
+//è¯»æ•°æ®
 unsigned short read_data(void)
 {
     return LCD_RAM;
 }
-//Ğ´Êı¾İ
+//å†™æ•°æ®
 void write_data(unsigned short data_code )
 {
     LCD_RAM = data_code;
 }
-//Ğ´¼Ä´æÆ÷
+//å†™å¯„å­˜å™¨
 void write_reg(unsigned char reg_addr,unsigned short reg_val)
 {
     write_cmd(reg_addr);
     write_data(reg_val);
 }
-//¶Á¼Ä´æÆ÷
+//è¯»å¯„å­˜å™¨
 unsigned short read_reg(unsigned char reg_addr)
 {
     unsigned short val=0;
@@ -88,7 +88,7 @@ unsigned short read_reg(unsigned char reg_addr)
     return (val);
 }
 
-//lcd¶Ë¿Ú³õÊ¼»¯
+//lcdç«¯å£åˆå§‹åŒ–
 void lcd_port_init(void)
 {
     GPIO_InitTypeDef GPIO_InitStructure;
@@ -126,55 +126,55 @@ void lcd_port_init(void)
     GPIO_Init(GPIOG, &GPIO_InitStructure);
 }
 
-//lcd¿ØÖÆ³õÊ¼»¯
+//lcdæ§åˆ¶åˆå§‹åŒ–
 void lcd_ctl_init(void)
 {
     FSMC_NORSRAMInitTypeDef  FSMC_NORSRAMInitStructure;
     FSMC_NORSRAMTimingInitTypeDef  readWriteTiming;
     FSMC_NORSRAMTimingInitTypeDef  writeTiming;
 
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC,ENABLE);	//Ê¹ÄÜFSMCÊ±ÖÓ
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_FSMC,ENABLE);	//ä½¿èƒ½FSMCæ—¶é’Ÿ
 
-    readWriteTiming.FSMC_AddressSetupTime = 0x01;	    //µØÖ·½¨Á¢Ê±¼ä£¨ADDSET£©Îª2¸öHCLK 1/36M=27ns
-    readWriteTiming.FSMC_AddressHoldTime = 0x00;	    //µØÖ·±£³ÖÊ±¼ä£¨ADDHLD£©Ä£Ê½AÎ´ÓÃµ½
-    readWriteTiming.FSMC_DataSetupTime = 0x0f;		    // Êı¾İ±£´æÊ±¼äÎª16¸öHCLK,ÒòÎªÒº¾§Çı¶¯ICµÄ¶ÁÊı¾İµÄÊ±ºò£¬ËÙ¶È²»ÄÜÌ«¿ì£¬ÓÈÆä¶Ô1289Õâ¸öIC¡£
+    readWriteTiming.FSMC_AddressSetupTime = 0x01;	    //åœ°å€å»ºç«‹æ—¶é—´ï¼ˆADDSETï¼‰ä¸º2ä¸ªHCLK 1/36M=27ns
+    readWriteTiming.FSMC_AddressHoldTime = 0x00;	    //åœ°å€ä¿æŒæ—¶é—´ï¼ˆADDHLDï¼‰æ¨¡å¼Aæœªç”¨åˆ°
+    readWriteTiming.FSMC_DataSetupTime = 0x0f;		    // æ•°æ®ä¿å­˜æ—¶é—´ä¸º16ä¸ªHCLK,å› ä¸ºæ¶²æ™¶é©±åŠ¨ICçš„è¯»æ•°æ®çš„æ—¶å€™ï¼Œé€Ÿåº¦ä¸èƒ½å¤ªå¿«ï¼Œå°¤å…¶å¯¹1289è¿™ä¸ªICã€‚
     readWriteTiming.FSMC_BusTurnAroundDuration = 0x00;
     readWriteTiming.FSMC_CLKDivision = 0x00;
     readWriteTiming.FSMC_DataLatency = 0x00;
-    readWriteTiming.FSMC_AccessMode = FSMC_AccessMode_A;	 //Ä£Ê½A
+    readWriteTiming.FSMC_AccessMode = FSMC_AccessMode_A;	 //æ¨¡å¼A
 
 
-    writeTiming.FSMC_AddressSetupTime = 0x01;	 //µØÖ·½¨Á¢Ê±¼ä£¨ADDSET£©Îª1¸öHCLK
-    writeTiming.FSMC_AddressHoldTime = 0x00;	 //µØÖ·±£³ÖÊ±¼ä£¨A
-    writeTiming.FSMC_DataSetupTime = 0x03;		 ////Êı¾İ±£´æÊ±¼äÎª4¸öHCLK
+    writeTiming.FSMC_AddressSetupTime = 0x01;	 //åœ°å€å»ºç«‹æ—¶é—´ï¼ˆADDSETï¼‰ä¸º1ä¸ªHCLK
+    writeTiming.FSMC_AddressHoldTime = 0x00;	 //åœ°å€ä¿æŒæ—¶é—´ï¼ˆA
+    writeTiming.FSMC_DataSetupTime = 0x03;		 ////æ•°æ®ä¿å­˜æ—¶é—´ä¸º4ä¸ªHCLK
     writeTiming.FSMC_BusTurnAroundDuration = 0x00;
     writeTiming.FSMC_CLKDivision = 0x00;
     writeTiming.FSMC_DataLatency = 0x00;
-    writeTiming.FSMC_AccessMode = FSMC_AccessMode_A;	 //Ä£Ê½A
+    writeTiming.FSMC_AccessMode = FSMC_AccessMode_A;	 //æ¨¡å¼A
 
 
-    FSMC_NORSRAMInitStructure.FSMC_Bank = FSMC_Bank1_NORSRAM4;//  ÕâÀïÎÒÃÇÊ¹ÓÃNE4 £¬Ò²¾Í¶ÔÓ¦BTCR[6],[7]¡£
-    FSMC_NORSRAMInitStructure.FSMC_DataAddressMux = FSMC_DataAddressMux_Disable; // ²»¸´ÓÃÊı¾İµØÖ·
+    FSMC_NORSRAMInitStructure.FSMC_Bank = FSMC_Bank1_NORSRAM4;//  è¿™é‡Œæˆ‘ä»¬ä½¿ç”¨NE4 ï¼Œä¹Ÿå°±å¯¹åº”BTCR[6],[7]ã€‚
+    FSMC_NORSRAMInitStructure.FSMC_DataAddressMux = FSMC_DataAddressMux_Disable; // ä¸å¤ç”¨æ•°æ®åœ°å€
     FSMC_NORSRAMInitStructure.FSMC_MemoryType =FSMC_MemoryType_SRAM;// FSMC_MemoryType_SRAM;  //SRAM
-    FSMC_NORSRAMInitStructure.FSMC_MemoryDataWidth = FSMC_MemoryDataWidth_16b;//´æ´¢Æ÷Êı¾İ¿í¶ÈÎª16bit
+    FSMC_NORSRAMInitStructure.FSMC_MemoryDataWidth = FSMC_MemoryDataWidth_16b;//å­˜å‚¨å™¨æ•°æ®å®½åº¦ä¸º16bit
     FSMC_NORSRAMInitStructure.FSMC_BurstAccessMode =FSMC_BurstAccessMode_Disable;// FSMC_BurstAccessMode_Disable;
     FSMC_NORSRAMInitStructure.FSMC_WaitSignalPolarity = FSMC_WaitSignalPolarity_Low;
     FSMC_NORSRAMInitStructure.FSMC_AsynchronousWait=FSMC_AsynchronousWait_Disable;
     FSMC_NORSRAMInitStructure.FSMC_WrapMode = FSMC_WrapMode_Disable;
     FSMC_NORSRAMInitStructure.FSMC_WaitSignalActive = FSMC_WaitSignalActive_BeforeWaitState;
-    FSMC_NORSRAMInitStructure.FSMC_WriteOperation = FSMC_WriteOperation_Enable;	//  ´æ´¢Æ÷Ğ´Ê¹ÄÜ
+    FSMC_NORSRAMInitStructure.FSMC_WriteOperation = FSMC_WriteOperation_Enable;	//  å­˜å‚¨å™¨å†™ä½¿èƒ½
     FSMC_NORSRAMInitStructure.FSMC_WaitSignal = FSMC_WaitSignal_Disable;
-    FSMC_NORSRAMInitStructure.FSMC_ExtendedMode = FSMC_ExtendedMode_Enable; // ¶ÁĞ´Ê¹ÓÃ²»Í¬µÄÊ±Ğò
+    FSMC_NORSRAMInitStructure.FSMC_ExtendedMode = FSMC_ExtendedMode_Enable; // è¯»å†™ä½¿ç”¨ä¸åŒçš„æ—¶åº
     FSMC_NORSRAMInitStructure.FSMC_WriteBurst = FSMC_WriteBurst_Disable;
-    FSMC_NORSRAMInitStructure.FSMC_ReadWriteTimingStruct = &readWriteTiming; //¶ÁĞ´Ê±Ğò
-    FSMC_NORSRAMInitStructure.FSMC_WriteTimingStruct = &writeTiming;  //Ğ´Ê±Ğò
+    FSMC_NORSRAMInitStructure.FSMC_ReadWriteTimingStruct = &readWriteTiming; //è¯»å†™æ—¶åº
+    FSMC_NORSRAMInitStructure.FSMC_WriteTimingStruct = &writeTiming;  //å†™æ—¶åº
 
-    FSMC_NORSRAMInit(&FSMC_NORSRAMInitStructure);  //³õÊ¼»¯FSMCÅäÖÃ
+    FSMC_NORSRAMInit(&FSMC_NORSRAMInitStructure);  //åˆå§‹åŒ–FSMCé…ç½®
 
     FSMC_NORSRAMCmd(FSMC_Bank1_NORSRAM4, ENABLE);  //
 
 }
-//lcd¼Ä´æÆ÷³õÊ¼»¯
+//lcdå¯„å­˜å™¨åˆå§‹åŒ–
 void lcd_reg_init(void)
 {
     unsigned short deviceid;
@@ -190,7 +190,7 @@ void lcd_reg_init(void)
         write_reg(0x0001,0x0100);                    //
 #endif
         write_reg(0x0002,0x0700); 				    //power on sequence
-        /* [5:4]-ID1~ID0 [3]-AM-1´¹Ö±-0Ë®Æ½ */
+        /* [5:4]-ID1~ID0 [3]-AM-1å‚ç›´-0æ°´å¹³ */
         write_reg(0x0003,(1<<12)|(1<<5)|(0<<4) | (1<<3) );
         write_reg(0x0004,0x0000);
         write_reg(0x0008,0x0207);
@@ -434,7 +434,7 @@ void lcd_reg_init(void)
     delay(1000);
 
 }
-//ÉèÖÃÓÎ±êÎ»ÖÃ
+//è®¾ç½®æ¸¸æ ‡ä½ç½®
 void lcd_set_cursor(unsigned int x,unsigned int y)
 {
     write_reg(0x0020,x);
@@ -452,7 +452,7 @@ void lcd_set_windows(unsigned int x0,unsigned int y0,unsigned int x1,unsigned in
 }
 
 
-/* ¶ÁÈ¡Ö¸¶¨µØÖ·µÄGRAM */
+/* è¯»å–æŒ‡å®šåœ°å€çš„GRAM */
 unsigned short lcd_read_gram(unsigned int x,unsigned int y)
 {
     unsigned short temp;
@@ -481,7 +481,7 @@ unsigned short BGR2RGB(unsigned short c)
 
 //public function
 
-//lcd³õÊ¼»¯
+//lcdåˆå§‹åŒ–
 void lcd_init(void)
 {
     lcd_port_init();
@@ -489,7 +489,7 @@ void lcd_init(void)
     lcd_reg_init();
 }
 
-//»ñÈ¡lcdĞÅÏ¢
+//è·å–lcdä¿¡æ¯
 void lcd_get_info(LCD_INFO *lcd_info)
 {
     lcd_info->color_bit = LCD_COLOR_BIT;
@@ -497,7 +497,7 @@ void lcd_get_info(LCD_INFO *lcd_info)
     lcd_info->width = LCD_SHORT;
 }
 
-//ÓÃcolor»­µã
+//ç”¨colorç”»ç‚¹
 void lcd_set_point(unsigned int x,unsigned int y,LCD_COLOR color)
 {
     lcd_set_cursor(x,y);
@@ -505,13 +505,13 @@ void lcd_set_point(unsigned int x,unsigned int y,LCD_COLOR color)
     write_data(color);
 }
 
-//»ñÈ¡µãÑÕÉ«
+//è·å–ç‚¹é¢œè‰²
 LCD_COLOR lcd_get_point(unsigned int x,unsigned int y)
 {
     return BGR2RGB( lcd_read_gram(x,y) );
 }
 
-//»­ÊµĞÄ¾ØĞÎ
+//ç”»å®å¿ƒçŸ©å½¢
 void lcd_draw_block(unsigned int x0,unsigned y0,unsigned x1,unsigned y1,LCD_COLOR color)
 {
     unsigned long l;
@@ -521,7 +521,7 @@ void lcd_draw_block(unsigned int x0,unsigned y0,unsigned x1,unsigned y1,LCD_COLO
     while(l--)write_data(color);
     lcd_set_windows(0,0,239,319);
 }
-//ÓÃµã»­ÊµĞÄ¾ØĞÎ
+//ç”¨ç‚¹ç”»å®å¿ƒçŸ©å½¢
 void lcd_draw_block2(unsigned int x0,unsigned y0,unsigned x1,unsigned y1,LCD_COLOR color)
 {
     unsigned int x,y;

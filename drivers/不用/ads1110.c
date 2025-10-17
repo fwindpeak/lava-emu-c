@@ -10,7 +10,7 @@
 #define NOACK			         0
 #define Ads_config_m          0x9c
 
-//¶ÁÖµ
+//è¯»å€¼
 uint16_t ads1110_read(void)
 {
 
@@ -27,7 +27,7 @@ uint16_t ads1110_read(void)
     return Ads_value;
 }
 
-//³õÊ¼»¯
+//åˆå§‹åŒ–
 void ads1110_init(void)
 {
     IIC_Init();

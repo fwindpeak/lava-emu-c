@@ -47,9 +47,9 @@ void wdgui_thread_entry(void* parameter)
     wd_set_cnfont(&Font12x12_GB2312);
     
 
-    wd_println(0,"Hello,ÄãºÃ");
-    wd_println(1,"ÖÐ¹ú!");
-    wd_println(2,"ÕâÊÇÒ»¸ö²âÊÔ");
+    wd_println(0,"Hello,ä½ å¥½");
+    wd_println(1,"ä¸­å›½!");
+    wd_println(2,"è¿™æ˜¯ä¸€ä¸ªæµ‹è¯•");
     
      // Write operation 
     Status = SD_WriteBlock(buffer, address, 512);

@@ -27,25 +27,25 @@ typedef struct
 #define LCD_RGB(RED,GREEN,BLUE)     (((RED&0xF8)<<8)|((GREEN&0xFC)<<3)|((BLUE&0xF8)>>3))
 
 
-//lcd³õÊ¼»¯
+//lcdåˆå§‹åŒ–
 void lcd_init(void);
 
-//»ñÈ¡lcdĞÅÏ¢
+//è·å–lcdä¿¡æ¯
 void lcd_get_info(LCD_INFO *lcd_info);
 
-//ÓÃcolor»­µã
+//ç”¨colorç”»ç‚¹
 void lcd_set_point(unsigned int x,unsigned int y,LCD_COLOR color);
 
-//»ñÈ¡µãÑÕÉ«
+//è·å–ç‚¹é¢œè‰²
 LCD_COLOR lcd_get_point(unsigned int x,unsigned int y);
 
-//ÉèÖÃÓÎ±êÎ»ÖÃ
+//è®¾ç½®æ¸¸æ ‡ä½ç½®
 void lcd_set_cursor(unsigned int x,unsigned int y);
 
-//»­ÊµĞÄ¾ØĞÎ
+//ç”»å®å¿ƒçŸ©å½¢
 void lcd_draw_block(unsigned int x0,unsigned y0,unsigned x1,unsigned y1,LCD_COLOR color);
 
-//ÓÃµã»­ÊµĞÄ¾ØĞÎ
+//ç”¨ç‚¹ç”»å®å¿ƒçŸ©å½¢
 void lcd_draw_block2(unsigned int x0,unsigned y0,unsigned x1,unsigned y1,LCD_COLOR color);
 
 

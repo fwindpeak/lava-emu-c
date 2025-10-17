@@ -1,15 +1,15 @@
 /*********************************************************************************************************
   *
-  *@ÎÄ¼şÃû main.c
-  *@ËµÃ÷   LavaSimÖ÷³ÌĞò
+  *@æ–‡ä»¶å main.c
+  *@è¯´æ˜   LavaSimä¸»ç¨‹åº
   *
   *********************************************************************************************************/
-//ÏµÍ³
+//ç³»ç»Ÿ
 #include "stm32f10x.h"
 
 #include "delay.h"
 //#include "stdio.h"
-//Çı¶¯
+//é©±åŠ¨
 #include "usart.h"
 #include "sdcard.h"
 #include "ff.h"
@@ -21,7 +21,7 @@
 #include "led.h"
 #include "key.h"
 
-//Ó¦ÓÃ
+//åº”ç”¨
 #include "lavasim.h"
 #include "lvm.h"
 
@@ -37,7 +37,7 @@
 
 /* Private functions ---------------------------------------------------------*/
 /**
-  * @brief  ÏµÍ³Ê±ÖÓ³õÊ¼»¯
+  * @brief  ç³»ç»Ÿæ—¶é’Ÿåˆå§‹åŒ–
   * @param  None
   * @retval None
   */
@@ -51,8 +51,8 @@ void RCC_Configuration(void)
 
 
 
-//Íâ²¿ÖĞ¶Ï0·şÎñ³ÌĞò
-//³õÊ¼»¯PA0ÎªÖĞ¶ÏÊäÈë.
+//å¤–éƒ¨ä¸­æ–­0æœåŠ¡ç¨‹åº
+//åˆå§‹åŒ–PA0ä¸ºä¸­æ–­è¾“å…¥.
 void EXTIX_Init(void)
 {
   	GPIO_InitTypeDef GPIO_InitStructure;
@@ -62,32 +62,32 @@ void EXTIX_Init(void)
 
   	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA|RCC_APB2Periph_AFIO,ENABLE);
 
- // ³õÊ¼»¯ WK_UP-->GPIOA.0	  ÏÂÀ­ÊäÈë
+ // åˆå§‹åŒ– WK_UP-->GPIOA.0	  ä¸‹æ‹‰è¾“å…¥
   	GPIO_InitStructure.GPIO_Pin  = GPIO_Pin_0;
   	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;        
   	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
 
-  //GPIOA.0	  ÖĞ¶ÏÏßÒÔ¼°ÖĞ¶Ï³õÊ¼»¯ÅäÖÃ
+  //GPIOA.0	  ä¸­æ–­çº¿ä»¥åŠä¸­æ–­åˆå§‹åŒ–é…ç½®
  	GPIO_EXTILineConfig(GPIO_PortSourceGPIOA,GPIO_PinSource0);
 
  	EXTI_InitStructure.EXTI_Line=EXTI_Line0;
   	EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;	
   	EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising;
   	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
-  	EXTI_Init(&EXTI_InitStructure);		//¸ù¾İEXTI_InitStructÖĞÖ¸¶¨µÄ²ÎÊı³õÊ¼»¯ÍâÉèEXTI¼Ä´æÆ÷
+  	EXTI_Init(&EXTI_InitStructure);		//æ ¹æ®EXTI_InitStructä¸­æŒ‡å®šçš„å‚æ•°åˆå§‹åŒ–å¤–è®¾EXTIå¯„å­˜å™¨
 
 
-  	NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;			//Ê¹ÄÜ°´¼üËùÔÚµÄÍâ²¿ÖĞ¶ÏÍ¨µÀ
-  	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01;	//ÇÀÕ¼ÓÅÏÈ¼¶2 
-  	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x01;					//×ÓÓÅÏÈ¼¶2 
-  	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;								//Ê¹ÄÜÍâ²¿ÖĞ¶ÏÍ¨µÀ
-  	NVIC_Init(&NVIC_InitStructure);  	  //¸ù¾İNVIC_InitStructÖĞÖ¸¶¨µÄ²ÎÊı³õÊ¼»¯ÍâÉèNVIC¼Ä´æÆ÷
+  	NVIC_InitStructure.NVIC_IRQChannel = EXTI0_IRQn;			//ä½¿èƒ½æŒ‰é”®æ‰€åœ¨çš„å¤–éƒ¨ä¸­æ–­é€šé“
+  	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0x01;	//æŠ¢å ä¼˜å…ˆçº§2 
+  	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0x01;					//å­ä¼˜å…ˆçº§2 
+  	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;								//ä½¿èƒ½å¤–éƒ¨ä¸­æ–­é€šé“
+  	NVIC_Init(&NVIC_InitStructure);  	  //æ ¹æ®NVIC_InitStructä¸­æŒ‡å®šçš„å‚æ•°åˆå§‹åŒ–å¤–è®¾NVICå¯„å­˜å™¨
 }
 
  
-//Íâ²¿ÖĞ¶Ï0 PA0ÉÏÉıÑØ´¥·¢£¬ÓÃÓÚ½ØÆÁ °´ÏÂwakeup+tamper(PC13)½ØÆÁ
+//å¤–éƒ¨ä¸­æ–­0 PA0ä¸Šå‡æ²¿è§¦å‘ï¼Œç”¨äºæˆªå± æŒ‰ä¸‹wakeup+tamper(PC13)æˆªå±
 void EXTI0_IRQHandler(void)
 {
 //     if(GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_13)==RESET)
@@ -100,7 +100,7 @@ void EXTI0_IRQHandler(void)
 
 
 /**
-  * @brief  ÖĞ¶Ï³õÊ¼»¯
+  * @brief  ä¸­æ–­åˆå§‹åŒ–
   * @param  None
   * @retval None
   */
@@ -121,7 +121,7 @@ void NVIC_Configuration(void)
 
 
 /**
-  * @brief  Ó²¼ş³õÊ¼»¯
+  * @brief  ç¡¬ä»¶åˆå§‹åŒ–
   * @param  None
   * @retval None
   */
@@ -140,8 +140,8 @@ void hw_init(void)
 
     if(ff_init()==0)
     {
-        //wd_println(0,"SD¿¨³õÊ¼»¯Ê§°Ü");
-        //wd_println(1,"Çë¼ì²éSD¿¨ÊÇ·ñ²åÉÏ");
+        //wd_println(0,"SDå¡åˆå§‹åŒ–å¤±è´¥");
+        //wd_println(1,"è¯·æ£€æŸ¥SDå¡æ˜¯å¦æ’ä¸Š");
         TextOut(0,0,"ERROR:No SD card",0x41);
         while(1);
     }
@@ -151,7 +151,7 @@ void hw_init(void)
 
 //--------------------------------------------------------------------------------------------------------------------
 /**
-  * @brief  ÏµÍ³Ö÷º¯Êı
+  * @brief  ç³»ç»Ÿä¸»å‡½æ•°
   * @param  None
   * @retval int
   */
@@ -159,19 +159,19 @@ int main(void)
 {
 //    unsigned int i=0;
 
-    //ÏµÍ³Ê±ÖÓ³õÊ¼»¯
+    //ç³»ç»Ÿæ—¶é’Ÿåˆå§‹åŒ–
     RCC_Configuration();
-    //ÖĞ¶Ï³õÊ¼»¯
+    //ä¸­æ–­åˆå§‹åŒ–
     NVIC_Configuration();
     
     //EXTIX_Init();
     
-    //Ó²¼ş³õÊ¼»¯
+    //ç¡¬ä»¶åˆå§‹åŒ–
     hw_init();
-    //ÏÔÊ¾ÏµÍ³logo
+    //æ˜¾ç¤ºç³»ç»Ÿlogo
     while(1)
     {
-        lava_init();//Ò»Ğ©³õÊ¼»¯¹¤×÷
+        lava_init();//ä¸€äº›åˆå§‹åŒ–å·¥ä½œ
         //lcd_test();
         //lava_demo();
         lvm_main();

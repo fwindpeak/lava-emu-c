@@ -1,8 +1,8 @@
 /**
- * @ÎÄ¼şÃû£ºtcs230.c
- * @°æ±¾£ºV0.1
- * @¼ò½é£ºÑÕÉ«´«¸ĞÆ÷¼ì²âÇı¶¯
- * @±Ê¼Ç  Á½¸öÄ£¿étcs230ºÍtcs3200£¬Á½ÕßµÄOE½Å×÷ÓÃµçÆ½ËÆºõÊÇ·´µÄ£¬TCS3200ÊÇµÍµçÆ½ÓĞĞ§
+ * @æ–‡ä»¶åï¼štcs230.c
+ * @ç‰ˆæœ¬ï¼šV0.1
+ * @ç®€ä»‹ï¼šé¢œè‰²ä¼ æ„Ÿå™¨æ£€æµ‹é©±åŠ¨
+ * @ç¬”è®°  ä¸¤ä¸ªæ¨¡å—tcs230å’Œtcs3200ï¼Œä¸¤è€…çš„OEè„šä½œç”¨ç”µå¹³ä¼¼ä¹æ˜¯åçš„ï¼ŒTCS3200æ˜¯ä½ç”µå¹³æœ‰æ•ˆ
  */
 
 #include "stm32f10x.h"
@@ -25,43 +25,43 @@ static u16 colorCount;
 void tcs230_init()
 {
     GPIO_InitTypeDef GPIO_InitStructure;	//GPIO
-    NVIC_InitTypeDef NVIC_InitStructure;  //ÖĞ¶Ï
-    EXTI_InitTypeDef EXTI_InitStructure;	//Íâ²¿ÖĞ¶ÏÏß
+    NVIC_InitTypeDef NVIC_InitStructure;  //ä¸­æ–­
+    EXTI_InitTypeDef EXTI_InitStructure;	//å¤–éƒ¨ä¸­æ–­çº¿
 
     /* Enable  GPIOA Portand AFIO clock */
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE | RCC_APB2Periph_AFIO, ENABLE);
 
     GPIO_InitStructure.GPIO_Pin = OUT_PIN;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;   //ÉÏÀ­ÊäÈë
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;   //ä¸Šæ‹‰è¾“å…¥
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIO_TCS230, &GPIO_InitStructure);
 
     GPIO_InitStructure.GPIO_Pin = S0_PIN |S1_PIN |S2_PIN |S3_PIN |OE_PIN;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;  //ÍÆÍìÊä³ö
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;  //æ¨æŒ½è¾“å‡º
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIO_TCS230, &GPIO_InitStructure);
 
     /* Enable the EXTI2 Interrupt */
-    NVIC_InitStructure.NVIC_IRQChannel = EXTI2_IRQn; //Ê¹ÄÜ°´¼üËùÔÚµÄÍâ²¿ÖĞ¶ÏÍ¨µÀ
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2; //ÏÈÕ¼ÓÅÏÈ¼¶2¼¶
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0; //´ÓÓÅÏÈ¼¶0¼¶
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //Ê¹ÄÜÍâ²¿ÖĞ¶ÏÍ¨µÀ
-    NVIC_Init(&NVIC_InitStructure); //¸ù¾İNVIC_InitStructÖĞÖ¸¶¨µÄ²ÎÊı³õÊ¼»¯ÍâÉèNVIC¼Ä´æÆ÷
+    NVIC_InitStructure.NVIC_IRQChannel = EXTI2_IRQn; //ä½¿èƒ½æŒ‰é”®æ‰€åœ¨çš„å¤–éƒ¨ä¸­æ–­é€šé“
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2; //å…ˆå ä¼˜å…ˆçº§2çº§
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0; //ä»ä¼˜å…ˆçº§0çº§
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //ä½¿èƒ½å¤–éƒ¨ä¸­æ–­é€šé“
+    NVIC_Init(&NVIC_InitStructure); //æ ¹æ®NVIC_InitStructä¸­æŒ‡å®šçš„å‚æ•°åˆå§‹åŒ–å¤–è®¾NVICå¯„å­˜å™¨
 
     /* Connect Button EXTI Line to Button GPIO Pin */
-    GPIO_EXTILineConfig(GPIO_PortSourceGPIOE, GPIO_PinSource2);  	//Ñ¡ÔñPC1ËùÔÚµÄGPIO¹Ü½ÅÓÃ×÷Íâ²¿ÖĞ¶ÏÏßÂ·EXIT1
+    GPIO_EXTILineConfig(GPIO_PortSourceGPIOE, GPIO_PinSource2);  	//é€‰æ‹©PC1æ‰€åœ¨çš„GPIOç®¡è„šç”¨ä½œå¤–éƒ¨ä¸­æ–­çº¿è·¯EXIT1
 
     /* Configure Button EXTI line */
-    EXTI_InitStructure.EXTI_Line = EXTI_Line2;	//Íâ²¿ÏßÂ·EXIT6
-    EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;			//ÉèÍâÍâ²¿ÖĞ¶ÏÄ£Ê½:EXTIÏßÂ·ÎªÖĞ¶ÏÇëÇó
-    EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising ;  //Íâ²¿ÖĞ¶Ï´¥·¢ÑØÑ¡Ôñ:ÉèÖÃÊäÈëÏßÂ·ÉÏÉıÑØÎªÖĞ¶ÏÇëÇó
-    EXTI_InitStructure.EXTI_LineCmd = ENABLE;		//Ê¹ÄÜÍâ²¿ÖĞ¶ÏĞÂ×´Ì¬
-    EXTI_Init(&EXTI_InitStructure);		//¸ù¾İEXTI_InitStructÖĞÖ¸¶¨µÄ²ÎÊı³õÊ¼»¯ÍâÉèEXTI¼Ä´æÆ÷
+    EXTI_InitStructure.EXTI_Line = EXTI_Line2;	//å¤–éƒ¨çº¿è·¯EXIT6
+    EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;			//è®¾å¤–å¤–éƒ¨ä¸­æ–­æ¨¡å¼:EXTIçº¿è·¯ä¸ºä¸­æ–­è¯·æ±‚
+    EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Rising ;  //å¤–éƒ¨ä¸­æ–­è§¦å‘æ²¿é€‰æ‹©:è®¾ç½®è¾“å…¥çº¿è·¯ä¸Šå‡æ²¿ä¸ºä¸­æ–­è¯·æ±‚
+    EXTI_InitStructure.EXTI_LineCmd = ENABLE;		//ä½¿èƒ½å¤–éƒ¨ä¸­æ–­æ–°çŠ¶æ€
+    EXTI_Init(&EXTI_InitStructure);		//æ ¹æ®EXTI_InitStructä¸­æŒ‡å®šçš„å‚æ•°åˆå§‹åŒ–å¤–è®¾EXTIå¯„å­˜å™¨
 
     GPIO_SetBits(GPIO_TCS230,S0_PIN|S1_PIN);
 }
 
-//Íâ²¿ÖĞ¶Ï·şÎñ³ÌĞò
+//å¤–éƒ¨ä¸­æ–­æœåŠ¡ç¨‹åº
 void EXTI2_IRQHandler(void)
 {
     colorCount++;
@@ -93,7 +93,7 @@ u16 tcs_get_color(u8 tunnel)
     return colorCount;
 }
 
-//¼ì²éÊÇ·ñÎªÄ³ÖÖÑÕÉ«
+//æ£€æŸ¥æ˜¯å¦ä¸ºæŸç§é¢œè‰²
 u8 tcs_is_color(u8 type)
 {
     u16 r,g,b;

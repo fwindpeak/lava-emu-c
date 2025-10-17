@@ -1,12 +1,12 @@
 /**
- * @ÎÄ¼şÃû£ºWindGUI.c
- * @°æ±¾£ºV0.0.1
- * @¼ò½é£ºWindGUI£¬Ò»¸ö¼òµ¥µÄÇ¶ÈëÊ½GUI¿â£¬Ìá¹©Ò»Ğ©³£ÓÃµÄ»æÍ¼º¯Êı¡£
+ * @æ–‡ä»¶åï¼šWindGUI.c
+ * @ç‰ˆæœ¬ï¼šV0.0.1
+ * @ç®€ä»‹ï¼šWindGUIï¼Œä¸€ä¸ªç®€å•çš„åµŒå…¥å¼GUIåº“ï¼Œæä¾›ä¸€äº›å¸¸ç”¨çš„ç»˜å›¾å‡½æ•°ã€‚
  *
- * @×÷Õß£ºfwindcore (c)2013
+ * @ä½œè€…ï¼šfwindcore (c)2013
  * @Log:
- * 2013/08/09 ¿ªÊ¼±àĞ´
- * 2013/09/03 ÖØĞ´£¬ÖĞ¼ä¾­ÀúÁËÓ²ÅÌËğ»µµÄÂé·³
+ * 2013/08/09 å¼€å§‹ç¼–å†™
+ * 2013/09/03 é‡å†™ï¼Œä¸­é—´ç»å†äº†ç¡¬ç›˜æŸåçš„éº»çƒ¦
  *
  */
 
@@ -22,20 +22,20 @@
 
 
 /****************************************************************************************************
-//private ±äÁ¿
+//private å˜é‡
 */
 
 /****************************************************************************************************
-//public ±äÁ¿
+//public å˜é‡
 */
 WD_INFO wd_lcd;
 
 /******************************************************************************************************
- *windgui ÏµÍ³º¯Êı
+ *windgui ç³»ç»Ÿå‡½æ•°
  */
 
 /**
-  * @brief  ÓÃ±³¾°É«Çå³ıÆÁÄ»
+  * @brief  ç”¨èƒŒæ™¯è‰²æ¸…é™¤å±å¹•
   * @param  None
   * @retval None
   */
@@ -55,8 +55,8 @@ void wd_clr(void)
 }
 
 /**
-  * @brief  ÉèÖÃÓ¢ÎÄ×ÖÌå
-  * @param  font£ºÓ¢ÎÄ×ÖÌå
+  * @brief  è®¾ç½®è‹±æ–‡å­—ä½“
+  * @param  fontï¼šè‹±æ–‡å­—ä½“
   * @retval None
   */
 void wd_set_enfont(sFONT *font)
@@ -65,8 +65,8 @@ void wd_set_enfont(sFONT *font)
 }
 
 /**
-  * @brief  ÉèÖÃÖĞÎÄ×ÖÌå
-  * @param  font£ºÖĞÎÄ×ÖÌå
+  * @brief  è®¾ç½®ä¸­æ–‡å­—ä½“
+  * @param  fontï¼šä¸­æ–‡å­—ä½“
   * @retval None
   */
 void wd_set_cnfont(sFONT *font)
@@ -75,8 +75,8 @@ void wd_set_cnfont(sFONT *font)
 }
 
 /**
-  * @brief  ÉèÖÃÆÁÄ»Ëõ·Å
-  * @param  scale:ÆÁÄ»Ëõ·Å±ÈÀı£¬Ö»ÄÜÊÇÕûÊı
+  * @brief  è®¾ç½®å±å¹•ç¼©æ”¾
+  * @param  scale:å±å¹•ç¼©æ”¾æ¯”ä¾‹ï¼Œåªèƒ½æ˜¯æ•´æ•°
   * @retval None
   */
 void wd_set_scale(wd_u8 scale)
@@ -87,8 +87,8 @@ void wd_set_scale(wd_u8 scale)
 }
 
 /**
-  * @brief  ÉèÖÃÆÁÄ»·½Ïò
-  * @param  ori:ÆÁÄ»·½Ïò
+  * @brief  è®¾ç½®å±å¹•æ–¹å‘
+  * @param  ori:å±å¹•æ–¹å‘
   * @retval None
   */
 void wd_set_orientation(WD_ORIEN  ori)
@@ -113,7 +113,7 @@ void wd_set_orientation(WD_ORIEN  ori)
 }
 
 /**
-  * @brief  windgui³õÊ¼»¯
+  * @brief  windguiåˆå§‹åŒ–
   * @param  None
   * @retval None
   */
@@ -123,7 +123,7 @@ void wdgui_init(void)
 
     wd_lcd.BK_COLOR = WD_COLOR_WHITE;
     wd_lcd.FOR_COLOR = WD_COLOR_BLACK;
-    wd_set_orientation (WD_UP); //ÆÁÄ»ÊúÖ±ÏòÉÏ£¬¶ÌµÄÎªxÖá
+    wd_set_orientation (WD_UP); //å±å¹•ç«–ç›´å‘ä¸Šï¼ŒçŸ­çš„ä¸ºxè½´
 
     wd_set_scale(1);
 
@@ -134,9 +134,9 @@ void wdgui_init(void)
 
 }
 /**
-  * @brief  È¡µãµÄÑÕÉ«
-  * @param  (x,y)µã×ø±ê
-  * @retval µãÑÕÉ«
+  * @brief  å–ç‚¹çš„é¢œè‰²
+  * @param  (x,y)ç‚¹åæ ‡
+  * @retval ç‚¹é¢œè‰²
   */
 WD_COLOR wd_get_point(wd_u16 x,wd_u16 y)
 {
@@ -168,12 +168,12 @@ WD_COLOR wd_get_point(wd_u16 x,wd_u16 y)
 }
 
 /******************************************************************************************************
- * @µ×²ã»æÍ¼º¯Êı
+ * @åº•å±‚ç»˜å›¾å‡½æ•°
  */
 
 /**
-  * @brief  ÓÃÇ°¾°É«»­µã
-  * @param  (x,y)µã×ø±ê
+  * @brief  ç”¨å‰æ™¯è‰²ç”»ç‚¹
+  * @param  (x,y)ç‚¹åæ ‡
   * @retval None
   */
 void wd_point(wd_u16 x,wd_u16 y)
@@ -206,8 +206,8 @@ void wd_point(wd_u16 x,wd_u16 y)
 }
 
 /**
-  * @brief  ÓÃÑÕÉ«color»­µã
-  * @param  (x,y)µã×ø±ê
+  * @brief  ç”¨é¢œè‰²colorç”»ç‚¹
+  * @param  (x,y)ç‚¹åæ ‡
   * @retval None
   */
 void wd_point2(wd_u16 x,wd_u16 y,WD_COLOR color)
@@ -221,8 +221,8 @@ void wd_point2(wd_u16 x,wd_u16 y,WD_COLOR color)
 
 
 /**
-  * @brief  »­Ïß
-  * @param  (x0,y0)ÆğÊ¼µã×ø±ê£¬(x1,y1)ÖÕÖ¹µã×ø±ê
+  * @brief  ç”»çº¿
+  * @param  (x0,y0)èµ·å§‹ç‚¹åæ ‡ï¼Œ(x1,y1)ç»ˆæ­¢ç‚¹åæ ‡
   * @retval None
   */
 void wd_line(wd_u16 x1,wd_u16 y1,wd_u16 x2,wd_u16 y2)
@@ -231,31 +231,31 @@ void wd_line(wd_u16 x1,wd_u16 y1,wd_u16 x2,wd_u16 y2)
     wd_i16 xerr = 0, yerr = 0, delta_x, delta_y, distance;
     wd_i16 incx, incy, uRow, uCol;
 
-    delta_x = x2 - x1; //¼ÆËã×ø±êÔöÁ¿
+    delta_x = x2 - x1; //è®¡ç®—åæ ‡å¢é‡
     delta_y = y2 - y1;
     uRow = x1;
     uCol = y1;
-    if(delta_x > 0)incx = 1; //ÉèÖÃµ¥²½·½Ïò
-    else if(delta_x == 0)incx = 0; //´¹Ö±Ïß
+    if(delta_x > 0)incx = 1; //è®¾ç½®å•æ­¥æ–¹å‘
+    else if(delta_x == 0)incx = 0; //å‚ç›´çº¿
     else
     {
-        incx = -1;    //ÖÕµã×ø±êĞ¡ÓÚÆğÊ¼×ø±ê,·´·½Ïò,½«×ø±êÖØĞÂ¶¨Î»ÎªÕı×ø±ê
+        incx = -1;    //ç»ˆç‚¹åæ ‡å°äºèµ·å§‹åæ ‡,åæ–¹å‘,å°†åæ ‡é‡æ–°å®šä½ä¸ºæ­£åæ ‡
         delta_x = -delta_x;
     }
     if(delta_y > 0)incy = 1;
-    else if(delta_y == 0)incy = 0; //Ë®Æ½Ïß
+    else if(delta_y == 0)incy = 0; //æ°´å¹³çº¿
     else
     {
-        incy = -1;    //ÖÕµã×ø±êĞ¡ÓÚÆğÊ¼×ø±ê,·´·½Ïò,½«×ø±êÖØĞÂ¶¨Î»ÎªÕı×ø±ê
+        incy = -1;    //ç»ˆç‚¹åæ ‡å°äºèµ·å§‹åæ ‡,åæ–¹å‘,å°†åæ ‡é‡æ–°å®šä½ä¸ºæ­£åæ ‡
         delta_y = -delta_y;
     }
-    if( delta_x > delta_y)distance = delta_x; //Ñ¡È¡»ù±¾ÔöÁ¿×ø±êÖá
+    if( delta_x > delta_y)distance = delta_x; //é€‰å–åŸºæœ¬å¢é‡åæ ‡è½´
     else distance = delta_y;
-    for(t = 0; t <= distance + 1; t++ ) //»­ÏßÊä³ö
+    for(t = 0; t <= distance + 1; t++ ) //ç”»çº¿è¾“å‡º
     {
-        wd_point(uRow, uCol); //¸ù¾İ×ø±ê»­µã
-        xerr += delta_x ; //X×ø±êÔöÁ¿
-        yerr += delta_y ; //Y×ø±êÔöÁ¿
+        wd_point(uRow, uCol); //æ ¹æ®åæ ‡ç”»ç‚¹
+        xerr += delta_x ; //Xåæ ‡å¢é‡
+        yerr += delta_y ; //Yåæ ‡å¢é‡
         if(xerr > distance)
         {
             xerr -= distance;
@@ -270,8 +270,8 @@ void wd_line(wd_u16 x1,wd_u16 y1,wd_u16 x2,wd_u16 y2)
 }
 
 /**
-  * @brief  ÓÃÇ°¾°É«»­ÊµĞÄ¾ØĞÎ
-  * @param  (x0,y0)ÆğÊ¼µã×ø±ê£¬(x1,y1)ÖÕÖ¹µã×ø±ê
+  * @brief  ç”¨å‰æ™¯è‰²ç”»å®å¿ƒçŸ©å½¢
+  * @param  (x0,y0)èµ·å§‹ç‚¹åæ ‡ï¼Œ(x1,y1)ç»ˆæ­¢ç‚¹åæ ‡
   * @retval None
   */
 void wd_block(wd_u16 x0,wd_u16 y0,wd_u16 x1,wd_u16 y1)
@@ -321,8 +321,8 @@ void wd_block(wd_u16 x0,wd_u16 y0,wd_u16 x1,wd_u16 y1)
 }
 
 /**
-  * @brief  ÓÃÇ°¾°É«»­¿ÕĞÄ¾ØĞÎ
-  * @param  (x0,y0)ÆğÊ¼µã×ø±ê£¬(x1,y1)ÖÕÖ¹µã×ø±ê
+  * @brief  ç”¨å‰æ™¯è‰²ç”»ç©ºå¿ƒçŸ©å½¢
+  * @param  (x0,y0)èµ·å§‹ç‚¹åæ ‡ï¼Œ(x1,y1)ç»ˆæ­¢ç‚¹åæ ‡
   * @retval None
   */
 void wd_box(wd_u16 x0,wd_u16 y0,wd_u16 x1,wd_u16 y1)
@@ -336,14 +336,14 @@ void wd_box(wd_u16 x0,wd_u16 y0,wd_u16 x1,wd_u16 y1)
 
 
 /******************************************************************************************************
- * @Í¼ĞÎÏÔÊ¾º¯Êı
+ * @å›¾å½¢æ˜¾ç¤ºå‡½æ•°
  */
 
 /**
-  * @brief  ÏÔÊ¾µ¥É«Î»Í¼
-  * @param  (x,y)ÆğÊ¼µã×ø±ê
-  * @param  (width,height)Î»Í¼³ß´ç
-  * @param  (*dat)Î»Í¼ÆğÊ¼Êı¾İ
+  * @brief  æ˜¾ç¤ºå•è‰²ä½å›¾
+  * @param  (x,y)èµ·å§‹ç‚¹åæ ‡
+  * @param  (width,height)ä½å›¾å°ºå¯¸
+  * @param  (*dat)ä½å›¾èµ·å§‹æ•°æ®
   * @retval None
   */
 void wd_show_mono_pic(wd_u16 x,wd_u16 y,wd_u16 width,wd_u16 height,const wd_u8 *dat)
@@ -368,10 +368,10 @@ void wd_show_mono_pic(wd_u16 x,wd_u16 y,wd_u16 width,wd_u16 height,const wd_u8 *
 }
 
 /**
-  * @brief  ÏÔÊ¾²ÊÉ«Î»Í¼
-  * @param  (x,y)ÆğÊ¼µã×ø±ê
-  * @param  (width,height)Î»Í¼³ß´ç
-  * @param  (*dat)Î»Í¼ÆğÊ¼Êı¾İ
+  * @brief  æ˜¾ç¤ºå½©è‰²ä½å›¾
+  * @param  (x,y)èµ·å§‹ç‚¹åæ ‡
+  * @param  (width,height)ä½å›¾å°ºå¯¸
+  * @param  (*dat)ä½å›¾èµ·å§‹æ•°æ®
   * @retval None
   */
 void wd_show_pic(wd_u16 x,wd_u16 y,wd_u16 width,wd_u16 height,const wd_u8 *dat)
@@ -391,10 +391,10 @@ void wd_show_pic(wd_u16 x,wd_u16 y,wd_u16 width,wd_u16 height,const wd_u8 *dat)
 }
 
 /**
-  * @brief  ÏÔÊ¾²ÊÉ«Î»Í¼,¿ÉÉèÖÃÍ¸Ã÷ÑÕÉ«
-  * @param  (x,y)ÆğÊ¼µã×ø±ê
-  * @param  (width,height)Î»Í¼³ß´ç
-  * @param  (*dat)Î»Í¼ÆğÊ¼Êı¾İ
+  * @brief  æ˜¾ç¤ºå½©è‰²ä½å›¾,å¯è®¾ç½®é€æ˜é¢œè‰²
+  * @param  (x,y)èµ·å§‹ç‚¹åæ ‡
+  * @param  (width,height)ä½å›¾å°ºå¯¸
+  * @param  (*dat)ä½å›¾èµ·å§‹æ•°æ®
   * @param  
   * @retval None
   */
@@ -415,11 +415,11 @@ void wd_show_pic2(wd_u16 x,wd_u16 y,wd_u16 width,wd_u16 height,const wd_u8 *dat,
     }
 }
 /******************************************************************************************************
- * @ÎÄ×ÖÏÔÊ¾º¯Êı
+ * @æ–‡å­—æ˜¾ç¤ºå‡½æ•°
  */
 /**
-  * @brief  ÏÔÊ¾Ó¢ÎÄ×Ö·û
-  * @param  chr£º×Ö·ûµÄASCIIÂë
+  * @brief  æ˜¾ç¤ºè‹±æ–‡å­—ç¬¦
+  * @param  chrï¼šå­—ç¬¦çš„ASCIIç 
   * @retval None
   */
 void wd_show_char(wd_u16 x0,wd_u16 y0,wd_word chr)
@@ -440,8 +440,8 @@ void wd_show_char(wd_u16 x0,wd_u16 y0,wd_word chr)
 }
 
 /**
-  * @brief  ÏÔÊ¾ÖĞÎÄ×Ö·û
-  * @param  ch_h£ºÖĞÎÄ×Ö·ûµÄASCIIÂë¸ßÎ» ch_l£ºÖĞÎÄ×Ö·ûµÄASCIIÂëµÍÎ»
+  * @brief  æ˜¾ç¤ºä¸­æ–‡å­—ç¬¦
+  * @param  ch_hï¼šä¸­æ–‡å­—ç¬¦çš„ASCIIç é«˜ä½ ch_lï¼šä¸­æ–‡å­—ç¬¦çš„ASCIIç ä½ä½
   * @retval None
   */
 void wd_show_ch(wd_u16 x0,wd_u16 y0,wd_word ch_h,wd_word ch_l)
@@ -476,8 +476,8 @@ void wd_show_ch(wd_u16 x0,wd_u16 y0,wd_word ch_h,wd_word ch_l)
 }
 
 /**
-  * @brief  ÏÔÊ¾×Ö·û´®
-  * @param  *p£º×Ö·û´®
+  * @brief  æ˜¾ç¤ºå­—ç¬¦ä¸²
+  * @param  *pï¼šå­—ç¬¦ä¸²
   * @retval None
   */
 void wd_show_string(wd_u16 x0,wd_u16 y0,wd_word *p)
@@ -505,9 +505,9 @@ void wd_show_string(wd_u16 x0,wd_u16 y0,wd_word *p)
 }
 
 /**
-  * @brief  ÏÔÊ¾Êı×Ö
-  * @param  num£ºÊı×Ö
-  * @param  wei£ºÊı×ÖÎ»Êı
+  * @brief  æ˜¾ç¤ºæ•°å­—
+  * @param  numï¼šæ•°å­—
+  * @param  weiï¼šæ•°å­—ä½æ•°
   * @retval None
   */
 void wd_show_num(wd_u16 x,wd_u16 y,wd_u16 num,wd_u8 wei)
@@ -530,9 +530,9 @@ void wd_show_num(wd_u16 x,wd_u16 y,wd_u16 num,wd_u8 wei)
 }
 
 /**
-  * @brief  ´òÓ¡Ò»ĞĞ×Ö·û´®
-  * @param  line£ºĞĞÊı
-  * @param  str£º×Ö·û´®
+  * @brief  æ‰“å°ä¸€è¡Œå­—ç¬¦ä¸²
+  * @param  lineï¼šè¡Œæ•°
+  * @param  strï¼šå­—ç¬¦ä¸²
   * @retval None
   */
 void wd_println(wd_u16 line,wd_word *str)

@@ -3216,9 +3216,9 @@ FATFS myfs;                     //FAT file system structure, see ff.h for detail
 FRESULT fsresult;               //return code for file related operations
 
 /**
-  * @brief  fatfs³õÊ¼»¯
+  * @brief  fatfsåˆå§‹åŒ–
   * @param  None
-  * @retval 0 ³õÊ¼»¯Ê§°Ü ·Ç0 ³õÊ¼»¯³É¹¦
+  * @retval 0 åˆå§‹åŒ–å¤±è´¥ é0 åˆå§‹åŒ–æˆåŠŸ
   */
 unsigned char ff_init(void)
 {

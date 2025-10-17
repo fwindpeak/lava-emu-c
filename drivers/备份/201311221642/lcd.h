@@ -45,35 +45,35 @@ typedef struct
 void lcd_set_windows(unsigned int x0,unsigned int y0,unsigned int x1,unsigned int y1);
 
 /*******************************************************************************/
-//lcd³õÊ¼»¯
+//lcdåˆå§‹åŒ–
 void lcd_init(void);
 
-//»ñÈ¡lcdĞÅÏ¢
+//è·å–lcdä¿¡æ¯
 void lcd_get_info(LCD_INFO *lcd_info);
 
-//ÓÃcolor»­µã
+//ç”¨colorç”»ç‚¹
 void lcd_set_point(unsigned int x,unsigned int y,LCD_COLOR color);
 
-//»ñÈ¡µãÑÕÉ«
+//è·å–ç‚¹é¢œè‰²
 LCD_COLOR lcd_get_point(unsigned int x,unsigned int y);
 
-//ÉèÖÃÓÎ±êÎ»ÖÃ
+//è®¾ç½®æ¸¸æ ‡ä½ç½®
 void lcd_set_cursor(unsigned int x,unsigned int y);
 
-//»­ÊµĞÄ¾ØĞÎ
+//ç”»å®å¿ƒçŸ©å½¢
 void lcd_draw_block(unsigned int x0,unsigned y0,unsigned x1,unsigned y1,LCD_COLOR color);
 
-//ÓÃµã»­ÊµĞÄ¾ØĞÎ
+//ç”¨ç‚¹ç”»å®å¿ƒçŸ©å½¢
 void lcd_draw_block2(unsigned int x0,unsigned y0,unsigned x1,unsigned y1,LCD_COLOR color);
 
 #ifdef USE_DRAW_PIC
-//»­Í¼£¬oriÎªÆÁÄ»·½Ïò
+//ç”»å›¾ï¼Œoriä¸ºå±å¹•æ–¹å‘
 void lcd_draw_pic(unsigned int x0,unsigned int y0,unsigned int width,unsigned int height,const unsigned short *dat,unsigned char ori);
-//ÏÔÊ¾bmpÍ¼Æ¬
+//æ˜¾ç¤ºbmpå›¾ç‰‡
 void lcd_draw_bmp(unsigned int x0,unsigned int y0,const unsigned char *fn);
 #endif
 
-//Ë¢ÆÁ²âÊÔ
+//åˆ·å±æµ‹è¯•
 void lcd_test(void);
 
 #endif

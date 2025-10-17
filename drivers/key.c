@@ -14,8 +14,8 @@
 #define     LAVA_KEY_F1          6      
 #define     LAVA_KEY_ESC         7
 
-int keymapc;                                //ÒÑ¾­±»mapµÄ°´¼üÊı
-unsigned char KeyMap[LAVA_KEY_NUM][2];        //ÓÃÓÚ´¢´ækeymapÊı¾İ
+int keymapc;                                //å·²ç»è¢«mapçš„æŒ‰é”®æ•°
+unsigned char KeyMap[LAVA_KEY_NUM][2];        //ç”¨äºå‚¨å­˜keymapæ•°æ®
 
 
 
@@ -37,7 +37,7 @@ typedef struct
 }KeyDef;
 
 
-//»ñÈ¡°´¼üÓ³ÉäÖµ
+//è·å–æŒ‰é”®æ˜ å°„å€¼
 unsigned char key_getmap(unsigned char key)
 {
     int i;
@@ -61,7 +61,7 @@ unsigned char key_getmap(unsigned char key)
     return 1;
 }
 
-//¸ù¾İÓ³ÉäÖµ»ñÈ¡Êµ¼Ê¼üÖµ
+//æ ¹æ®æ˜ å°„å€¼è·å–å®é™…é”®å€¼
 unsigned char key_getmap2(unsigned char key)
 {
     int i;
@@ -101,8 +101,8 @@ const KeyDef BKey[LAVA_KEY_NUM]=
 #define KEY_GET_UP(i)         GPIO_ReadInputDataBit(BKey[i].Port,BKey[i].Pin) == Bit_SET
 
 
-static u8 key_up = 1; //°´¼üËÉ¿ª±êÖ¾
-//³õÊ¼»¯
+static u8 key_up = 1; //æŒ‰é”®æ¾å¼€æ ‡å¿—
+//åˆå§‹åŒ–
 void key_init(void)
 {
     int i;
@@ -111,7 +111,7 @@ void key_init(void)
     {
         RCC_APB2PeriphClockCmd(BKey[i].Clk,ENABLE);
         GPIO_InitStructure.GPIO_Pin = BKey[i].Pin;
-        GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU ;   //ÉÏÀ­ÊäÈë
+        GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU ;   //ä¸Šæ‹‰è¾“å…¥
         GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
         GPIO_Init(BKey[i].Port, &GPIO_InitStructure);
     }
@@ -123,13 +123,13 @@ void key_init(void)
     
     
     
-    //Çå³ıkeymapÊı¾İ
+    //æ¸…é™¤keymapæ•°æ®
     keymapc=0;
     memset(KeyMap,0,sizeof(KeyMap));
 }
 
 
-//¼ì²â°´¼üÊÇ·ñ°´ÏÂ key>128¼ì²âËùÓĞ°´¼ü
+//æ£€æµ‹æŒ‰é”®æ˜¯å¦æŒ‰ä¸‹ key>128æ£€æµ‹æ‰€æœ‰æŒ‰é”®
 u8 key_check(u8 key)
 {
     int i;
@@ -154,7 +154,7 @@ u8 key_check(u8 key)
     }
 }
 
-//²»µÈ´ı¶Á°´¼ü
+//ä¸ç­‰å¾…è¯»æŒ‰é”®
 u8 key_read(void)
 {
     int i,n;
@@ -166,7 +166,7 @@ u8 key_read(void)
     
     if(key_up && (key_check(128)) )
     {
-        delay_ms(10);//È¥¶¶¶¯
+        delay_ms(10);//å»æŠ–åŠ¨
         key_up = 0;
         for(i=0;i<LAVA_KEY_NUM;i++)
         {
@@ -177,10 +177,10 @@ u8 key_read(void)
         }
     }
     else if(key_check(128)==0)key_up = 1;
-    return 0;// ÎŞ°´¼ü°´ÏÂ
+    return 0;// æ— æŒ‰é”®æŒ‰ä¸‹
 }
 
-//µÈ´ı»ñÈ¡°´¼ü
+//ç­‰å¾…è·å–æŒ‰é”®
 u8 key_get(void)
 {
     u8 key;
@@ -188,10 +188,10 @@ u8 key_get(void)
     return key;
 }
 
-//ÊÍ·Å°´¼ü×´Ì¬
+//é‡Šæ”¾æŒ‰é”®çŠ¶æ€
 void key_release(u8 key)
 {
-    key_up = 1; //°´¼üËÉ¿ª±êÖ¾
+    key_up = 1; //æŒ‰é”®æ¾å¼€æ ‡å¿—
 }
 
 

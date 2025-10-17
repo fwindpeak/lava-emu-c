@@ -1564,7 +1564,7 @@ sFONT Font6x12 =
     12, /* Height */
 };
 
-//´¦ÀíÖĞÎÄ×ÖÌå
+//å¤„ç†ä¸­æ–‡å­—ä½“
 
 #ifdef USE_EXT_CNFONT
 
@@ -1601,7 +1601,7 @@ sFONT Font12x12_GB2312 =
 
 
 /**
-  * @brief  ×ÖÌå³õÊ¼»¯
+  * @brief  å­—ä½“åˆå§‹åŒ–
   * @param  None
   * @retval None
   */
@@ -1613,10 +1613,10 @@ void font_init(void)
 }
 
 /**
-  * @brief  ¶ÁÈ¡Íâ²¿spi flashµÄÖĞÎÄ×ÖÌåÊı¾İ
-  * @param  pBuffer£º¶ÁÈ¡³öÀ´µÄÊı¾İ»º´æÖ¸Õë
-  * @param  ReadAddr£ºÆğÊ¼µØÖ·
-  * @param  NumByteToRead£ºĞèÒª¶ÁÈ¡µÄ×Ö½ÚÊı
+  * @brief  è¯»å–å¤–éƒ¨spi flashçš„ä¸­æ–‡å­—ä½“æ•°æ®
+  * @param  pBufferï¼šè¯»å–å‡ºæ¥çš„æ•°æ®ç¼“å­˜æŒ‡é’ˆ
+  * @param  ReadAddrï¼šèµ·å§‹åœ°å€
+  * @param  NumByteToReadï¼šéœ€è¦è¯»å–çš„å­—èŠ‚æ•°
   * @retval None
   */
 void font_read_ext(u8* pBuffer, u32 ReadAddr, u16 NumByteToRead)

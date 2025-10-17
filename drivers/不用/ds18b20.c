@@ -2,32 +2,32 @@
 #include "delay.h"
 #include "sys.h"
 
-//Òı½Å¶¨Òå
+//å¼•è„šå®šä¹‰
 #define DS_GPIO         GPIOD
 #define DS_RCC          RCC_APB2Periph_GPIOD
 #define DS_PIN          GPIO_Pin_3
 
 static 	GPIO_InitTypeDef    GPIO_InitStructure;
-//IO·½ÏòÉèÖÃ
+//IOæ–¹å‘è®¾ç½®
 #define DS18B20_IO_IN()       {GPIO_InitStructure.GPIO_Pin =DS_PIN;GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN_FLOATING;GPIO_Init(DS_GPIO, &GPIO_InitStructure);}
 #define DS18B20_IO_OUT()      {GPIO_InitStructure.GPIO_Pin =DS_PIN;GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;GPIO_Init(DS_GPIO, &GPIO_InitStructure);}
 
-////IO²Ù×÷º¯Êı
-#define	DS18B20_DQ_OUT          PDout(3) //Êı¾İ¶Ë¿Ú	PD3 
-#define	DS18B20_DQ_IN           PDin(3)  //Êı¾İ¶Ë¿Ú	PD3 
+////IOæ“ä½œå‡½æ•°
+#define	DS18B20_DQ_OUT          PDout(3) //æ•°æ®ç«¯å£	PD3 
+#define	DS18B20_DQ_IN           PDin(3)  //æ•°æ®ç«¯å£	PD3 
 
-//¸´Î»DS18B20
+//å¤ä½DS18B20
 void DS18B20_Rst(void)
 {
     DS18B20_IO_OUT(); //SET PA0 OUTPUT
-    DS18B20_DQ_OUT=0; //À­µÍDQ
-    delay_us(750);    //À­µÍ750us
+    DS18B20_DQ_OUT=0; //æ‹‰ä½DQ
+    delay_us(750);    //æ‹‰ä½750us
     DS18B20_DQ_OUT=1; //DQ=1
     delay_us(15);     //15US
 }
-//µÈ´ıDS18B20µÄ»ØÓ¦
-//·µ»Ø1:Î´¼ì²âµ½DS18B20µÄ´æÔÚ
-//·µ»Ø0:´æÔÚ
+//ç­‰å¾…DS18B20çš„å›åº”
+//è¿”å›1:æœªæ£€æµ‹åˆ°DS18B20çš„å­˜åœ¨
+//è¿”å›0:å­˜åœ¨
 u8 DS18B20_Check(void)
 {
     u8 retry=0;
@@ -47,8 +47,8 @@ u8 DS18B20_Check(void)
     if(retry>=240)return 1;
     return 0;
 }
-//´ÓDS18B20¶ÁÈ¡Ò»¸öÎ»
-//·µ»ØÖµ£º1/0
+//ä»DS18B20è¯»å–ä¸€ä¸ªä½
+//è¿”å›å€¼ï¼š1/0
 u8 DS18B20_Read_Bit(void) 			 // read one bit
 {
     u8 data;
@@ -63,8 +63,8 @@ u8 DS18B20_Read_Bit(void) 			 // read one bit
     delay_us(50);
     return data;
 }
-//´ÓDS18B20¶ÁÈ¡Ò»¸ö×Ö½Ú
-//·µ»ØÖµ£º¶Áµ½µÄÊı¾İ
+//ä»DS18B20è¯»å–ä¸€ä¸ªå­—èŠ‚
+//è¿”å›å€¼ï¼šè¯»åˆ°çš„æ•°æ®
 u8 DS18B20_Read_Byte(void)    // read one byte
 {
     u8 i,j,dat;
@@ -76,8 +76,8 @@ u8 DS18B20_Read_Byte(void)    // read one byte
     }
     return dat;
 }
-//Ğ´Ò»¸ö×Ö½Úµ½DS18B20
-//dat£ºÒªĞ´ÈëµÄ×Ö½Ú
+//å†™ä¸€ä¸ªå­—èŠ‚åˆ°DS18B20
+//datï¼šè¦å†™å…¥çš„å­—èŠ‚
 void DS18B20_Write_Byte(u8 dat)
 {
     u8 j;
@@ -103,7 +103,7 @@ void DS18B20_Write_Byte(u8 dat)
         }
     }
 }
-//¿ªÊ¼ÎÂ¶È×ª»»
+//å¼€å§‹æ¸©åº¦è½¬æ¢
 void DS18B20_Start(void)// ds1820 start convert
 {
     DS18B20_Rst();
@@ -111,29 +111,29 @@ void DS18B20_Start(void)// ds1820 start convert
     DS18B20_Write_Byte(0xcc);// skip rom
     DS18B20_Write_Byte(0x44);// convert
 }
-//³õÊ¼»¯DS18B20µÄIO¿Ú DQ Í¬Ê±¼ì²âDSµÄ´æÔÚ
-//·µ»Ø1:²»´æÔÚ
-//·µ»Ø0:´æÔÚ
+//åˆå§‹åŒ–DS18B20çš„IOå£ DQ åŒæ—¶æ£€æµ‹DSçš„å­˜åœ¨
+//è¿”å›1:ä¸å­˜åœ¨
+//è¿”å›0:å­˜åœ¨
 u8 ds18b20_init(void)
 {
     //GPIO_InitTypeDef  GPIO_InitStructure;
 
-    RCC_APB2PeriphClockCmd(DS_RCC, ENABLE);	 //Ê¹ÄÜPORTB¿ÚÊ±ÖÓ
+    RCC_APB2PeriphClockCmd(DS_RCC, ENABLE);	 //ä½¿èƒ½PORTBå£æ—¶é’Ÿ
 
-    GPIO_InitStructure.GPIO_Pin = DS_PIN;				//PORTB3 ÍÆÍìÊä³ö
+    GPIO_InitStructure.GPIO_Pin = DS_PIN;				//PORTB3 æ¨æŒ½è¾“å‡º
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-    GPIO_SetBits(DS_GPIO,DS_PIN);    //Êä³ö1
+    GPIO_SetBits(DS_GPIO,DS_PIN);    //è¾“å‡º1
 
     DS18B20_Rst();
 
     return DS18B20_Check();
 }
-//´ÓDS18B20µÃµ½ÎÂ¶ÈÖµ
-//¾«¶È£º0.1C
-//·µ»ØÖµ£ºÎÂ¶ÈÖµ £¨-550~1250£©
+//ä»DS18B20å¾—åˆ°æ¸©åº¦å€¼
+//ç²¾åº¦ï¼š0.1C
+//è¿”å›å€¼ï¼šæ¸©åº¦å€¼ ï¼ˆ-550~1250ï¼‰
 short ds18b20_get_temp(void)
 {
     u8 temp;
@@ -151,13 +151,13 @@ short ds18b20_get_temp(void)
     {
         TH=~TH;
         TL=~TL;
-        temp=0;//ÎÂ¶ÈÎª¸º
-    } else temp=1;//ÎÂ¶ÈÎªÕı
-    tem=TH; //»ñµÃ¸ß°ËÎ»
+        temp=0;//æ¸©åº¦ä¸ºè´Ÿ
+    } else temp=1;//æ¸©åº¦ä¸ºæ­£
+    tem=TH; //è·å¾—é«˜å…«ä½
     tem<<=8;
-    tem+=TL;//»ñµÃµ×°ËÎ»
-    tem=(float)tem*0.625;   //×ª»»
-    if(temp)return tem;     //·µ»ØÎÂ¶ÈÖµ
+    tem+=TL;//è·å¾—åº•å…«ä½
+    tem=(float)tem*0.625;   //è½¬æ¢
+    if(temp)return tem;     //è¿”å›æ¸©åº¦å€¼
     else return -tem;
 }
 

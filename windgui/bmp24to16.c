@@ -44,9 +44,9 @@ int main(int argc, char* argv[])
     unsigned short int write_data;
     char write_string[11];
     char file_name[1024];
-    bitmap_file_header is_file_header; //14×Ö½Ú
-    bitmap_info_header is_info_header; //16×Ö½Ú
-    //µ÷É«°å
+    bitmap_file_header is_file_header; //14å­—èŠ‚
+    bitmap_info_header is_info_header; //16å­—èŠ‚
+    //è°ƒè‰²æ¿
     const unsigned char ctr[12]={0x00,0xFB,0x00,0x00,0xE0,0x07,0x00,0x00,0x1F,0x00,0x00,0x00};
 
     FILE *fp;
@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    /* ¶ÁÈ¡ÎÄ¼şÍ· */
+    /* è¯»å–æ–‡ä»¶å¤´ */
     fread(&is_file_header.Type,sizeof(is_file_header.Type),1,fp);
     fread(&is_file_header.Size,sizeof(is_file_header.Size),1,fp);
     fread(&is_file_header.Reserved1,sizeof(is_file_header.Reserved1),1,fp);
@@ -85,32 +85,32 @@ int main(int argc, char* argv[])
         printf("not support file format\n");
         return -1;
     }
-    /* ¶ÁÈ¡ĞÅÏ¢Í· */
+    /* è¯»å–ä¿¡æ¯å¤´ */
     fread(&is_info_header,sizeof(is_info_header),1,fp);
 
-    /* ÀàĞÍÅĞ¶Ï*/
+    /* ç±»å‹åˆ¤æ–­*/
     if(24 != is_info_header.BitCount)
     {
         printf("only support 24 deep bitmap\n");
         return -1;
     }
-    /* ÓĞÎŞµ÷É«°å */
+    /* æœ‰æ— è°ƒè‰²æ¿ */
     if(0 != is_info_header.ClrUsed)
     {
         printf("only support 24 deep bitmap without color plant\n");
         return -1;
     }
-    /* ÊÇ·ñÑ¹Ëõ */
+    /* æ˜¯å¦å‹ç¼© */
     if(0 != is_info_header.Compression)
     {
         printf("not support Compression bitmap\n");
         return -1;
     }
 #ifdef ALIGNMENT_FIX
-    /* Ô­24bbp²¹ÆëµÄ×Ö½ÚÊı£¬Îª4ÔòÃ»ÓĞ²¹Æë*/
+    /* åŸ24bbpè¡¥é½çš„å­—èŠ‚æ•°ï¼Œä¸º4åˆ™æ²¡æœ‰è¡¥é½*/
     pre_append_bytes = 4 - ((is_info_header.Width * 3) % 4);
 
-    /* ²¹ÆëµÄ×Ö½ÚÊõ£¬Îª4Ôò²»ĞèÒª²¹Æë*/
+    /* è¡¥é½çš„å­—èŠ‚æœ¯ï¼Œä¸º4åˆ™ä¸éœ€è¦è¡¥é½*/
     post_append_bytes = 4 - ((is_info_header.Width * 2) % 4);
 #endif
     /* open to write */
@@ -130,7 +130,7 @@ int main(int argc, char* argv[])
     
     
     
-    /* ÎÄ¼şÍ·ĞÅÏ¢×ª»» */
+    /* æ–‡ä»¶å¤´ä¿¡æ¯è½¬æ¢ */
     
     is_file_header.Size=(is_file_header.Size-54)/3*2+66;
     is_file_header.OffSet = 66;
@@ -144,7 +144,7 @@ int main(int argc, char* argv[])
     /* convert data */
     for (i=0; i<is_info_header.Height ; ++i)
     {
-        /* µ¹Ğò´æ´¢ĞŞÕı*/
+        /* å€’åºå­˜å‚¨ä¿®æ­£*/
         end_fix_byte = is_info_header.SizeImage - is_info_header.Height * bytes_per_line;
         fseek(fp,-(bytes_per_line * (i+1) + end_fix_byte),SEEK_END);
 
@@ -160,17 +160,17 @@ int main(int argc, char* argv[])
             fwrite(write_data,2,1,out_fp);
         }
 #ifdef ALIGNMENT_FIX
-        /* 24bbp ÊÇ·ñÓĞ²¹ÆëµÄbytes */
+        /* 24bbp æ˜¯å¦æœ‰è¡¥é½çš„bytes */
         if (4 != pre_append_bytes)
         {
-            fread(&read_byte,pre_append_bytes,1,fp); /* Ìø¹ı²¹È«µÄ0x00 */
+            fread(&read_byte,pre_append_bytes,1,fp); /* è·³è¿‡è¡¥å…¨çš„0x00 */
         }
 
-        /* Éú³ÉµÄRGB565ÊÇ·ñĞèÒª¶ÔÆë*/
+        /* ç”Ÿæˆçš„RGB565æ˜¯å¦éœ€è¦å¯¹é½*/
         if (4 != post_append_bytes)
         {
-            /* RGB565 Ö»¿ÉÄÜ²¹Ò»¸ö 0x0000*/
-            /* µ÷ÊÔ·¢ÏÖÊä³ö²»ĞèÒª²¹Æë*/
+            /* RGB565 åªå¯èƒ½è¡¥ä¸€ä¸ª 0x0000*/
+            /* è°ƒè¯•å‘ç°è¾“å‡ºä¸éœ€è¦è¡¥é½*/
             sprintf(write_string,"0x00,0x00,");
             fwrite(write_string,10,1,out_fp);
         }

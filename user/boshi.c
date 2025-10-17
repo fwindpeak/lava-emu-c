@@ -388,7 +388,7 @@ char g_caThingBox[10];
 char g_saThingBox[10][11];
 
 char g_saMainManualItems[3][11]= {
-    "½»Ì¸¡¡¡¡  ", "²é¿´ËÄÖÜ  ", "Ê¹ÓÃÎïÆ·  "
+    "äº¤è°ˆã€€ã€€  ", "æŸ¥çœ‹å››å‘¨  ", "ä½¿ç”¨ç‰©å“  "
 };
 
 int g_iMainManualItemCount;
@@ -403,7 +403,7 @@ void DrawGraphic(int x, int y, int iObjectID)
     iOffset=iObjectID*OBJECT_DATA_SIZE;
     WriteBlock(x*16,y*20,16,20,1,iOffset+GraphicData);
 }
-//¿Õ¼ä²»×ã£¬ÔİÊ±¸ÄÎª²»´«²ÎÊı
+//ç©ºé—´ä¸è¶³ï¼Œæš‚æ—¶æ”¹ä¸ºä¸ä¼ å‚æ•°
 //void DrawMap(int iMapX, int iMapY, int iManX, int iManY)
 void DrawMap()
 {
@@ -557,7 +557,7 @@ void PoliceSeekRichHouse()
     man_y=4;
     DrawMap();
 
-    DisplayMessage(OBJ_POLICE, "Ææ¹Ö£¬¸ô±ÚÎİ×ÓµÄ¾¯ÁåÔõÃ´»áÏì£¬ÎÒµÃ¹ıÈ¥²é²é¿´");
+    DisplayMessage(OBJ_POLICE, "å¥‡æ€ªï¼Œéš”å£å±‹å­çš„è­¦é“ƒæ€ä¹ˆä¼šå“ï¼Œæˆ‘å¾—è¿‡å»æŸ¥æŸ¥çœ‹");
 
     MapData[2][1]=OBJ_DRHOUSE4;
     for (iTempX=1; iTempX<=5; iTempX=iTempX+1) {
@@ -595,7 +595,7 @@ void BadManGoAway()
     Refresh();
     Delay(DELAY_TIME);
 
-    DisplayMessage(OBJ_BADMANR, "ß×£¬²ŞËùÔõÃ´Â©Ë®ÁË£¬¹ıÈ¥¿´¿´¡£");
+    DisplayMessage(OBJ_BADMANR, "å’¦ï¼Œå•æ‰€æ€ä¹ˆæ¼æ°´äº†ï¼Œè¿‡å»çœ‹çœ‹ã€‚");
 
     MapData[27][23]=OBJ_BLANK;
     MapData[26][23]=OBJ_BADMANL;
@@ -621,38 +621,38 @@ void TheEnd()
 
     ClearScreen();
     DisplayMessage(OBJ_BLANK, "-The End- ");
-    DisplayMessage(OBJ_MAN, "µÈµÈ£¬µÈµÈ£¬ÔõÃ´ÕâÑù¾Í½áÊøÁË");
-    DisplayMessage(OBJ_SAD, "Ã»°ì·¨ÒòÎª32K µÄ¿Õ¼äÒÑ¾­ÓÃÍêÁË");
-    DisplayMessage(OBJ_MAN, "²»ĞĞ£¬ÎÒºÃ²»ÈİÒ×²Å¾È³ö²©Ê¿£¬Ò²ÒªÓĞ¸ö¶¯»­»òÊ²Ã´µÄ");
-    DisplayMessage(OBJ_SMILE, "ºÃ°É");
+    DisplayMessage(OBJ_MAN, "ç­‰ç­‰ï¼Œç­‰ç­‰ï¼Œæ€ä¹ˆè¿™æ ·å°±ç»“æŸäº†");
+    DisplayMessage(OBJ_SAD, "æ²¡åŠæ³•å› ä¸º32K çš„ç©ºé—´å·²ç»ç”¨å®Œäº†");
+    DisplayMessage(OBJ_MAN, "ä¸è¡Œï¼Œæˆ‘å¥½ä¸å®¹æ˜“æ‰æ•‘å‡ºåšå£«ï¼Œä¹Ÿè¦æœ‰ä¸ªåŠ¨ç”»æˆ–ä»€ä¹ˆçš„");
+    DisplayMessage(OBJ_SMILE, "å¥½å§");
 
     ClearScreen();
     x=1;
     DrawGraphic(x+4, 1, OBJ_MAN);
     DrawGraphic(x+5, 1, OBJ_DR);
-    DisplayMessage(OBJ_DR, "ÔãÁË£¬Ëû×·À´ÁË");
+    DisplayMessage(OBJ_DR, "ç³Ÿäº†ï¼Œä»–è¿½æ¥äº†");
 
     ClearScreen();
     x++;
     DrawGraphic(x, 1, OBJ_BADMANR);
     DrawGraphic(x+4, 1, OBJ_MAN2);
     DrawGraphic(x+5, 1, OBJ_DR);
-    DisplayMessage(OBJ_BADMANR, "Õ¾×¡£¬±ğÅÜ");
+    DisplayMessage(OBJ_BADMANR, "ç«™ä½ï¼Œåˆ«è·‘");
 
     ClearScreen();
     x++;
     DrawGraphic(x, 1, OBJ_BADMANR);
     DrawGraphic(x+4, 1, OBJ_MAN);
     DrawGraphic(x+5, 1, OBJ_DR);
-    DisplayMessage(OBJ_MAN, "¾ÈÃü¡­¾ÈÃü¡­");
+    DisplayMessage(OBJ_MAN, "æ•‘å‘½â€¦æ•‘å‘½â€¦");
 
     ClearScreen();
     x++;
     DrawGraphic(x, 1, OBJ_BADMANR);
     DrawGraphic(x+4, 1, OBJ_MAN2);
     DrawGraphic(x+5, 1, OBJ_DR);
-    DisplayMessage(OBJ_BADMANR, "Õ¾×¡£¬±ğÅÜ");
-    DisplayMessage(OBJ_MAN, "ÎØ¡«ÎÒ²»ÒªÕâÑùµÄ½á¾Ö¶¯»­");
+    DisplayMessage(OBJ_BADMANR, "ç«™ä½ï¼Œåˆ«è·‘");
+    DisplayMessage(OBJ_MAN, "å‘œï½æˆ‘ä¸è¦è¿™æ ·çš„ç»“å±€åŠ¨ç”»");
 
     ClearScreen();
     DisplayMessage(OBJ_SMILE, "-The End- ");
@@ -662,22 +662,22 @@ void TheEnd()
 void Thing_GetObjectName(char cThingID, uchar * sName)
 {
     if (cThingID==OBJ_SLINGSHOT) {
-        strcpy(sName, "µ¯¹­      ");
+        strcpy(sName, "å¼¹å¼“      ");
     }
     else if (cThingID==OBJ_TICKET) {
-        strcpy(sName, "½İÔË³µÆ±  ");
+        strcpy(sName, "æ·è¿è½¦ç¥¨  ");
     }
     else if (cThingID==OBJ_INVOICE) {
-        strcpy(sName, "ËÍĞŞµ¥¾İ  ");
+        strcpy(sName, "é€ä¿®å•æ®  ");
     }
     else if (cThingID==OBJ_CC800) {
         strcpy(sName, "CC800     ");
     }
     else if (cThingID==OBJ_TOILETPAPER) {
-        strcpy(sName, "²ŞÖ½      ");
+        strcpy(sName, "å•çº¸      ");
     }
     else {
-        strcpy(sName, "Ï¸¾úÅàÑøÒº");
+        strcpy(sName, "ç»†èŒåŸ¹å…»æ¶²");
     }
 }
 //----------------------------------------------------------------
@@ -721,11 +721,11 @@ int CheckStatus()
 
     iStatus=0;
 
-    //È¡µÃÈËÎïµÄ¾ø¶Ô×ù±ê
+    //å–å¾—äººç‰©çš„ç»å¯¹åº§æ ‡
     x=map_x+man_x;
     y=map_y+man_y;
 
-    //×ß½ø½İÔËÕ¾
+    //èµ°è¿›æ·è¿ç«™
     if (x==9 && y==6) {
         map_x=0;
         map_y=15;
@@ -734,7 +734,7 @@ int CheckStatus()
         iStatus=1;
     }
 
-    //Àë¿ª½İÔËÕ¾
+    //ç¦»å¼€æ·è¿ç«™
     else if (x==9 && y==16) {
         map_x=5;
         map_y=5;
@@ -743,7 +743,7 @@ int CheckStatus()
         iStatus=1;
     }
 
-    //×ß½øÑĞ¾¿ÊÒ
+    //èµ°è¿›ç ”ç©¶å®¤
     else if (x==17 && y==6) {
         map_x=0;
         map_y=25;
@@ -752,36 +752,36 @@ int CheckStatus()
         iStatus=1;
     }
 
-    //Àë¿ªÑĞ¾¿ÊÒ
+    //ç¦»å¼€ç ”ç©¶å®¤
     else if (x==5 && y==28) {
         map_x=13;
         map_y=5;
         man_x=4;
         man_y=2;
 
-        //ÒÑ¾­È¡µÃÅàÑøÒº
+        //å·²ç»å–å¾—åŸ¹å…»æ¶²
         if (g_iStory==40) {
             DrawMap();
             DrawGraphic(man_x, man_y, OBJ_MAN);
 
-            //±»×¥×ß
-            DisplayMessage(OBJ_MAN, "ÄãÃÇÊÇË­£¬Òª×öÊ²Ã´");
-            DisplayMessage(OBJ_BADMANR, "²»Òª¶¯£¬Äã¸ú²©Ê¿µÄ½»Çé²»´í°É£¬ÇëÄã¸úÎÒÃÇ×ß");  //ÎÒÃÇÊÖÉÏÓĞÇ¹£¬
-            DisplayMessage(OBJ_MAN, "Ê²Ã´£¬ÄãÃÇÊÇ°ó¼Ü²©Ê¿µÄÈË");
-            DisplayMessage(OBJ_BADMANR, "·Ï»°ÉÙËµ£¬¿ì×ß");
+            //è¢«æŠ“èµ°
+            DisplayMessage(OBJ_MAN, "ä½ ä»¬æ˜¯è°ï¼Œè¦åšä»€ä¹ˆ");
+            DisplayMessage(OBJ_BADMANR, "ä¸è¦åŠ¨ï¼Œä½ è·Ÿåšå£«çš„äº¤æƒ…ä¸é”™å§ï¼Œè¯·ä½ è·Ÿæˆ‘ä»¬èµ°");  //æˆ‘ä»¬æ‰‹ä¸Šæœ‰æªï¼Œ
+            DisplayMessage(OBJ_MAN, "ä»€ä¹ˆï¼Œä½ ä»¬æ˜¯ç»‘æ¶åšå£«çš„äºº");
+            DisplayMessage(OBJ_BADMANR, "åºŸè¯å°‘è¯´ï¼Œå¿«èµ°");
             map_x=21;
             map_y=25;
             man_x=5;
             man_y=2;
             DrawMap();
             DrawGraphic(man_x, man_y, OBJ_MAN);
-            DisplayMessage(OBJ_BADMANR, "Ï£ÍûÄã¿ÉÒÔ°ïÎÒÃÇÈ°È°²©Ê¿£¬½ĞËû¸úÎÒÃÇºÏ×÷Ò»µã£¬·ñÔòÄãÃÇÓÀÔ¶×ß²»³öÕâÀï");
-            DisplayMessage(OBJ_MAN, "Ô­À´²©Ê¿±»¹ØÔÚÕâÀï");
+            DisplayMessage(OBJ_BADMANR, "å¸Œæœ›ä½ å¯ä»¥å¸®æˆ‘ä»¬åŠåŠåšå£«ï¼Œå«ä»–è·Ÿæˆ‘ä»¬åˆä½œä¸€ç‚¹ï¼Œå¦åˆ™ä½ ä»¬æ°¸è¿œèµ°ä¸å‡ºè¿™é‡Œ");
+            DisplayMessage(OBJ_MAN, "åŸæ¥åšå£«è¢«å…³åœ¨è¿™é‡Œ");
         }
         iStatus=1;
     }
 
-    //×ß½ø×Ô¼º¼Ò
+    //èµ°è¿›è‡ªå·±å®¶
     else if (x==12 && y==2) {
         map_x=11;
         map_y=16;
@@ -790,7 +790,7 @@ int CheckStatus()
         iStatus=1;
     }
 
-    //Àë¿ª×Ô¼º¼Ò
+    //ç¦»å¼€è‡ªå·±å®¶
     else if (x==11 && y==18) {
         map_x=4;
         map_y=0;
@@ -799,7 +799,7 @@ int CheckStatus()
         iStatus=1;
     }
 
-    //×ß½ø²©Ê¿µÄÎİ×Ó
+    //èµ°è¿›åšå£«çš„å±‹å­
     else if (x==1 && y==2) {
         map_x=11;
         map_y=21;
@@ -808,7 +808,7 @@ int CheckStatus()
         iStatus=1;
     }
 
-    //×ß½øÔ¶¼û´óÂ¥
+    //èµ°è¿›è¿œè§å¤§æ¥¼
     else if (x==26 && y==8) {
         map_x=11;
         map_y=25;
@@ -817,7 +817,7 @@ int CheckStatus()
         iStatus=1;
     }
 
-    //Àë¿ªÔ¶¼û´óÂ¥
+    //ç¦»å¼€è¿œè§å¤§æ¥¼
     else if (x==20 && y==27) {
         map_x=20;
         map_y=7;
@@ -826,7 +826,7 @@ int CheckStatus()
         iStatus=1;
     }
 
-    //×ß½ø½İÔËÕ¾2
+    //èµ°è¿›æ·è¿ç«™2
     else if (x==22 && y==2) {
         map_x=0;
         map_y=15;
@@ -836,10 +836,10 @@ int CheckStatus()
         iStatus=1;
     }
 
-    //´Ó²©Ê¿Îİ×ÓµÄºóÃÅÀë¿ª
+    //ä»åšå£«å±‹å­çš„åé—¨ç¦»å¼€
     else if (x==20 && y==23) {
 
-        //ÒÑ¾­ÄÃµ½ËÍĞŞµ¥
+        //å·²ç»æ‹¿åˆ°é€ä¿®å•
         //if (Thing_IsExist(OBJ_CABINET_OPEN)) {
         if (MapData[20][19]==OBJ_CABINET_OPEN) {
             map_x=0;
@@ -847,27 +847,27 @@ int CheckStatus()
             man_x=4;
             man_y=2;
 
-            //¾¯²ì×ß»Ø²©Ê¿Îİ×ÓµÄÃÅ¿Ú
+            //è­¦å¯Ÿèµ°å›åšå£«å±‹å­çš„é—¨å£
             MapData[2][1]=OBJ_POLICE;
             iStatus=1;
         }
 
-        //ÉĞÎ´ÄÃµ½ËÍĞŞµ¥£¬²»ÄÜÀë¿ª
+        //å°šæœªæ‹¿åˆ°é€ä¿®å•ï¼Œä¸èƒ½ç¦»å¼€
         else {
             man_x--;
-            DisplayMessage(OBJ_MAN, "ºÃ²»ÈİÒ×²Å½øÀ´²©Ê¿µÄÎİ×Ó£¬»¹Ã»ÕÒµ½ÖØÒªµÄ¶«Î÷Ç°£¬ÎÒÏë»¹ÊÇÏÈ²»ÒªÀë¿ªºÃÁË");
+            DisplayMessage(OBJ_MAN, "å¥½ä¸å®¹æ˜“æ‰è¿›æ¥åšå£«çš„å±‹å­ï¼Œè¿˜æ²¡æ‰¾åˆ°é‡è¦çš„ä¸œè¥¿å‰ï¼Œæˆ‘æƒ³è¿˜æ˜¯å…ˆä¸è¦ç¦»å¼€å¥½äº†");
             iStatus=1;
         }
     }
 
-    //´Ó²©Ê¿Îİ×ÓµÄÇ°ÃÅÀë¿ª
+    //ä»åšå£«å±‹å­çš„å‰é—¨ç¦»å¼€
     else if (x==12 && y==23) {
         man_y--;
-        DisplayMessage(OBJ_MAN, "¾¯²ì¿ÉÄÜÒÑ¾­»ØÀ´ÁË£¬²»Òª´ÓÇ°ÃÅ×ß£¬ÃâµÃ±»·¢ÏÖ");
+        DisplayMessage(OBJ_MAN, "è­¦å¯Ÿå¯èƒ½å·²ç»å›æ¥äº†ï¼Œä¸è¦ä»å‰é—¨èµ°ï¼Œå…å¾—è¢«å‘ç°");
         iStatus=1;
     }
 
-    //×ß½ø½İÔË³µÏä
+    //èµ°è¿›æ·è¿è½¦ç®±
     else if (x==0 && (y>=16 && y<=18)) {
         RapidMove();
         map_x=20;
@@ -876,20 +876,20 @@ int CheckStatus()
         man_y=2;
         DrawMap();
         DrawGraphic(man_x, man_y, OBJ_MAN);
-        DisplayMessage(OBJ_MAN, "µ½´ïÏ«Ö¹ÁË");
+        DisplayMessage(OBJ_MAN, "åˆ°è¾¾æ±æ­¢äº†");
         iStatus=1;
     }
 
-    //Í¨¹ı½İÔËÕ¢¿Ú
+    //é€šè¿‡æ·è¿é—¸å£
     else if (x==4 && (y==16 || y==18)) {
         MapData[y][x]=OBJ_DOORCLOSE;
         iStatus=1;
     }
 
-    //Àë¿ª²ŞËù
+    //ç¦»å¼€å•æ‰€
     else if (x==27 && y==23) {
 
-        //Èç¹ûÒÑ¾­ÄÃµ½ÎÀÉúÖ½
+        //å¦‚æœå·²ç»æ‹¿åˆ°å«ç”Ÿçº¸
         //if (Thing_IsExist(OBJ_TOILETPAPER)) {
         if (g_iStory==50) {
             MapData[23][27]=OBJ_DOORCLOSE;
@@ -897,16 +897,16 @@ int CheckStatus()
         }
     }
 
-    //ÉÏ´²Ë¯¾õ
+    //ä¸ŠåºŠç¡è§‰
     else if (x==19 && y==17) {
         DrawGraphic(man_x, man_y, OBJ_SLEEP);
 
-        //ÒÑ¾­ºÍ²©Ê¿Ì¸¹ı»°ÁË
+        //å·²ç»å’Œåšå£«è°ˆè¿‡è¯äº†
         if (g_iStory==10) {
-            DisplayMessage(OBJ_SLEEP, "ºÃÏëË¯Å¶£¬ZZZ...");
+            DisplayMessage(OBJ_SLEEP, "å¥½æƒ³ç¡å“¦ï¼ŒZZZ...");
 
             SetScreen(0);
-            DisplayMessage(OBJ_BLANK, "¸ôÌì... ");
+            DisplayMessage(OBJ_BLANK, "éš”å¤©... ");
 
             MapData[18][12]=OBJ_POLICE;
             map_x=11;
@@ -915,12 +915,12 @@ int CheckStatus()
             man_y=1;
             DrawMap();
             DrawGraphic(man_x, man_y, OBJ_MAN);
-            DisplayMessage(OBJ_MAN, "ÔõÃ´Ò»Ôç¾ÍÓĞ¾¯²ìÀ´¼ÒÀï£¬ÎÒµÃÈ¥¿´¿´²ÅĞĞ");
+            DisplayMessage(OBJ_MAN, "æ€ä¹ˆä¸€æ—©å°±æœ‰è­¦å¯Ÿæ¥å®¶é‡Œï¼Œæˆ‘å¾—å»çœ‹çœ‹æ‰è¡Œ");
             g_iStory=15;
             iStatus=1;
         }
         else {
-            DisplayMessage(OBJ_SLEEP, "ÎÒ»¹²»ÏëË¯¾õ£¬»¹ÊÇ³öÈ¥×ß×ß°É");
+            DisplayMessage(OBJ_SLEEP, "æˆ‘è¿˜ä¸æƒ³ç¡è§‰ï¼Œè¿˜æ˜¯å‡ºå»èµ°èµ°å§");
             man_x--;
             iStatus=1;
         }
@@ -1013,8 +1013,8 @@ int DisplayManual(uchar * sItems, uchar * caObject, int iItemCount) //
   g_caThingBox[1]=OBJ_CELLPHONE;
 //  g_caThingBox[2]=OBJ_CC800;
 
-  strcpy(g_saThingBox[0], "Ç®        ");
-  strcpy(g_saThingBox[1], "ĞĞ¶¯µç»°  ");
+  strcpy(g_saThingBox[0], "é’±        ");
+  strcpy(g_saThingBox[1], "è¡ŒåŠ¨ç”µè¯  ");
 //  strcpy(g_saThingBox[2], "CC800     ");
 }*/
 //----------------------------------------------------------------
@@ -1025,53 +1025,53 @@ void Talk()
     x=man_x+map_x;
     y=man_y+map_y;
 
-    //ÔÚ²©Ê¿Îİ×ÓµÄÃÅÍâ
+    //åœ¨åšå£«å±‹å­çš„é—¨å¤–
     if ((x==1 && y==3)) {
         if (g_iStory==0) {
-            DisplayMessage(OBJ_MAN, "²©Ê¿£¬ÕâÃ´Ò»¸öÈËÕ¾ÔÚÃÅ¿Ú·¢´ôÄØ");
-            DisplayMessage(OBJ_DR, "°¡£¬ÊÇÄãÑ½£¬ÎÒ×î½üÓĞÒ»ÏîĞÂÑĞ¾¿³É¹ûÒª·¢±í");
-            DisplayMessage(OBJ_MAN, "ÄÇºÜºÃÑ½£¬ÎªÊ²Ã´Òª·³ÄÕÄØ");
-            DisplayMessage(OBJ_DR, "ÎÒµ£ĞÄ»áÓĞÈË»á½«ÎÒµÄ³É¹ûÓÃÔÚ²»·¨µÄÓÃÍ¾ÉÏ");
-            DisplayMessage(OBJ_DR, "¶øÇÒÎÒ×î½üÓĞ±»¸ú×ÙµÄ¸Ğ¾õ£¬»¹»á½Óµ½²»Ã÷µÄµç»°");
-            DisplayMessage(OBJ_MAN, "²»»á°É£¬²©Ê¿£¬Òª²»ÒªÍ¨Öª¾¯·½");
-            DisplayMessage(OBJ_DR, "²»ĞĞ£¬²»ĞĞ£¬Ëµ²»¶¨ÊÇÎÒÌ«Ãô¸ĞÁË£¬²»Òª¾ª¶¯´ó¼Ò");
-//      DisplayMessage(OBJ_DR, "ºÜÍíÁË£¬¿ì»ØÈ¥Ë¯°É");
+            DisplayMessage(OBJ_MAN, "åšå£«ï¼Œè¿™ä¹ˆä¸€ä¸ªäººç«™åœ¨é—¨å£å‘å‘†å‘¢");
+            DisplayMessage(OBJ_DR, "å•Šï¼Œæ˜¯ä½ å‘€ï¼Œæˆ‘æœ€è¿‘æœ‰ä¸€é¡¹æ–°ç ”ç©¶æˆæœè¦å‘è¡¨");
+            DisplayMessage(OBJ_MAN, "é‚£å¾ˆå¥½å‘€ï¼Œä¸ºä»€ä¹ˆè¦çƒ¦æ¼å‘¢");
+            DisplayMessage(OBJ_DR, "æˆ‘æ‹…å¿ƒä¼šæœ‰äººä¼šå°†æˆ‘çš„æˆæœç”¨åœ¨ä¸æ³•çš„ç”¨é€”ä¸Š");
+            DisplayMessage(OBJ_DR, "è€Œä¸”æˆ‘æœ€è¿‘æœ‰è¢«è·Ÿè¸ªçš„æ„Ÿè§‰ï¼Œè¿˜ä¼šæ¥åˆ°ä¸æ˜çš„ç”µè¯");
+            DisplayMessage(OBJ_MAN, "ä¸ä¼šå§ï¼Œåšå£«ï¼Œè¦ä¸è¦é€šçŸ¥è­¦æ–¹");
+            DisplayMessage(OBJ_DR, "ä¸è¡Œï¼Œä¸è¡Œï¼Œè¯´ä¸å®šæ˜¯æˆ‘å¤ªæ•æ„Ÿäº†ï¼Œä¸è¦æƒŠåŠ¨å¤§å®¶");
+//      DisplayMessage(OBJ_DR, "å¾ˆæ™šäº†ï¼Œå¿«å›å»ç¡å§");
             g_iStory=10;
         }
         else if (g_iStory==10) {
-            DisplayMessage(OBJ_DR, "ºÜÍíÁË£¬¿ì»ØÈ¥Ë¯°É");
+            DisplayMessage(OBJ_DR, "å¾ˆæ™šäº†ï¼Œå¿«å›å»ç¡å§");
         }
 
-        //Óë¾¯Ô±ÔÚ²©Ê¿Îİ×ÓÃÅÍâ½»Ì¸
+        //ä¸è­¦å‘˜åœ¨åšå£«å±‹å­é—¨å¤–äº¤è°ˆ
         else {
             if (MapData[2][1]==OBJ_POLICE) {
-                DisplayMessage(OBJ_MAN, "¾¯²ìÏÈÉú£¬ÄãÎªÊ²Ã´Ò»Ö±ÊØÔÚ²©Ê¿µÄ¼ÒÃÅ¿Ú");
-                DisplayMessage(OBJ_POLICE, "ÒòÎª²©Ê¿¿ÉÄÜÊÇÔÚ¼ÒÖĞ±»°ó¼ÜµÄ£¬ÎÒÃÇÒª·âËøÏÖ³¡£¬×¼±¸½øĞĞµ÷²é");
-                DisplayMessage(OBJ_MAN, "Á¬ÎÒÒ²²»ÄÜ½øÈ¥Âğ");
-                DisplayMessage(OBJ_POLICE, "µ±È»£¬ÎÒÃÇ²»ÄÜËæÒâÈÃÈËÆÆ»µÏÖ³¡");
-                DisplayMessage(OBJ_MAN, "£¨¿´À´ÎÒÒª½øÈ¥²©Ê¿µÄÎİÀï£¬µÃÏÈÏë°ì·¨Òı¿ªÕâ¸ö¾¯²ì²ÅĞĞ£©");
+                DisplayMessage(OBJ_MAN, "è­¦å¯Ÿå…ˆç”Ÿï¼Œä½ ä¸ºä»€ä¹ˆä¸€ç›´å®ˆåœ¨åšå£«çš„å®¶é—¨å£");
+                DisplayMessage(OBJ_POLICE, "å› ä¸ºåšå£«å¯èƒ½æ˜¯åœ¨å®¶ä¸­è¢«ç»‘æ¶çš„ï¼Œæˆ‘ä»¬è¦å°é”ç°åœºï¼Œå‡†å¤‡è¿›è¡Œè°ƒæŸ¥");
+                DisplayMessage(OBJ_MAN, "è¿æˆ‘ä¹Ÿä¸èƒ½è¿›å»å—");
+                DisplayMessage(OBJ_POLICE, "å½“ç„¶ï¼Œæˆ‘ä»¬ä¸èƒ½éšæ„è®©äººç ´åç°åœº");
+                DisplayMessage(OBJ_MAN, "ï¼ˆçœ‹æ¥æˆ‘è¦è¿›å»åšå£«çš„å±‹é‡Œï¼Œå¾—å…ˆæƒ³åŠæ³•å¼•å¼€è¿™ä¸ªè­¦å¯Ÿæ‰è¡Œï¼‰");
             }
         }
     }
 
-    //ÔÚ¼ÒÖĞ
+    //åœ¨å®¶ä¸­
     else if (x==13 && y==18) {
 
-        //Óë¾¯Ô±ÔÚ¼ÒÖĞ½»Ì¸
+        //ä¸è­¦å‘˜åœ¨å®¶ä¸­äº¤è°ˆ
         if (g_iStory==15) {
-            DisplayMessage(OBJ_POLICE, "ÄãºÃ£¬ÎÒÊÇ¾¯²ì£¬ÄãµÄÁÚ¾Ó²©Ê¿Ê§×ÙÁË£¬Ëû×òÍí¿ÉÄÜÔâÈË°ó¼Ü");
-            DisplayMessage(OBJ_MAN, "°ó¼Ü! ÔõÃ´»áÄØ? ");
-            DisplayMessage(OBJ_POLICE, "ËûµÄÎİ×ÓÃÅËøÓĞ±»ÆÆ»µµÄºÛ¼££¬ÎİÀïÒ²ÓĞ±»ÆÆ»µ£¬½ñÔçÓĞÈË·¢ÏÖ²ÅÀ´±¨°¸µÄ");
-            DisplayMessage(OBJ_POLICE, "²©Ê¿ÓĞºÍÈË½áÔ¹Âğ? »ò×î½üÓĞ·¢Éú¹ıÊ²Ã´ÊÂÂğ? ");
-            DisplayMessage(OBJ_MAN, "¡­¡­");
-            DisplayMessage(OBJ_MAN, "Ã»ÓĞ");
-            DisplayMessage(OBJ_POLICE, "ÄÇ×òÍíÄãÓĞÌıµ½Ê²Ã´ÉùÒô£¬»ò¿´µ½Ê²Ã´¿ÉÒÉµÄÈËÄØ");
-            DisplayMessage(OBJ_MAN, "Ã»ÓĞ£¬×òÍíÎÒË¯µÃºÜºÃ");
-            DisplayMessage(OBJ_POLICE, "ÄãÈç¹ûÓĞÏëÆğÊ²Ã´ÏßË÷µÄ»°£¬ÇëÄãÔÙ¸æËß¾¯·½");
-            DisplayMessage(OBJ_MAN, "ºÃµÄ¡£");
+            DisplayMessage(OBJ_POLICE, "ä½ å¥½ï¼Œæˆ‘æ˜¯è­¦å¯Ÿï¼Œä½ çš„é‚»å±…åšå£«å¤±è¸ªäº†ï¼Œä»–æ˜¨æ™šå¯èƒ½é­äººç»‘æ¶");
+            DisplayMessage(OBJ_MAN, "ç»‘æ¶! æ€ä¹ˆä¼šå‘¢? ");
+            DisplayMessage(OBJ_POLICE, "ä»–çš„å±‹å­é—¨é”æœ‰è¢«ç ´åçš„ç—•è¿¹ï¼Œå±‹é‡Œä¹Ÿæœ‰è¢«ç ´åï¼Œä»Šæ—©æœ‰äººå‘ç°æ‰æ¥æŠ¥æ¡ˆçš„");
+            DisplayMessage(OBJ_POLICE, "åšå£«æœ‰å’Œäººç»“æ€¨å—? æˆ–æœ€è¿‘æœ‰å‘ç”Ÿè¿‡ä»€ä¹ˆäº‹å—? ");
+            DisplayMessage(OBJ_MAN, "â€¦â€¦");
+            DisplayMessage(OBJ_MAN, "æ²¡æœ‰");
+            DisplayMessage(OBJ_POLICE, "é‚£æ˜¨æ™šä½ æœ‰å¬åˆ°ä»€ä¹ˆå£°éŸ³ï¼Œæˆ–çœ‹åˆ°ä»€ä¹ˆå¯ç–‘çš„äººå‘¢");
+            DisplayMessage(OBJ_MAN, "æ²¡æœ‰ï¼Œæ˜¨æ™šæˆ‘ç¡å¾—å¾ˆå¥½");
+            DisplayMessage(OBJ_POLICE, "ä½ å¦‚æœæœ‰æƒ³èµ·ä»€ä¹ˆçº¿ç´¢çš„è¯ï¼Œè¯·ä½ å†å‘Šè¯‰è­¦æ–¹");
+            DisplayMessage(OBJ_MAN, "å¥½çš„ã€‚");
             g_iStory=20;
 
-            //¾¯Ô±Àë¿ª
+            //è­¦å‘˜ç¦»å¼€
             MapData[18][12]=OBJ_BLANK;
             MapData[18][11]=OBJ_POLICE;
             DrawMap();
@@ -1080,76 +1080,76 @@ void Talk()
             //delay(DELAY_TIME);
             MapData[18][11]=OBJ_BLANK;
 
-            //¾¯Ô±Õ¾ÔÚ²©Ê¿Îİ×ÓÃÅÍâ
+            //è­¦å‘˜ç«™åœ¨åšå£«å±‹å­é—¨å¤–
             MapData[2][1]=OBJ_POLICE;
             DrawMap();
             DrawGraphic(man_x, man_y, OBJ_MAN);
-            DisplayMessage(OBJ_MAN, "²©Ê¿µÄÊ§×ÙÒ»¶¨ºÍ×òÌìËûÌáµ½µÄÑĞ¾¿ÓĞ¹Ø£¬");
-            DisplayMessage(OBJ_MAN, "¾ª¶¯¾¯·½¿ÉÄÜ¶Ô²©Ê¿²»Àû£¬ÎÒµÃ×Ô¼º¾ÈËû³öÀ´¡£");
-            DisplayMessage(OBJ_MAN, "ÏÈÈ¥²©Ê¿µÄÑĞ¾¿ÊÒ¿´¿´ºÃÁË£¬");
+            DisplayMessage(OBJ_MAN, "åšå£«çš„å¤±è¸ªä¸€å®šå’Œæ˜¨å¤©ä»–æåˆ°çš„ç ”ç©¶æœ‰å…³ï¼Œ");
+            DisplayMessage(OBJ_MAN, "æƒŠåŠ¨è­¦æ–¹å¯èƒ½å¯¹åšå£«ä¸åˆ©ï¼Œæˆ‘å¾—è‡ªå·±æ•‘ä»–å‡ºæ¥ã€‚");
+            DisplayMessage(OBJ_MAN, "å…ˆå»åšå£«çš„ç ”ç©¶å®¤çœ‹çœ‹å¥½äº†ï¼Œ");
         }
         else {
-            DisplayMessage(OBJ_MAN, "Ã»ÓĞ¿É½»Ì¸µÄÈË");
+            DisplayMessage(OBJ_MAN, "æ²¡æœ‰å¯äº¤è°ˆçš„äºº");
         }
     }
 
-    //ÔÚÔ¶¼û´óÂ¥£¬¹şµç±¦±¦ÃæÇ°
+    //åœ¨è¿œè§å¤§æ¥¼ï¼Œå“ˆç”µå®å®é¢å‰
     else if (x==15 && y==28) {
-        DisplayMessage(OBJ_GIRL, "ÄãºÃ£¬ÎÒÊÇ¹şµç±¦±¦£¬ÓĞÊ²Ã´ÊÂÂğ");
-        DisplayMessage(OBJ_MAN, "°¡£¬Äã¾ÍÊÇ¹şµç±¦±¦Ñ½£¬ÎÒÏëÎÊ¡­");
-        DisplayMessage(OBJ_MAN, "ÍíÉÏÓĞÃ»ÓĞ¿Õ£¬ÎÒÃÇÒ»Æğ³Ô·¹°É");
-        DisplayMessage(OBJ_GIRL, "Ê²Ã´? ÄãÊÇÎªÕâ¸ö¶øÀ´µÄÂğ? ");
-        DisplayMessage(OBJ_MAN, "°¡£¬²»ÊÇÀ²£¬ÎÒÊÇÏëÄÃ»ØËÍĞŞµÄcc800 ");
-        DisplayMessage(OBJ_GIRL, "°ÑËÍĞŞµÄµ¥¾İ¸øÎÒ¾Í¿ÉÒÔÁË");
+        DisplayMessage(OBJ_GIRL, "ä½ å¥½ï¼Œæˆ‘æ˜¯å“ˆç”µå®å®ï¼Œæœ‰ä»€ä¹ˆäº‹å—");
+        DisplayMessage(OBJ_MAN, "å•Šï¼Œä½ å°±æ˜¯å“ˆç”µå®å®å‘€ï¼Œæˆ‘æƒ³é—®â€¦");
+        DisplayMessage(OBJ_MAN, "æ™šä¸Šæœ‰æ²¡æœ‰ç©ºï¼Œæˆ‘ä»¬ä¸€èµ·åƒé¥­å§");
+        DisplayMessage(OBJ_GIRL, "ä»€ä¹ˆ? ä½ æ˜¯ä¸ºè¿™ä¸ªè€Œæ¥çš„å—? ");
+        DisplayMessage(OBJ_MAN, "å•Šï¼Œä¸æ˜¯å•¦ï¼Œæˆ‘æ˜¯æƒ³æ‹¿å›é€ä¿®çš„cc800 ");
+        DisplayMessage(OBJ_GIRL, "æŠŠé€ä¿®çš„å•æ®ç»™æˆ‘å°±å¯ä»¥äº†");
     }
 
-    //ÔÚÑĞ¾¿ÊÒºÍ²©Ê¿ÖúÀí½»Ì¸
+    //åœ¨ç ”ç©¶å®¤å’Œåšå£«åŠ©ç†äº¤è°ˆ
     else if ((x==7 && y==21) || (x==8 && y==22)) {
         if (g_iStory >= 20) {
-            DisplayMessage(OBJ_ASSISTANT, "ÌıËµ²©Ê¿±»°ó¼ÜÁË£¬ÎÒºÃµ£ĞÄ");
-            DisplayMessage(OBJ_MAN, "±ğµ£ĞÄ£¬ÎÒÃÇÕıÔÚÏë°ì·¨¾ÈËû³öÀ´");
-            DisplayMessage(OBJ_MAN, "ÄãÊÇ²©Ê¿µÄÖúÀí£¬ÄãÖªµÀ²©Ê¿×î½üÓĞÊ²Ã´ÑĞ¾¿Âğ");
-            DisplayMessage(OBJ_ASSISTANT, "ÎÒ²»Çå³ş£¬²©Ê¿×î½ü¶¼×Ô¼º¹ØÆğÀ´ÑĞ¾¿£¬Ö»ÖªµÀºÃÏñ¸úÏ¸¾úÓĞ¹Ø");
-            DisplayMessage(OBJ_MAN, "Ï¸¾ú? ÄÇÃ´ÄãÖªµÀ²©Ê¿ÓĞ¼ÇÂ¼ÊÂÇéµÄÏ°¹ßÂğ? ");
-            DisplayMessage(OBJ_ASSISTANT, "ËûÓĞÒ»Ì¨cc800 £¬Ëû¶¼°ÑÊÂÇé¼ÇÂ¼ÔÚÀïÃæ£¬²»¹ıÇ°Ò»Õó×ÓÓĞÎÊÌâ£¬ÄÃÈ¥ËÍĞŞÁË");
-            DisplayMessage(OBJ_MAN, "£¨¿´À´ÎÒµÃÕÒ³öÕâÌ¨cc800 ²ÅĞĞ£©");
+            DisplayMessage(OBJ_ASSISTANT, "å¬è¯´åšå£«è¢«ç»‘æ¶äº†ï¼Œæˆ‘å¥½æ‹…å¿ƒ");
+            DisplayMessage(OBJ_MAN, "åˆ«æ‹…å¿ƒï¼Œæˆ‘ä»¬æ­£åœ¨æƒ³åŠæ³•æ•‘ä»–å‡ºæ¥");
+            DisplayMessage(OBJ_MAN, "ä½ æ˜¯åšå£«çš„åŠ©ç†ï¼Œä½ çŸ¥é“åšå£«æœ€è¿‘æœ‰ä»€ä¹ˆç ”ç©¶å—");
+            DisplayMessage(OBJ_ASSISTANT, "æˆ‘ä¸æ¸…æ¥šï¼Œåšå£«æœ€è¿‘éƒ½è‡ªå·±å…³èµ·æ¥ç ”ç©¶ï¼ŒåªçŸ¥é“å¥½åƒè·Ÿç»†èŒæœ‰å…³");
+            DisplayMessage(OBJ_MAN, "ç»†èŒ? é‚£ä¹ˆä½ çŸ¥é“åšå£«æœ‰è®°å½•äº‹æƒ…çš„ä¹ æƒ¯å—? ");
+            DisplayMessage(OBJ_ASSISTANT, "ä»–æœ‰ä¸€å°cc800 ï¼Œä»–éƒ½æŠŠäº‹æƒ…è®°å½•åœ¨é‡Œé¢ï¼Œä¸è¿‡å‰ä¸€é˜µå­æœ‰é—®é¢˜ï¼Œæ‹¿å»é€ä¿®äº†");
+            DisplayMessage(OBJ_MAN, "ï¼ˆçœ‹æ¥æˆ‘å¾—æ‰¾å‡ºè¿™å°cc800 æ‰è¡Œï¼‰");
         }
         else {
-            DisplayMessage(OBJ_ASSISTANT, "ÄãºÃ£¬ÎÒÊÇ²©Ê¿µÄÖúÀí");
-            DisplayMessage(OBJ_MAN, "ÄãºÃ");
+            DisplayMessage(OBJ_ASSISTANT, "ä½ å¥½ï¼Œæˆ‘æ˜¯åšå£«çš„åŠ©ç†");
+            DisplayMessage(OBJ_MAN, "ä½ å¥½");
         }
     }
 
-    //ÔÚ¼àÀÎÖĞºÍ²©Ê¿½»Ì¸
+    //åœ¨ç›‘ç‰¢ä¸­å’Œåšå£«äº¤è°ˆ
     else if ((x==28 && y==28) || (x==29 && y==27)) {
 
-        //¸Õ±»Çô½ûÊ±
+        //åˆšè¢«å›šç¦æ—¶
         if (g_iStory==40) {
-            DisplayMessage(OBJ_MAN, "²©Ê¿£¬Äã²»Òª½ô°É£¬µ½µ×·¢ÉúÊ²Ã´ÊÂÁË");
-            DisplayMessage(OBJ_DR, "ËûÃÇÒªÎÒÌá¹©ÎÒ×î½üÑĞ¾¿³É¹¦µÄÏ¸¾úºÏ³É·½³ÌÊ½");
-            DisplayMessage(OBJ_MAN, "Ï¸¾úºÏ³É·½³ÌÊ½£¿");
-            DisplayMessage(OBJ_DR, "Ã»´í£¬ÊÇÒ»ÖÖ¾ßÓĞÇ¿Á¦¸¯Ê´ĞÔÖÊµÄÏ¸¾ú");
-            DisplayMessage(OBJ_MAN, "Ç¿Á¦¸¯Ê´£¿²»»áÊÇ´ÓÄã¹ñ×ÓÀïÄÃÀ´µÄÕâ¸ö°É");
-            DisplayMessage(OBJ_DR, "Ã»´í£¬ÄãÔõÃ´ÄÃµ½µÄ");
-            DisplayMessage(OBJ_MAN, "ÔãÁË£¬ÎÒ¸Õ²ÅÓĞÕ´µ½Ò»µãÔÚÉíÉÏ£¬ÎÒ²»»á±»¸¯Ê´µô°É");
-            DisplayMessage(OBJ_DR, "·ÅĞÄºÃÁË£¬ÕâÖÖÏ¸¾úÀë¿ªÅàÑøÒººó£¬ºÜ¿ì¾Í»áËÀÍöÁË");
-            DisplayMessage(OBJ_DR, "¶øÇÒÒªÔÚÓĞµçÁ÷Í¨¹ıµÄÊ±ºò£¬²Å»á¿ªÊ¼ÓĞ¸¯Ê´µÄĞ§¹û£¬·ñÔòÔõÄÜÓÃÆ¿×Ó×°×ÅËü");
-            DisplayMessage(OBJ_MAN, "ËµµÃÒ²ÊÇ£¬ÄÇ¾ÍºÃÁË");
-            DisplayMessage(OBJ_DR, "±ğ¶àËµÁË£¬¸Ï¿ìÏë·¨×ÓÌÓ³öÕâÀï²ÅÊÇ");
+            DisplayMessage(OBJ_MAN, "åšå£«ï¼Œä½ ä¸è¦ç´§å§ï¼Œåˆ°åº•å‘ç”Ÿä»€ä¹ˆäº‹äº†");
+            DisplayMessage(OBJ_DR, "ä»–ä»¬è¦æˆ‘æä¾›æˆ‘æœ€è¿‘ç ”ç©¶æˆåŠŸçš„ç»†èŒåˆæˆæ–¹ç¨‹å¼");
+            DisplayMessage(OBJ_MAN, "ç»†èŒåˆæˆæ–¹ç¨‹å¼ï¼Ÿ");
+            DisplayMessage(OBJ_DR, "æ²¡é”™ï¼Œæ˜¯ä¸€ç§å…·æœ‰å¼ºåŠ›è…èš€æ€§è´¨çš„ç»†èŒ");
+            DisplayMessage(OBJ_MAN, "å¼ºåŠ›è…èš€ï¼Ÿä¸ä¼šæ˜¯ä»ä½ æŸœå­é‡Œæ‹¿æ¥çš„è¿™ä¸ªå§");
+            DisplayMessage(OBJ_DR, "æ²¡é”™ï¼Œä½ æ€ä¹ˆæ‹¿åˆ°çš„");
+            DisplayMessage(OBJ_MAN, "ç³Ÿäº†ï¼Œæˆ‘åˆšæ‰æœ‰æ²¾åˆ°ä¸€ç‚¹åœ¨èº«ä¸Šï¼Œæˆ‘ä¸ä¼šè¢«è…èš€æ‰å§");
+            DisplayMessage(OBJ_DR, "æ”¾å¿ƒå¥½äº†ï¼Œè¿™ç§ç»†èŒç¦»å¼€åŸ¹å…»æ¶²åï¼Œå¾ˆå¿«å°±ä¼šæ­»äº¡äº†");
+            DisplayMessage(OBJ_DR, "è€Œä¸”è¦åœ¨æœ‰ç”µæµé€šè¿‡çš„æ—¶å€™ï¼Œæ‰ä¼šå¼€å§‹æœ‰è…èš€çš„æ•ˆæœï¼Œå¦åˆ™æ€èƒ½ç”¨ç“¶å­è£…ç€å®ƒ");
+            DisplayMessage(OBJ_MAN, "è¯´å¾—ä¹Ÿæ˜¯ï¼Œé‚£å°±å¥½äº†");
+            DisplayMessage(OBJ_DR, "åˆ«å¤šè¯´äº†ï¼Œèµ¶å¿«æƒ³æ³•å­é€ƒå‡ºè¿™é‡Œæ‰æ˜¯");
         }
 
-        //Èû×¡ÂíÍ°Ö®ºó
+        //å¡ä½é©¬æ¡¶ä¹‹å
         else if (g_iStory==50) {
-            DisplayMessage(OBJ_MAN, "ÎÒ°Ñ²ŞËùµÄÂíÍ°¶Â×¡ÁË£¬µÈÒ»ÏÂÂ©Ë®Ó¦¸Ã»áÒı¿ªÊØÎÀµÄ");
-            DisplayMessage(OBJ_DR, "Ï£Íû¿ÉÒÔ³É¹¦");
+            DisplayMessage(OBJ_MAN, "æˆ‘æŠŠå•æ‰€çš„é©¬æ¡¶å µä½äº†ï¼Œç­‰ä¸€ä¸‹æ¼æ°´åº”è¯¥ä¼šå¼•å¼€å®ˆå«çš„");
+            DisplayMessage(OBJ_DR, "å¸Œæœ›å¯ä»¥æˆåŠŸ");
             BadManGoAway();
             g_iStory=60;
         }
 
-        //ÊØÎÀÀë¿ªÖ®ºó
+        //å®ˆå«ç¦»å¼€ä¹‹å
         else if (g_iStory==60 || g_iStory==70) {
-            DisplayMessage(OBJ_MAN, "³É¹¦ÁË£¬ÊØÎÀ×ß¿ªÁË");
-            DisplayMessage(OBJ_DR, "ÎÒÃÇ¸Ï¿ìÏë°ì·¨Àë¿ª");
+            DisplayMessage(OBJ_MAN, "æˆåŠŸäº†ï¼Œå®ˆå«èµ°å¼€äº†");
+            DisplayMessage(OBJ_DR, "æˆ‘ä»¬èµ¶å¿«æƒ³åŠæ³•ç¦»å¼€");
         }
         else {
             DisplayMessage(OBJ_MAN, "...");
@@ -1157,15 +1157,15 @@ void Talk()
         }
     }
 
-    //ÔÚ¼àÀÎÖ®ÖĞºÍÊØÎÀÌ¸»°
+    //åœ¨ç›‘ç‰¢ä¹‹ä¸­å’Œå®ˆå«è°ˆè¯
     else if (x==26 && y==27) {
         if (MapData[y][x-2]==OBJ_BADMANR) {
-            DisplayMessage(OBJ_MAN, "¿ì·ÅÎÒÃÇ³öÈ¥");
-            DisplayMessage(OBJ_BADMANR, "ÔÚ²©Ê¿´ğÓ¦ºÍÎÒÃÇºÏ×÷Ö®Ç°£¬ĞİÏëÀë¿ªÕâÀï");
+            DisplayMessage(OBJ_MAN, "å¿«æ”¾æˆ‘ä»¬å‡ºå»");
+            DisplayMessage(OBJ_BADMANR, "åœ¨åšå£«ç­”åº”å’Œæˆ‘ä»¬åˆä½œä¹‹å‰ï¼Œä¼‘æƒ³ç¦»å¼€è¿™é‡Œ");
         }
     }
     else {
-        DisplayMessage(OBJ_MAN, "Ã»ÓĞ¿É½»Ì¸µÄÈË");
+        DisplayMessage(OBJ_MAN, "æ²¡æœ‰å¯äº¤è°ˆçš„äºº");
     }
 }
 //----------------------------------------------------------------
@@ -1176,80 +1176,80 @@ void Search()
     x=map_x+man_x;
     y=map_y+man_y;
 
-    //ÔÚºÀÕ¬Ö®Ç°
+    //åœ¨è±ªå®…ä¹‹å‰
     if (((x==5 || x==6 || x==7) && (y==3)) || (x==8 && y==2)) {
-        DisplayMessage(OBJ_MAN, "ÕâÊÇ²©Ê¿¼ÒÅÔ±ßµÄºÀÕ¬£¬ºÜÉÙ¿´¼ûÓĞÈË½ø³ö£¬²»¹ı±£È«ÏµÍ³ºÜÑÏÃÜ£¬ÉÏ´ÎÓĞÖ»Ğ¡Äñ×²µ½´°»§£¬»¹ÒıÆğ¾¯Áå´óÏì£¬¾ª¶¯ÁË²»ÉÙÈË¡£");
+        DisplayMessage(OBJ_MAN, "è¿™æ˜¯åšå£«å®¶æ—è¾¹çš„è±ªå®…ï¼Œå¾ˆå°‘çœ‹è§æœ‰äººè¿›å‡ºï¼Œä¸è¿‡ä¿å…¨ç³»ç»Ÿå¾ˆä¸¥å¯†ï¼Œä¸Šæ¬¡æœ‰åªå°é¸Ÿæ’åˆ°çª—æˆ·ï¼Œè¿˜å¼•èµ·è­¦é“ƒå¤§å“ï¼ŒæƒŠåŠ¨äº†ä¸å°‘äººã€‚");
         return;
     }
 
-    //ÔÚ²©Ê¿µÄÎİ×ÓÖ®Ç°
+    //åœ¨åšå£«çš„å±‹å­ä¹‹å‰
     else if ((x==1 || x==2 || x==3) && (y==3)) {
-        DisplayMessage(OBJ_MAN, "²©Ê¿×¡ÔÚÕâÎİ×ÓºÃ¼¸ÄêÁË£¬ÎÒ»¹Âù³£À´´®ÃÅ×ÓµÄ£¬ËûÊÇÒ»¸öºÍÉÆµÄÁÚ¾Ó¡£");
+        DisplayMessage(OBJ_MAN, "åšå£«ä½åœ¨è¿™å±‹å­å¥½å‡ å¹´äº†ï¼Œæˆ‘è¿˜è›®å¸¸æ¥ä¸²é—¨å­çš„ï¼Œä»–æ˜¯ä¸€ä¸ªå’Œå–„çš„é‚»å±…ã€‚");
         return;
     }
 
-    //ÔÚ¼ÒÀïµÄ¹ñ×ÓÇ°
+    //åœ¨å®¶é‡Œçš„æŸœå­å‰
     else if (x==18 && y==17) {
         if (Thing_Add(OBJ_SLINGSHOT)) {
             MapData[y-1][x]=OBJ_CABINET_OPEN;
             DrawMap();
             DrawGraphic(man_x, man_y, OBJ_MAN);
-            DisplayMessage(OBJ_MAN, "¹ñ×ÓÀïÓĞÒ»¸öµ¯¹­£¬Õâ¸öµ¯¹­ÊÇÎÒÒÔÇ°Ğ¡Ê±ºòµÄÍæ¾ß£¬ÒÔÇ°ÎÒ¿ÉÊÇ°Ù·¢°ÙÖĞµÄÉñÉäÊÖ");
-            DisplayMessage(OBJ_SLINGSHOT, "µÃµ½ÁËµ¯¹­");
+            DisplayMessage(OBJ_MAN, "æŸœå­é‡Œæœ‰ä¸€ä¸ªå¼¹å¼“ï¼Œè¿™ä¸ªå¼¹å¼“æ˜¯æˆ‘ä»¥å‰å°æ—¶å€™çš„ç©å…·ï¼Œä»¥å‰æˆ‘å¯æ˜¯ç™¾å‘ç™¾ä¸­çš„ç¥å°„æ‰‹");
+            DisplayMessage(OBJ_SLINGSHOT, "å¾—åˆ°äº†å¼¹å¼“");
             return;
         }
     }
 
-    //ÔÚ×Ô¶¯ÊÛÆ±»úÇ°
+    //åœ¨è‡ªåŠ¨å”®ç¥¨æœºå‰
     else if (x==7 && y==16) {
-        DisplayMessage(OBJ_MAN, "ÕâÀïÓĞÒ»Ì¨×Ô¶¯ÊÛÆ±»ú");
+        DisplayMessage(OBJ_MAN, "è¿™é‡Œæœ‰ä¸€å°è‡ªåŠ¨å”®ç¥¨æœº");
         return;
     }
 
-    //ÔÚ½İÔËÕ¢¿Ú
+    //åœ¨æ·è¿é—¸å£
     else if (x==5 && (y==16 || y==18)) {
-        DisplayMessage(OBJ_MAN, "¸ÕºÃÓĞÒ»°à³µ£¬²»¹ıÎÒĞèÒª³µÆ±²ÅÄÜ¹ıÈ¥´î³µ");
+        DisplayMessage(OBJ_MAN, "åˆšå¥½æœ‰ä¸€ç­è½¦ï¼Œä¸è¿‡æˆ‘éœ€è¦è½¦ç¥¨æ‰èƒ½è¿‡å»æ­è½¦");
         return;
     }
 
-    //²©Ê¿Îİ×ÓÖĞµÄ¹ñ×Ó
+    //åšå£«å±‹å­ä¸­çš„æŸœå­
     else if (x==19 && y==21) {
         if (Thing_Add(OBJ_INVOICE)) {
             MapData[y-1][x]=OBJ_CABINET_OPEN;
             DrawMap();
             DrawGraphic(man_x, man_y, OBJ_MAN);
-            DisplayMessage(OBJ_MAN, "ÕÒµ½ÁË£¬ÕâÀïÓĞÒ»ÕÅcc800 µÄËÍĞŞµ¥¾İ£¬½ñÌì¸ÕºÃ¿ÉÒÔÈ¥ÄÃ»ØÀ´£¬µØµãÔÚÏ«Ö¹£¬¿´À´ÎÒµÃ¸Ï¿ì´î½İÔË¹ıÈ¥²ÅĞĞ");
-            DisplayMessage(OBJ_INVOICE, "µÃµ½ÁËËÍĞŞµ¥");
+            DisplayMessage(OBJ_MAN, "æ‰¾åˆ°äº†ï¼Œè¿™é‡Œæœ‰ä¸€å¼ cc800 çš„é€ä¿®å•æ®ï¼Œä»Šå¤©åˆšå¥½å¯ä»¥å»æ‹¿å›æ¥ï¼Œåœ°ç‚¹åœ¨æ±æ­¢ï¼Œçœ‹æ¥æˆ‘å¾—èµ¶å¿«æ­æ·è¿è¿‡å»æ‰è¡Œ");
+            DisplayMessage(OBJ_INVOICE, "å¾—åˆ°äº†é€ä¿®å•");
             return;
         }
     }
 
-    //ÑĞ¾¿ÊÒÖĞµÄ¹ñ×Ó
+    //ç ”ç©¶å®¤ä¸­çš„æŸœå­
     else if (x==1 && y==21) {
-        DisplayMessage(OBJ_MAN, "Õâ¸ö¹ñ×Ó±»Ò»¸öÊı×ÖËøËø×¡ÁË£¬²©Ê¿ÊÇÒ»¸ö½¡ÍüµÄÈË£¬ËûÓ¦¸Ã»á°ÑºÅÂë¼ÇÔÚÄ³¸öµØ·½");
+        DisplayMessage(OBJ_MAN, "è¿™ä¸ªæŸœå­è¢«ä¸€ä¸ªæ•°å­—é”é”ä½äº†ï¼Œåšå£«æ˜¯ä¸€ä¸ªå¥å¿˜çš„äººï¼Œä»–åº”è¯¥ä¼šæŠŠå·ç è®°åœ¨æŸä¸ªåœ°æ–¹");
         return;
     }
 
-    //ÔÚ²ŞËùÖĞµÄ¹ñ×Ó
+    //åœ¨å•æ‰€ä¸­çš„æŸœå­
     else if (x==26 && y==22) {
 
-        //µÃµ½²ŞÖ½
+        //å¾—åˆ°å•çº¸
         if (Thing_Add(OBJ_TOILETPAPER)) {
             MapData[y-1][x]=OBJ_CABINET_OPEN;
             DrawMap();
             DrawGraphic(man_x, man_y, OBJ_MAN);
-            DisplayMessage(OBJ_MAN, "ÕÒµ½Ò»´ó°ü²ŞÖ½£¬²»ÅÂÀ­¶Ç×ÓÁË");
-            DisplayMessage(OBJ_TOILETPAPER, "µÃµ½ÁË²ŞÖ½");
+            DisplayMessage(OBJ_MAN, "æ‰¾åˆ°ä¸€å¤§åŒ…å•çº¸ï¼Œä¸æ€•æ‹‰è‚šå­äº†");
+            DisplayMessage(OBJ_TOILETPAPER, "å¾—åˆ°äº†å•çº¸");
             return;
         }
     }
 
-    //¼àÀÎÖĞµÄÃÅ
+    //ç›‘ç‰¢ä¸­çš„é—¨
     else if (x==29 && y==27) {
-        DisplayMessage(OBJ_MAN, "ÕâÀïÓĞ¸öÃÅºÃÏñ¿ÉÒÔÍ¨µ½ÍâÃæ£¬²»¹ıËøµÃºÜ½ô´ò²»¿ª");
+        DisplayMessage(OBJ_MAN, "è¿™é‡Œæœ‰ä¸ªé—¨å¥½åƒå¯ä»¥é€šåˆ°å¤–é¢ï¼Œä¸è¿‡é”å¾—å¾ˆç´§æ‰“ä¸å¼€");
         return;
     }
-    DisplayMessage(OBJ_MAN, "Ã»ÓĞ¼ì²éµ½Ê²Ã´");
+    DisplayMessage(OBJ_MAN, "æ²¡æœ‰æ£€æŸ¥åˆ°ä»€ä¹ˆ");
 }
 //----------------------------------------------------------------
 void UseThing()
@@ -1270,76 +1270,76 @@ void UseThing()
     cThingID=g_caThingBox[iSelectID];
     if (cThingID==OBJ_SLINGSHOT) {
         if (x==8 && y==2 && g_iStory==20) {
-            DisplayMessage(OBJ_MAN, "¿´ÎÒµÄ");
-            DisplayMessage(OBJ_MAN, "Å¾£¬¸ÕºÃ´òÖĞ´°»§£¬¿´À´ÎÒ»¹ÊÇÏàµ±Éñ×¼µÄ");
-            DisplayMessage(OBJ_MAN, "Áå~~¾¯Áå¿ªÊ¼ÏìÁË");
+            DisplayMessage(OBJ_MAN, "çœ‹æˆ‘çš„");
+            DisplayMessage(OBJ_MAN, "å•ªï¼Œåˆšå¥½æ‰“ä¸­çª—æˆ·ï¼Œçœ‹æ¥æˆ‘è¿˜æ˜¯ç›¸å½“ç¥å‡†çš„");
+            DisplayMessage(OBJ_MAN, "é“ƒ~~è­¦é“ƒå¼€å§‹å“äº†");
             PoliceSeekRichHouse();
         }
         else if ((x==5 || x==6 || x==7) && (y==3) && g_iStory==20) {
-            DisplayMessage(OBJ_MAN, "ÔÚÕâÀïÌ«Ã÷ÏÔ£¬»á±»¿´µ½µÄ");
+            DisplayMessage(OBJ_MAN, "åœ¨è¿™é‡Œå¤ªæ˜æ˜¾ï¼Œä¼šè¢«çœ‹åˆ°çš„");
         }
         else {
-            DisplayMessage(OBJ_MAN, "ÎÒ¿É²»ÏëÈÇÉÏÊ²Ã´Âé·³");
+            DisplayMessage(OBJ_MAN, "æˆ‘å¯ä¸æƒ³æƒ¹ä¸Šä»€ä¹ˆéº»çƒ¦");
         }
     }
 
-    //Âò³µÆ±
+    //ä¹°è½¦ç¥¨
     else if (x==7 && y==16 && cThingID==OBJ_MONEY) {
         Thing_Exchange(OBJ_MONEY, OBJ_TICKET);
-        DisplayMessage(OBJ_TICKET, "µÃµ½ÁË³µÆ±");
+        DisplayMessage(OBJ_TICKET, "å¾—åˆ°äº†è½¦ç¥¨");
     }
 
-    //Í¨¹ı½İÔËÕ¢¿Ú
+    //é€šè¿‡æ·è¿é—¸å£
     else if ((x==3 || x==5) && (y==16 || y==18) && cThingID==OBJ_TICKET) {
         MapData[y][4]=OBJ_DOOROPEN;
     }
 
-    //È¡µÃ cc800
+    //å–å¾— cc800
     else if (x==15 && y==28 && cThingID==OBJ_INVOICE) {
         Thing_Exchange(OBJ_INVOICE, OBJ_CC800);
-        DisplayMessage(OBJ_MAN, "ÕâÊÇÎÒµÄcc800 ËÍĞŞµÄµ¥¾İ");
-        DisplayMessage(OBJ_GIRL, "ºÃ£¬ÇëµÈÒ»ÏÂ");
-        DisplayMessage(OBJ_GIRL, "ÕâÊÇĞŞºÃµÄcc800 £¬ÒªºÃºÃ±£¹ÜÅ¶");
-        DisplayMessage(OBJ_MAN, "ºÃµÄ£¬ÎÒÒ»¶¨»áµÄ");
-        DisplayMessage(OBJ_MAN, "£¨ÀïÃæÓĞ²©Ê¿ÊµÑéÊÒÀï¹ñ×ÓµÄÊı×ÖËøÃÜÂë£¬ÎÒ¿ÉÒÔÓÃÕâ¸öÈ¥´ò¿ªËûµÄ¹ñ×ÓÁË£©");
-        DisplayMessage(OBJ_CC800, "µÃµ½ÁË cc800");
+        DisplayMessage(OBJ_MAN, "è¿™æ˜¯æˆ‘çš„cc800 é€ä¿®çš„å•æ®");
+        DisplayMessage(OBJ_GIRL, "å¥½ï¼Œè¯·ç­‰ä¸€ä¸‹");
+        DisplayMessage(OBJ_GIRL, "è¿™æ˜¯ä¿®å¥½çš„cc800 ï¼Œè¦å¥½å¥½ä¿ç®¡å“¦");
+        DisplayMessage(OBJ_MAN, "å¥½çš„ï¼Œæˆ‘ä¸€å®šä¼šçš„");
+        DisplayMessage(OBJ_MAN, "ï¼ˆé‡Œé¢æœ‰åšå£«å®éªŒå®¤é‡ŒæŸœå­çš„æ•°å­—é”å¯†ç ï¼Œæˆ‘å¯ä»¥ç”¨è¿™ä¸ªå»æ‰“å¼€ä»–çš„æŸœå­äº†ï¼‰");
+        DisplayMessage(OBJ_CC800, "å¾—åˆ°äº† cc800");
     }
 
-    //È¡µÃÅàÑøÒº
+    //å–å¾—åŸ¹å…»æ¶²
     else if (x==1 && y==21 && cThingID==OBJ_CC800) {
         if (Thing_Add(OBJ_CHEMICAL)) {
             MapData[y-1][x]=OBJ_CABINET_OPEN;
             DrawMap();
             DrawGraphic(man_x, man_y, OBJ_MAN);
-            DisplayMessage(OBJ_MAN, "ÔÚ²©Ê¿µÄ¹ñ×ÓÀï£¬ÕÒµ½ÁËÒ»¹ŞÆæ¹ÖµÄÒ©Ë®£¬²»ÖªÓĞÊ²Ã´ÓÃÍ¾¡£");
-            DisplayMessage(OBJ_MAN, "¿ÉÄÜºÍËû×î½üµÄÑĞ¾¿ÓĞ¹Ø£¬Ï£Íû¿ÉÒÔÕÒ³öÒ»Ğ©ÓĞ¹ØËû±»°ó¼ÜµÄÏßË÷¡£");
-            DisplayMessage(OBJ_CHEMICAL, "µÃµ½ÁËÅàÑøÒº");
+            DisplayMessage(OBJ_MAN, "åœ¨åšå£«çš„æŸœå­é‡Œï¼Œæ‰¾åˆ°äº†ä¸€ç½å¥‡æ€ªçš„è¯æ°´ï¼Œä¸çŸ¥æœ‰ä»€ä¹ˆç”¨é€”ã€‚");
+            DisplayMessage(OBJ_MAN, "å¯èƒ½å’Œä»–æœ€è¿‘çš„ç ”ç©¶æœ‰å…³ï¼Œå¸Œæœ›å¯ä»¥æ‰¾å‡ºä¸€äº›æœ‰å…³ä»–è¢«ç»‘æ¶çš„çº¿ç´¢ã€‚");
+            DisplayMessage(OBJ_CHEMICAL, "å¾—åˆ°äº†åŸ¹å…»æ¶²");
             g_iStory=40;
             MapData[7][16]=OBJ_BADMANR;
             MapData[7][18]=OBJ_BADMANL;
         }
     }
 
-    //Èû×¡ÂíÍ°
+    //å¡ä½é©¬æ¡¶
     else if (((x==26 && y==22) || (x==25 && y==23)) && cThingID==OBJ_TOILETPAPER ) {
-        DisplayMessage(OBJ_MAN, "ÕâÑù°ÑÂíÍ°¶Â×¡£¬µÈÒ»ÏÂ¾Í»áÒç³öºÜ¶àË®À´ÒıÆğ×¢ÒâÁË");
+        DisplayMessage(OBJ_MAN, "è¿™æ ·æŠŠé©¬æ¡¶å µä½ï¼Œç­‰ä¸€ä¸‹å°±ä¼šæº¢å‡ºå¾ˆå¤šæ°´æ¥å¼•èµ·æ³¨æ„äº†");
         MapData[23][25]=OBJ_WATER;
         g_iStory=50;
     }
 
-    //Ê¹ÓÃÏ¸¾úÅàÑøÒººÍÊÖ»úÌÓ³ö¼àÀÎ
+    //ä½¿ç”¨ç»†èŒåŸ¹å…»æ¶²å’Œæ‰‹æœºé€ƒå‡ºç›‘ç‰¢
     else if (x==29 && y==27) {
         if (g_iStory==60 && cThingID==OBJ_CHEMICAL) {
-            DisplayMessage(OBJ_MAN, "ÎÒ°ÑÒ©Ë®Í¿ÔÚÃÅÉÏÁË£¬½ÓÏÂÀ´µÈÍ¨ÉÏµç¾Í¿ÉÒÔÁË");
+            DisplayMessage(OBJ_MAN, "æˆ‘æŠŠè¯æ°´æ¶‚åœ¨é—¨ä¸Šäº†ï¼Œæ¥ä¸‹æ¥ç­‰é€šä¸Šç”µå°±å¯ä»¥äº†");
             g_iStory=70;
         }
         else if (g_iStory==70 && cThingID==OBJ_CELLPHONE) {
-            DisplayMessage(OBJ_MAN, "»¹ºÃĞĞ¶¯µç»°µÄµç³Ø»¹ÓĞµç£¬°ÑÏßÂ·¸ÄÒ»ÏÂ£¬¾Í¿ÉÒÔ·Å³öµçÁË");
+            DisplayMessage(OBJ_MAN, "è¿˜å¥½è¡ŒåŠ¨ç”µè¯çš„ç”µæ± è¿˜æœ‰ç”µï¼ŒæŠŠçº¿è·¯æ”¹ä¸€ä¸‹ï¼Œå°±å¯ä»¥æ”¾å‡ºç”µäº†");
             MapData[27][30]=OBJ_BLANK;
             DrawMap();
             DrawGraphic(man_x, man_y, OBJ_MAN);
-            DisplayMessage(OBJ_MAN, "ÍÛ£¬ÃÅÒ»ÏÂ×Ó¾ÍÈÜµôÁË£¬Ì«¿ÉÅÂÁË");
-            DisplayMessage(OBJ_DR, "ÎÒÃÇ¿ìÌÓ×ß°É");
+            DisplayMessage(OBJ_MAN, "å“‡ï¼Œé—¨ä¸€ä¸‹å­å°±æº¶æ‰äº†ï¼Œå¤ªå¯æ€•äº†");
+            DisplayMessage(OBJ_DR, "æˆ‘ä»¬å¿«é€ƒèµ°å§");
             g_iStory=80;
 
             //The End
@@ -1348,27 +1348,27 @@ void UseThing()
 
         else if (g_iStory < 60) {
             if (g_iStory >= 60) {
-                DisplayMessage(OBJ_MAN, "Ã»ÓĞ×÷ÓÃ");
+                DisplayMessage(OBJ_MAN, "æ²¡æœ‰ä½œç”¨");
             }
             else {
-                DisplayMessage(OBJ_MAN, "ÓĞÈË»¹ÔÚÃÅ¿Ú¼àÊÓ£¬Ì«Î£ÏÕÁË»á±»·¢ÏÖµÄ£¬ÎÒµÃÒı¿ªËû²ÅĞĞ");
+                DisplayMessage(OBJ_MAN, "æœ‰äººè¿˜åœ¨é—¨å£ç›‘è§†ï¼Œå¤ªå±é™©äº†ä¼šè¢«å‘ç°çš„ï¼Œæˆ‘å¾—å¼•å¼€ä»–æ‰è¡Œ");
             }
         }
     }
 
-    //Ê¹ÓÃĞĞ¶¯µç»°
+    //ä½¿ç”¨è¡ŒåŠ¨ç”µè¯
     else if (cThingID==OBJ_CELLPHONE) {
-        DisplayMessage(OBJ_MAN, "à½à½¡­ÊÕ²»µ½Ñ¶ºÅ£¬Õâ¸öĞĞ¶¯µç»°Õæ²î£¬×ÜÊÇÊÕ²»µ½Ñ¶ºÅ£¬´ò²»³öÈ¥");
+        DisplayMessage(OBJ_MAN, "å˜Ÿå˜Ÿâ€¦æ”¶ä¸åˆ°è®¯å·ï¼Œè¿™ä¸ªè¡ŒåŠ¨ç”µè¯çœŸå·®ï¼Œæ€»æ˜¯æ”¶ä¸åˆ°è®¯å·ï¼Œæ‰“ä¸å‡ºå»");
     }
 
-    //»ßÂ¸¾¯Ô±
+    //è´¿èµ‚è­¦å‘˜
     else if ((x==1 && y==3) && cThingID==OBJ_MONEY && MapData[2][1]==OBJ_POLICE) {
-        DisplayMessage(OBJ_POLICE, "Äã¸Ò»ßÂ¸¾¯Ô±£¬Õâ¿ÉÊÇÖØ×ï");
-        DisplayMessage(OBJ_MAN, "²»¸Ò£¬²»¸Ò");
+        DisplayMessage(OBJ_POLICE, "ä½ æ•¢è´¿èµ‚è­¦å‘˜ï¼Œè¿™å¯æ˜¯é‡ç½ª");
+        DisplayMessage(OBJ_MAN, "ä¸æ•¢ï¼Œä¸æ•¢");
     }
 
     else {
-        DisplayMessage(OBJ_MAN, "Ã»ÓĞ×÷ÓÃ");
+        DisplayMessage(OBJ_MAN, "æ²¡æœ‰ä½œç”¨");
     }
 }
 //----------------------------------------------------------------
@@ -1387,8 +1387,8 @@ void boshi_main(void)
     g_iThingCount=2;
     g_caThingBox[0]=OBJ_MONEY;
     g_caThingBox[1]=OBJ_CELLPHONE;
-    strcpy(g_saThingBox[0], "Ç®        ");
-    strcpy(g_saThingBox[1], "ĞĞ¶¯µç»°  ");
+    strcpy(g_saThingBox[0], "é’±        ");
+    strcpy(g_saThingBox[1], "è¡ŒåŠ¨ç”µè¯  ");
 
 //  InitialThingBox();
 
@@ -1487,15 +1487,15 @@ void boshi_main(void)
         }
         else if (ch==KEY_HELP) {
             SetScreen(1);
-            strcpy(_TEXT, "ÓÎÏ·ÖĞ°´ÏÂEnter »á³öÏÖ¡®½»Ì¸¡¯¡¢¡®²é¿´¡¯¡¢¡®Ê¹ÓÃÎïÆ·¡¯µÄÑ¡Ïî£¬ÓÎÏ·²¢²»ÄÑ£¬ºÍÓö¼ûµÄÈË½»Ì¸£¬¶à²é¿´ËÄÖÜ»·¾³Ó¦¸Ã¾Í¿ÉÒÔË³ÀûµÄ½øĞĞÓÎÏ·¡£");
+            strcpy(_TEXT, "æ¸¸æˆä¸­æŒ‰ä¸‹Enter ä¼šå‡ºç°â€˜äº¤è°ˆâ€™ã€â€˜æŸ¥çœ‹â€™ã€â€˜ä½¿ç”¨ç‰©å“â€™çš„é€‰é¡¹ï¼Œæ¸¸æˆå¹¶ä¸éš¾ï¼Œå’Œé‡è§çš„äººäº¤è°ˆï¼Œå¤šæŸ¥çœ‹å››å‘¨ç¯å¢ƒåº”è¯¥å°±å¯ä»¥é¡ºåˆ©çš„è¿›è¡Œæ¸¸æˆã€‚");
             UpdateLCD(0);
             lava_getchar();
             SetScreen(1);
-            strcpy(_TEXT, "¸ĞĞ»ÍøÂ·ÉÏÃ¿¸ö°ïÎÒ½â´ğÒÉÎÊµÄÍøÓÑ£¬ÁíÍâ±¾ÓÎÏ·ÖĞµÄÈËÎï¼°½¨Îï£¬ÊÇÓÉµ¤ÄáË¹¹ú¼ÊÌá¹©£¬ÌØ±ğ¸ĞĞ»¡£");
+            strcpy(_TEXT, "æ„Ÿè°¢ç½‘è·¯ä¸Šæ¯ä¸ªå¸®æˆ‘è§£ç­”ç–‘é—®çš„ç½‘å‹ï¼Œå¦å¤–æœ¬æ¸¸æˆä¸­çš„äººç‰©åŠå»ºç‰©ï¼Œæ˜¯ç”±ä¸¹å°¼æ–¯å›½é™…æä¾›ï¼Œç‰¹åˆ«æ„Ÿè°¢ã€‚");
             UpdateLCD(0);
             lava_getchar();
             SetScreen(1);
-            strcpy(_TEXT, "Èç¹ûÓĞÈÎºÎÎÊÌâµÄ»°£¬Çë E-mail ¸øÎÒ£¬ÎÒµÄ E-mailÊÇ nothing@ms11.url.com.tw");
+            strcpy(_TEXT, "å¦‚æœæœ‰ä»»ä½•é—®é¢˜çš„è¯ï¼Œè¯· E-mail ç»™æˆ‘ï¼Œæˆ‘çš„ E-mailæ˜¯ nothing@ms11.url.com.tw");
             UpdateLCD(0);
             lava_getchar();
         }

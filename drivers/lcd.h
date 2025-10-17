@@ -42,41 +42,41 @@ typedef struct
 void lcd_set_windows(unsigned int x0,unsigned int y0,unsigned int x1,unsigned int y1);
 
 /*******************************************************************************/
-//lcd³õÊ¼»¯
+//lcdåˆå§‹åŒ–
 void lcd_init(void);
 
-//ÓÃÑÕÉ«colorÇå³ıÆÁÄ»
+//ç”¨é¢œè‰²coloræ¸…é™¤å±å¹•
 void lcd_clr(LCD_COLOR color);
 
-//»ñÈ¡lcdĞÅÏ¢
+//è·å–lcdä¿¡æ¯
 void lcd_get_info(LCD_INFO *lcd_info);
 
-//ÓÃcolor»­µã
+//ç”¨colorç”»ç‚¹
 void lcd_set_point(unsigned int x,unsigned int y,LCD_COLOR color);
 
-//»ñÈ¡µãÑÕÉ«
+//è·å–ç‚¹é¢œè‰²
 LCD_COLOR lcd_get_point(unsigned int x,unsigned int y);
 
-//ÉèÖÃÓÎ±êÎ»ÖÃ
+//è®¾ç½®æ¸¸æ ‡ä½ç½®
 void lcd_set_cursor(unsigned int x,unsigned int y);
 
-//»­ÊµĞÄ¾ØĞÎ
+//ç”»å®å¿ƒçŸ©å½¢
 void lcd_draw_block(unsigned int x0,unsigned y0,unsigned x1,unsigned y1,LCD_COLOR color);
 
-//ÓÃµã»­ÊµĞÄ¾ØĞÎ
+//ç”¨ç‚¹ç”»å®å¿ƒçŸ©å½¢
 void lcd_draw_block2(unsigned int x0,unsigned y0,unsigned x1,unsigned y1,LCD_COLOR color);
 
-//»­Õı·½ĞÎ
+//ç”»æ­£æ–¹å½¢
 void lcd_draw_square(uint x,uint y,uint l,LCD_COLOR color);
 
-//»­µ¥É«Í¼
+//ç”»å•è‰²å›¾
 void lcd_draw_bw(uint x,uint y,uint w,uint h,uint scale,const uchar *p,LCD_COLOR bcolor,LCD_COLOR fcolor);
 
-//»ñÈ¡µ¥É«Í¼
+//è·å–å•è‰²å›¾
 void lcd_get_bw(uint x0,uint y0,uint w,uint h,uint scale,uchar *p,LCD_COLOR fcolor);
 
 
-//Ë¢ÆÁ²âÊÔ
+//åˆ·å±æµ‹è¯•
 void lcd_test(void);
 
 void lcd_check_read(void);

@@ -3,7 +3,7 @@
 
 #include "fonts.h"
 
-//≥£¡ø∂®“Â
+//Â∏∏ÈáèÂÆö‰πâ
 /******************************************************************************************************/
 #define WD_RGB(RED,GREEN,BLUE)     ((((RED)&0xF8)<<8)|(((GREEN)&0xFC)<<3)|(((BLUE)&0xF8)>>3))
 
@@ -20,7 +20,7 @@
 #define WD_COLOR_YELLOW         0xFFE0
 
 
-// ˝æ›¿‡–Õ∂®“Â
+//Êï∞ÊçÆÁ±ªÂûãÂÆö‰πâ
 /******************************************************************************************************/
 typedef signed   char                   wd_i8;      /**<  8bit integer type */
 typedef signed   short                  wd_i16;     /**< 16bit integer type */
@@ -38,7 +38,7 @@ typedef enum
     TRUE = !FALSE
 } wd_bool;
 
-//∆¡ƒª∑ΩœÚ
+//Â±èÂπïÊñπÂêë
 typedef enum
 {
     WD_UP = 0,
@@ -47,16 +47,16 @@ typedef enum
     WD_LEFT =3
 } WD_ORIEN;
 
-//—’…´÷µ
+//È¢úËâ≤ÂÄº
 typedef wd_u16							WD_COLOR;
 //windgui information
 typedef struct
 {
-    wd_u16 scale;                       //Àı∑≈º∂±£¨ƒø«∞÷ª÷ß≥÷’˚–ŒÀı∑≈
-    wd_u16 pixel_x;                           //∫·÷·œÒÀÿµ„∏ˆ ˝
-    wd_u16 pixel_y;                           //◊›÷·œÒÀÿµ„∏ˆ ˝
-    wd_u16 dpi_x;                               //∫·÷·œÒÀÿµ„∏ˆ ˝(–Èƒ‚)
-    wd_u16 dpi_y;                               //◊›÷·œÒÀÿµ„∏ˆ ˝(–Èƒ‚)
+    wd_u16 scale;                       //Áº©ÊîæÁ∫ßÂà´ÔºåÁõÆÂâçÂè™ÊîØÊåÅÊï¥ÂΩ¢Áº©Êîæ
+    wd_u16 pixel_x;                           //Ê®™ËΩ¥ÂÉèÁ¥†ÁÇπ‰∏™Êï∞
+    wd_u16 pixel_y;                           //Á∫µËΩ¥ÂÉèÁ¥†ÁÇπ‰∏™Êï∞
+    wd_u16 dpi_x;                               //Ê®™ËΩ¥ÂÉèÁ¥†ÁÇπ‰∏™Êï∞(ËôöÊãü)
+    wd_u16 dpi_y;                               //Á∫µËΩ¥ÂÉèÁ¥†ÁÇπ‰∏™Êï∞(ËôöÊãü)
     WD_ORIEN orientation;
     WD_COLOR FOR_COLOR;
     WD_COLOR BK_COLOR;
@@ -65,7 +65,7 @@ typedef struct
 } WD_INFO;
 
 /*****************************************************************************************************/
-//◊÷ÃÂ∂®“Â
+//Â≠ó‰ΩìÂÆö‰πâ
 
 extern sFONT Font16x16_GB2312;
 extern sFONT Font12x12_GB2312;
@@ -78,9 +78,9 @@ extern sFONT Font6x12;
 
 
 /*****************************************************************************************************/
-//public µ˜”√
+//public Ë∞ÉÁî®
 
-extern WD_INFO wd_lcd;  //∆¡ƒª–≈œ¢
+extern WD_INFO wd_lcd;  //Â±èÂπï‰ø°ÊÅØ
 
 void wd_clr(void);
 void wd_set_orientation(WD_ORIEN  ori);

@@ -54,7 +54,7 @@ uint8_t rtc_initialized = 0;
 rtc_time ref_uncorrected;    // counter values for reference point
 rtc_time ref_corrected;      // equivalent corrected time for reference point
 int32_t correction_factor; // the amount to adjust the uncorrected time since 
-                            // last_reference by, (delta µs)/(elapsed sec) 
+                            // last_reference by, (delta Á•ç)/(elapsed sec) 
 
 
 //------------------------------------------------------------------------------

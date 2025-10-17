@@ -3,7 +3,7 @@
 
 #include "fonts.h"
 
-//³£Á¿¶¨Òå
+//å¸¸é‡å®šä¹‰
 /******************************************************************************************************/
 
 
@@ -22,7 +22,7 @@
 #define WD_COLOR_YELLOW         0xFFE0
 
 
-//Êı¾İÀàĞÍ¶¨Òå
+//æ•°æ®ç±»å‹å®šä¹‰
 /******************************************************************************************************/
 typedef signed   char                   wd_i8;      /**<  8bit integer type */
 typedef signed   short                  wd_i16;     /**< 16bit integer type */
@@ -40,7 +40,7 @@ typedef enum
     TRUE = !FALSE
 }wd_bool;
 
-//ÆÁÄ»·½Ïò
+//å±å¹•æ–¹å‘
 typedef enum
 {
     WD_UP = 0,
@@ -49,16 +49,16 @@ typedef enum
     WD_LEFT =3
 }WD_ORIEN;
 
-//ÑÕÉ«Öµ
+//é¢œè‰²å€¼
 typedef wd_u16							WD_COLOR;  
 //windgui information
 typedef struct
 {
-    wd_u16 scale;                       //Ëõ·Å¼¶±ğ£¬Ä¿Ç°Ö»Ö§³ÖÕûĞÎËõ·Å
-    wd_u16 pixel_x;                           //ºáÖáÏñËØµã¸öÊı
-    wd_u16 pixel_y;                           //×İÖáÏñËØµã¸öÊı
-    wd_u16 dpi_x;                               //ºáÖáÏñËØµã¸öÊı(ĞéÄâ)
-    wd_u16 dpi_y;                               //×İÖáÏñËØµã¸öÊı(ĞéÄâ)
+    wd_u16 scale;                       //ç¼©æ”¾çº§åˆ«ï¼Œç›®å‰åªæ”¯æŒæ•´å½¢ç¼©æ”¾
+    wd_u16 pixel_x;                           //æ¨ªè½´åƒç´ ç‚¹ä¸ªæ•°
+    wd_u16 pixel_y;                           //çºµè½´åƒç´ ç‚¹ä¸ªæ•°
+    wd_u16 dpi_x;                               //æ¨ªè½´åƒç´ ç‚¹ä¸ªæ•°(è™šæ‹Ÿ)
+    wd_u16 dpi_y;                               //çºµè½´åƒç´ ç‚¹ä¸ªæ•°(è™šæ‹Ÿ)
     WD_ORIEN orientation;
     WD_COLOR FOR_COLOR;
     WD_COLOR BK_COLOR;
@@ -69,9 +69,9 @@ typedef struct
 
 
 /*****************************************************************************************************/
-//public µ÷ÓÃ
+//public è°ƒç”¨
 
-extern WD_INFO wd_lcd;  //ÆÁÄ»ĞÅÏ¢
+extern WD_INFO wd_lcd;  //å±å¹•ä¿¡æ¯
 
 void wd_set_orientation(WD_ORIEN  ori);
 void wd_set_scale(wd_u8 scale);

@@ -2,7 +2,7 @@
 #define __MIIC_H_
 #include "sys.h"
 
-//IO·½ÏòÉèÖÃ
+//IOæ–¹å‘è®¾ç½®
 // #define SDA_IN()  {GPIOF->CRL&=0XFFFFF0FF;GPIOF->CRL|=0X00000800;}
 // #define SDA_OUT() {GPIOF->CRL&=0XFFFFF0FF;GPIOF->CRL|=0X00000300;}
 
@@ -10,20 +10,20 @@
 
 
 
-//IO²Ù×÷º¯Êı
+//IOæ“ä½œå‡½æ•°
 #define IIC_SCL    PFout(14) //SCL
 #define IIC_SDA    PFout(15) //SDA	 
-#define READ_SDA   PFin(15)  //ÊäÈëSDA 
+#define READ_SDA   PFin(15)  //è¾“å…¥SDA 
 
-//IICËùÓĞ²Ù×÷º¯Êı
-void IIC_Init(void);                //³õÊ¼»¯IICµÄIO¿Ú
-void IIC_Start(void);				//·¢ËÍIIC¿ªÊ¼ĞÅºÅ
-void IIC_Stop(void);	  			//·¢ËÍIICÍ£Ö¹ĞÅºÅ
-void IIC_Send_Byte(u8 txd);			//IIC·¢ËÍÒ»¸ö×Ö½Ú
-u8 IIC_Read_Byte(unsigned char ack);//IIC¶ÁÈ¡Ò»¸ö×Ö½Ú
-u8 IIC_Wait_Ack(void); 				//IICµÈ´ıACKĞÅºÅ
-void IIC_Ack(void);					//IIC·¢ËÍACKĞÅºÅ
-void IIC_NAck(void);				//IIC²»·¢ËÍACKĞÅºÅ
+//IICæ‰€æœ‰æ“ä½œå‡½æ•°
+void IIC_Init(void);                //åˆå§‹åŒ–IICçš„IOå£
+void IIC_Start(void);				//å‘é€IICå¼€å§‹ä¿¡å·
+void IIC_Stop(void);	  			//å‘é€IICåœæ­¢ä¿¡å·
+void IIC_Send_Byte(u8 txd);			//IICå‘é€ä¸€ä¸ªå­—èŠ‚
+u8 IIC_Read_Byte(unsigned char ack);//IICè¯»å–ä¸€ä¸ªå­—èŠ‚
+u8 IIC_Wait_Ack(void); 				//IICç­‰å¾…ACKä¿¡å·
+void IIC_Ack(void);					//IICå‘é€ACKä¿¡å·
+void IIC_NAck(void);				//IICä¸å‘é€ACKä¿¡å·
 
 void IIC_Write_One_Byte(u8 daddr,u8 addr,u8 data);
 u8 IIC_Read_One_Byte(u8 daddr,u8 addr);

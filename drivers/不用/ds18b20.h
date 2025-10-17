@@ -2,16 +2,16 @@
 #define __DS18B20_H_
 #include "sys.h"
 
-u8 ds18b20_init(void);//³õÊ¼»¯DS18B20
-short ds18b20_get_temp(void);//»ñÈ¡ÎÂ¶È
+u8 ds18b20_init(void);//åˆå§‹åŒ–DS18B20
+short ds18b20_get_temp(void);//è·å–æ¸©åº¦
 
 /*
-void DS18B20_Start(void);//¿ªÊ¼ÎÂ¶È×ª»»
-void DS18B20_Write_Byte(u8 dat);//Ğ´ÈëÒ»¸ö×Ö½Ú
-u8 DS18B20_Read_Byte(void);//¶Á³öÒ»¸ö×Ö½Ú
-u8 DS18B20_Read_Bit(void);//¶Á³öÒ»¸öÎ»
-u8 DS18B20_Check(void);//¼ì²âÊÇ·ñ´æÔÚDS18B20
-void DS18B20_Rst(void);//¸´Î»DS18B20
+void DS18B20_Start(void);//å¼€å§‹æ¸©åº¦è½¬æ¢
+void DS18B20_Write_Byte(u8 dat);//å†™å…¥ä¸€ä¸ªå­—èŠ‚
+u8 DS18B20_Read_Byte(void);//è¯»å‡ºä¸€ä¸ªå­—èŠ‚
+u8 DS18B20_Read_Bit(void);//è¯»å‡ºä¸€ä¸ªä½
+u8 DS18B20_Check(void);//æ£€æµ‹æ˜¯å¦å­˜åœ¨DS18B20
+void DS18B20_Rst(void);//å¤ä½DS18B20
 */
 #endif
 

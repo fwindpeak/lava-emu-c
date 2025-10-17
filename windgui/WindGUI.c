@@ -1,12 +1,12 @@
 /**
- * @ÎÄ¼şÃû£ºWindGUI.c
- * @°æ±¾£ºV0.0.1
- * @¼ò½é£ºWindGUI£¬Ò»¸ö¼òµ¥µÄÇ¶ÈëÊ½GUI¿â£¬Ìá¹©Ò»Ğ©³£ÓÃµÄ»æÍ¼º¯Êı¡£
+ * @æ–‡ä»¶åï¼šWindGUI.c
+ * @ç‰ˆæœ¬ï¼šV0.0.1
+ * @ç®€ä»‹ï¼šWindGUIï¼Œä¸€ä¸ªç®€å•çš„åµŒå…¥å¼GUIåº“ï¼Œæä¾›ä¸€äº›å¸¸ç”¨çš„ç»˜å›¾å‡½æ•°ã€‚
  *
- * @×÷Õß£ºfwindcore (c)2013
+ * @ä½œè€…ï¼šfwindcore (c)2013
  * @Log:
- * 2013/08/09 ¿ªÊ¼±àĞ´
- * 2013/09/03 ÖØĞ´£¬ÖĞ¼ä¾­ÀúÁËÓ²ÅÌËğ»µµÄÂé·³
+ * 2013/08/09 å¼€å§‹ç¼–å†™
+ * 2013/09/03 é‡å†™ï¼Œä¸­é—´ç»å†äº†ç¡¬ç›˜æŸåçš„éº»çƒ¦
  *
  */
 
@@ -27,7 +27,7 @@
 
 
 /****************************************************************************************************
-//private ±äÁ¿
+//private å˜é‡
 */
 static wd_u16 TEXT_X=0;
 static wd_u16 TEXT_Y=0;
@@ -37,12 +37,12 @@ static wd_u16 TEXT_X_MAX;
 static wd_u16 TEXT_Y_MAX;  
 
 /****************************************************************************************************
-//public ±äÁ¿
+//public å˜é‡
 */
 WD_INFO wd_lcd;
 
 /******************************************************************************************************
- *windgui ÏµÍ³º¯Êı
+ *windgui ç³»ç»Ÿå‡½æ•°
  */
 
 void wd_update_config(void)
@@ -59,7 +59,7 @@ void wd_update_config(void)
     
 }
 /**
-  * @brief  ÓÃ±³¾°É«Çå³ıÆÁÄ»
+  * @brief  ç”¨èƒŒæ™¯è‰²æ¸…é™¤å±å¹•
   * @param  None
   * @retval None
   */
@@ -79,8 +79,8 @@ void wd_clr(void)
 }
 
 /**
-  * @brief  ÉèÖÃÓ¢ÎÄ×ÖÌå
-  * @param  font£ºÓ¢ÎÄ×ÖÌå
+  * @brief  è®¾ç½®è‹±æ–‡å­—ä½“
+  * @param  fontï¼šè‹±æ–‡å­—ä½“
   * @retval None
   */
 void wd_set_enfont(sFONT *font)
@@ -90,8 +90,8 @@ void wd_set_enfont(sFONT *font)
 }
 
 /**
-  * @brief  ÉèÖÃÖĞÎÄ×ÖÌå
-  * @param  font£ºÖĞÎÄ×ÖÌå
+  * @brief  è®¾ç½®ä¸­æ–‡å­—ä½“
+  * @param  fontï¼šä¸­æ–‡å­—ä½“
   * @retval None
   */
 void wd_set_cnfont(sFONT *font)
@@ -101,8 +101,8 @@ void wd_set_cnfont(sFONT *font)
 }
 
 /**
-  * @brief  ÉèÖÃÆÁÄ»Ëõ·Å
-  * @param  scale:ÆÁÄ»Ëõ·Å±ÈÀı£¬Ö»ÄÜÊÇÕûÊı
+  * @brief  è®¾ç½®å±å¹•ç¼©æ”¾
+  * @param  scale:å±å¹•ç¼©æ”¾æ¯”ä¾‹ï¼Œåªèƒ½æ˜¯æ•´æ•°
   * @retval None
   */
 void wd_set_scale(wd_u8 scale)
@@ -113,8 +113,8 @@ void wd_set_scale(wd_u8 scale)
 }
 
 /**
-  * @brief  ÉèÖÃÆÁÄ»·½Ïò
-  * @param  ori:ÆÁÄ»·½Ïò
+  * @brief  è®¾ç½®å±å¹•æ–¹å‘
+  * @param  ori:å±å¹•æ–¹å‘
   * @retval None
   */
 void wd_set_orientation(WD_ORIEN  ori)
@@ -139,7 +139,7 @@ void wd_set_orientation(WD_ORIEN  ori)
 }
 
 /**
-  * @brief  windgui³õÊ¼»¯
+  * @brief  windguiåˆå§‹åŒ–
   * @param  None
   * @retval None
   */
@@ -149,7 +149,7 @@ void wdgui_init(void)
 
     wd_lcd.BK_COLOR = WD_COLOR_WHITE;
     wd_lcd.FOR_COLOR = WD_COLOR_BLACK;
-    wd_set_orientation (WD_UP); //ÆÁÄ»ÊúÖ±ÏòÉÏ£¬¶ÌµÄÎªxÖá
+    wd_set_orientation (WD_UP); //å±å¹•ç«–ç›´å‘ä¸Šï¼ŒçŸ­çš„ä¸ºxè½´
     wd_lcd.scale = 1;
     wd_lcd.enFont = &Font8x16;
     wd_lcd.cnFont = &Font16x16_GB2312;
@@ -159,9 +159,9 @@ void wdgui_init(void)
 
 }
 /**
-  * @brief  È¡µãµÄÑÕÉ«
-  * @param  (x,y)µã×ø±ê
-  * @retval µãÑÕÉ«
+  * @brief  å–ç‚¹çš„é¢œè‰²
+  * @param  (x,y)ç‚¹åæ ‡
+  * @retval ç‚¹é¢œè‰²
   */
 WD_COLOR wd_get_point(wd_u16 x,wd_u16 y)
 {
@@ -193,12 +193,12 @@ WD_COLOR wd_get_point(wd_u16 x,wd_u16 y)
 }
 
 /******************************************************************************************************
- * @µ×²ã»æÍ¼º¯Êı
+ * @åº•å±‚ç»˜å›¾å‡½æ•°
  */
 
 /**
-  * @brief  ÓÃÇ°¾°É«»­µã
-  * @param  (x,y)µã×ø±ê
+  * @brief  ç”¨å‰æ™¯è‰²ç”»ç‚¹
+  * @param  (x,y)ç‚¹åæ ‡
   * @retval None
   */
 void wd_point(wd_u16 x,wd_u16 y)
@@ -232,8 +232,8 @@ void wd_point(wd_u16 x,wd_u16 y)
 }
 
 /**
-  * @brief  ÓÃÑÕÉ«color»­µã
-  * @param  (x,y)µã×ø±ê
+  * @brief  ç”¨é¢œè‰²colorç”»ç‚¹
+  * @param  (x,y)ç‚¹åæ ‡
   * @retval None
   */
 void wd_point2(wd_u16 x,wd_u16 y,WD_COLOR color)
@@ -247,8 +247,8 @@ void wd_point2(wd_u16 x,wd_u16 y,WD_COLOR color)
 
 
 /**
-  * @brief  »­Ïß
-  * @param  (x0,y0)ÆğÊ¼µã×ø±ê£¬(x1,y1)ÖÕÖ¹µã×ø±ê
+  * @brief  ç”»çº¿
+  * @param  (x0,y0)èµ·å§‹ç‚¹åæ ‡ï¼Œ(x1,y1)ç»ˆæ­¢ç‚¹åæ ‡
   * @retval None
   */
 void wd_line(wd_u16 x1,wd_u16 y1,wd_u16 x2,wd_u16 y2)
@@ -257,31 +257,31 @@ void wd_line(wd_u16 x1,wd_u16 y1,wd_u16 x2,wd_u16 y2)
     wd_i16 xerr = 0, yerr = 0, delta_x, delta_y, distance;
     wd_i16 incx, incy, uRow, uCol;
 
-    delta_x = x2 - x1; //¼ÆËã×ø±êÔöÁ¿
+    delta_x = x2 - x1; //è®¡ç®—åæ ‡å¢é‡
     delta_y = y2 - y1;
     uRow = x1;
     uCol = y1;
-    if(delta_x > 0)incx = 1; //ÉèÖÃµ¥²½·½Ïò
-    else if(delta_x == 0)incx = 0; //´¹Ö±Ïß
+    if(delta_x > 0)incx = 1; //è®¾ç½®å•æ­¥æ–¹å‘
+    else if(delta_x == 0)incx = 0; //å‚ç›´çº¿
     else
     {
-        incx = -1;    //ÖÕµã×ø±êĞ¡ÓÚÆğÊ¼×ø±ê,·´·½Ïò,½«×ø±êÖØĞÂ¶¨Î»ÎªÕı×ø±ê
+        incx = -1;    //ç»ˆç‚¹åæ ‡å°äºèµ·å§‹åæ ‡,åæ–¹å‘,å°†åæ ‡é‡æ–°å®šä½ä¸ºæ­£åæ ‡
         delta_x = -delta_x;
     }
     if(delta_y > 0)incy = 1;
-    else if(delta_y == 0)incy = 0; //Ë®Æ½Ïß
+    else if(delta_y == 0)incy = 0; //æ°´å¹³çº¿
     else
     {
-        incy = -1;    //ÖÕµã×ø±êĞ¡ÓÚÆğÊ¼×ø±ê,·´·½Ïò,½«×ø±êÖØĞÂ¶¨Î»ÎªÕı×ø±ê
+        incy = -1;    //ç»ˆç‚¹åæ ‡å°äºèµ·å§‹åæ ‡,åæ–¹å‘,å°†åæ ‡é‡æ–°å®šä½ä¸ºæ­£åæ ‡
         delta_y = -delta_y;
     }
-    if( delta_x > delta_y)distance = delta_x; //Ñ¡È¡»ù±¾ÔöÁ¿×ø±êÖá
+    if( delta_x > delta_y)distance = delta_x; //é€‰å–åŸºæœ¬å¢é‡åæ ‡è½´
     else distance = delta_y;
-    for(t = 0; t <= distance + 1; t++ ) //»­ÏßÊä³ö
+    for(t = 0; t <= distance + 1; t++ ) //ç”»çº¿è¾“å‡º
     {
-        wd_point(uRow, uCol); //¸ù¾İ×ø±ê»­µã
-        xerr += delta_x ; //X×ø±êÔöÁ¿
-        yerr += delta_y ; //Y×ø±êÔöÁ¿
+        wd_point(uRow, uCol); //æ ¹æ®åæ ‡ç”»ç‚¹
+        xerr += delta_x ; //Xåæ ‡å¢é‡
+        yerr += delta_y ; //Yåæ ‡å¢é‡
         if(xerr > distance)
         {
             xerr -= distance;
@@ -296,8 +296,8 @@ void wd_line(wd_u16 x1,wd_u16 y1,wd_u16 x2,wd_u16 y2)
 }
 
 /**
-  * @brief  ÓÃÇ°¾°É«»­ÊµĞÄ¾ØĞÎ
-  * @param  (x0,y0)ÆğÊ¼µã×ø±ê£¬(x1,y1)ÖÕÖ¹µã×ø±ê
+  * @brief  ç”¨å‰æ™¯è‰²ç”»å®å¿ƒçŸ©å½¢
+  * @param  (x0,y0)èµ·å§‹ç‚¹åæ ‡ï¼Œ(x1,y1)ç»ˆæ­¢ç‚¹åæ ‡
   * @retval None
   */
 static swap(wd_u16 *t1,wd_u16 *t2)
@@ -358,9 +358,9 @@ void wd_block(wd_u16 x0,wd_u16 y0,wd_u16 x1,wd_u16 y1)
 }
 
 /**
-  * @brief  »­ÊµĞÄ¾ØĞÎ,¿ÉÖ¸¶¨ÑÕÉ«
-  * @param  (x0,y0)ÆğÊ¼µã×ø±ê£¬(x1,y1)ÖÕÖ¹µã×ø±ê
-  * @param  color ÑÕÉ«
+  * @brief  ç”»å®å¿ƒçŸ©å½¢,å¯æŒ‡å®šé¢œè‰²
+  * @param  (x0,y0)èµ·å§‹ç‚¹åæ ‡ï¼Œ(x1,y1)ç»ˆæ­¢ç‚¹åæ ‡
+  * @param  color é¢œè‰²
   * @retval None
   */
 void wd_block2(wd_u16 x0,wd_u16 y0,wd_u16 x1,wd_u16 y1,WD_COLOR color)
@@ -373,8 +373,8 @@ void wd_block2(wd_u16 x0,wd_u16 y0,wd_u16 x1,wd_u16 y1,WD_COLOR color)
 }
 
 /**
-  * @brief  ÓÃÇ°¾°É«»­¿ÕĞÄ¾ØĞÎ
-  * @param  (x0,y0)ÆğÊ¼µã×ø±ê£¬(x1,y1)ÖÕÖ¹µã×ø±ê
+  * @brief  ç”¨å‰æ™¯è‰²ç”»ç©ºå¿ƒçŸ©å½¢
+  * @param  (x0,y0)èµ·å§‹ç‚¹åæ ‡ï¼Œ(x1,y1)ç»ˆæ­¢ç‚¹åæ ‡
   * @retval None
   */
 void wd_box(wd_u16 x0,wd_u16 y0,wd_u16 x1,wd_u16 y1)
@@ -388,16 +388,16 @@ void wd_box(wd_u16 x0,wd_u16 y0,wd_u16 x1,wd_u16 y1)
 
 
 /******************************************************************************************************
- * @Í¼ĞÎÏÔÊ¾º¯Êı
+ * @å›¾å½¢æ˜¾ç¤ºå‡½æ•°
  */
 
 /**
-  * @brief  ÉèÖÃÇøÓòÍ¼Ïñ
-  * @param  (x,y)ÆğÊ¼µã×ø±ê
-  * @param  (x1,y1)ÖÕÖ¹µã×ø±ê
-  * @param  type Ğ´ÈëÀàĞÍ 0:copy 1:or 2:and 3:Òì»ò 4:¼õ 5:¼Ó
-            Èç¹ûtype>0x80,ºöÂÔ²ÎÊıcolor£¬·ñÔòºöÂÔ²ÎÊı*dat
-  * @param  color ÑÕÉ«Öµ
+  * @brief  è®¾ç½®åŒºåŸŸå›¾åƒ
+  * @param  (x,y)èµ·å§‹ç‚¹åæ ‡
+  * @param  (x1,y1)ç»ˆæ­¢ç‚¹åæ ‡
+  * @param  type å†™å…¥ç±»å‹ 0:copy 1:or 2:and 3:å¼‚æˆ– 4:å‡ 5:åŠ 
+            å¦‚æœtype>0x80,å¿½ç•¥å‚æ•°colorï¼Œå¦åˆ™å¿½ç•¥å‚æ•°*dat
+  * @param  color é¢œè‰²å€¼
   * @retval None
   */
 void wd_block_set(wd_u16 x,wd_u16 y,wd_u16 x1,wd_u16 y1,wd_u8 type,WD_COLOR color,const WD_COLOR *dat)
@@ -431,10 +431,10 @@ void wd_block_set(wd_u16 x,wd_u16 y,wd_u16 x1,wd_u16 y1,wd_u8 type,WD_COLOR colo
     }
 }
 /**
-  * @brief  ÏÔÊ¾µ¥É«Î»Í¼
-  * @param  (x,y)ÆğÊ¼µã×ø±ê
-  * @param  (width,height)Î»Í¼³ß´ç
-  * @param  (*dat)Î»Í¼ÆğÊ¼Êı¾İ
+  * @brief  æ˜¾ç¤ºå•è‰²ä½å›¾
+  * @param  (x,y)èµ·å§‹ç‚¹åæ ‡
+  * @param  (width,height)ä½å›¾å°ºå¯¸
+  * @param  (*dat)ä½å›¾èµ·å§‹æ•°æ®
   * @retval None
   */
 void wd_show_mono_pic(wd_u16 x,wd_u16 y,wd_u16 width,wd_u16 height,const wd_u8 *dat)
@@ -459,10 +459,10 @@ void wd_show_mono_pic(wd_u16 x,wd_u16 y,wd_u16 width,wd_u16 height,const wd_u8 *
 }
 
 /**
-  * @brief  ÏÔÊ¾²ÊÉ«Î»Í¼
-  * @param  (x,y)ÆğÊ¼µã×ø±ê
-  * @param  (width,height)Î»Í¼³ß´ç
-  * @param  (*dat)Î»Í¼ÆğÊ¼Êı¾İ
+  * @brief  æ˜¾ç¤ºå½©è‰²ä½å›¾
+  * @param  (x,y)èµ·å§‹ç‚¹åæ ‡
+  * @param  (width,height)ä½å›¾å°ºå¯¸
+  * @param  (*dat)ä½å›¾èµ·å§‹æ•°æ®
   * @retval None
   */
 void wd_show_pic(wd_u16 x,wd_u16 y,wd_u16 width,wd_u16 height,const WD_COLOR *dat)
@@ -490,10 +490,10 @@ void wd_show_pic(wd_u16 x,wd_u16 y,wd_u16 width,wd_u16 height,const WD_COLOR *da
 }
 
 /**
-  * @brief  ÏÔÊ¾²ÊÉ«Î»Í¼,¿ÉÉèÖÃÍ¸Ã÷ÑÕÉ«
-  * @param  (x,y)ÆğÊ¼µã×ø±ê
-  * @param  (width,height)Î»Í¼³ß´ç
-  * @param  (*dat)Î»Í¼ÆğÊ¼Êı¾İ
+  * @brief  æ˜¾ç¤ºå½©è‰²ä½å›¾,å¯è®¾ç½®é€æ˜é¢œè‰²
+  * @param  (x,y)èµ·å§‹ç‚¹åæ ‡
+  * @param  (width,height)ä½å›¾å°ºå¯¸
+  * @param  (*dat)ä½å›¾èµ·å§‹æ•°æ®
   * @param
   * @retval None
   */
@@ -513,16 +513,16 @@ void wd_show_pic2(wd_u16 x,wd_u16 y,wd_u16 width,wd_u16 height,const wd_u16 *dat
 }
 #ifdef USE_SHOW_BMP
 
-// //14×Ö½Ú
+// //14å­—èŠ‚
 // typedef struct tagBITMAPFILEHEADER {
-//     WORD    bfType;             //Î»Í¼ÎÄ¼şÀàĞÍ£¬Îª"BM"
-//     DWORD   bfSize;             //Î»Í¼ÎÄ¼ş´óĞ¡
+//     WORD    bfType;             //ä½å›¾æ–‡ä»¶ç±»å‹ï¼Œä¸º"BM"
+//     DWORD   bfSize;             //ä½å›¾æ–‡ä»¶å¤§å°
 //     WORD    bfReserved1;
 //     WORD    bfReserved2;
-//     DWORD   bfOffBits;          //Î»Í¼Êı¾İÆğÊ¼Î»ÖÃ
+//     DWORD   bfOffBits;          //ä½å›¾æ•°æ®èµ·å§‹ä½ç½®
 // }BITMAPFILEHEADER;
 
-// //40×Ö½Ú
+// //40å­—èŠ‚
 // typedef struct tagBITMAPINFOHEADER // bmih
 // {
 //      DWORD biSize ;       // size of the structure = 40
@@ -540,11 +540,11 @@ void wd_show_pic2(wd_u16 x,wd_u16 y,wd_u16 width,wd_u16 height,const wd_u16 *dat
 
 
 /**
-  * @brief  »ñÈ¡bmpÍ¼Æ¬³ß´ç
-  * @param  (width,height)Í¼Æ¬¿í¶ÈºÍ¸ß¶È
-  * @param  (fn)ÎÄ¼şÃûÂ·¾¶
+  * @brief  è·å–bmpå›¾ç‰‡å°ºå¯¸
+  * @param  (width,height)å›¾ç‰‡å®½åº¦å’Œé«˜åº¦
+  * @param  (fn)æ–‡ä»¶åè·¯å¾„
   * @retval None
-  * @note   ĞèÒªfatfsÖ§³Ö£¬ÇÒÊ¹ÓÃÇ°ÒÑ¾­³õÊ¼»¯
+  * @note   éœ€è¦fatfsæ”¯æŒï¼Œä¸”ä½¿ç”¨å‰å·²ç»åˆå§‹åŒ–
   */
 void wd_get_bmp_size(wd_u16 *width,wd_u16 *height,wd_word *fn)
 {
@@ -560,11 +560,11 @@ void wd_get_bmp_size(wd_u16 *width,wd_u16 *height,wd_word *fn)
     f_close(&fp_bmp);
 }
 /**
-  * @brief  ÏÔÊ¾bmpÍ¼Æ¬
-  * @param  (x,y)Í¼Æ¬ÔÚlcdµÄ×ø±ê
-  * @param  (fn)ÎÄ¼şÃûÂ·¾¶
+  * @brief  æ˜¾ç¤ºbmpå›¾ç‰‡
+  * @param  (x,y)å›¾ç‰‡åœ¨lcdçš„åæ ‡
+  * @param  (fn)æ–‡ä»¶åè·¯å¾„
   * @retval None
-  * @note   ĞèÒªfatfsÖ§³Ö£¬ÇÒÊ¹ÓÃÇ°ÒÑ¾­³õÊ¼»¯
+  * @note   éœ€è¦fatfsæ”¯æŒï¼Œä¸”ä½¿ç”¨å‰å·²ç»åˆå§‹åŒ–
   */
 void wd_show_bmp(wd_u16 x,wd_u16 y,const wd_word *fn)
 {    
@@ -578,7 +578,7 @@ void wd_show_bmp(wd_u16 x,wd_u16 y,const wd_word *fn)
     if(f_open(&fp_bmp,fn,FA_OPEN_EXISTING|FA_READ)==FR_OK)
     {
 #ifdef USE_DEBUG
-        printf("bmp´ò¿ª³É¹¦\r\n");
+        printf("bmpæ‰“å¼€æˆåŠŸ\r\n");
 #endif
         f_lseek(&fp_bmp,0x12);
         f_read(&fp_bmp,&width,2,&fwsize);
@@ -596,7 +596,7 @@ void wd_show_bmp(wd_u16 x,wd_u16 y,const wd_word *fn)
     else
     {
 #ifdef USE_DEBUG
-        printf("bmp´ò¿ªÊ§°Ü\r\n");
+        printf("bmpæ‰“å¼€å¤±è´¥\r\n");
 #endif
     }
     f_close(&fp_bmp);
@@ -606,11 +606,11 @@ void wd_show_bmp(wd_u16 x,wd_u16 y,const wd_word *fn)
 
 
 /******************************************************************************************************
- * @Í¼ĞÎÄ£Ê½ÏÂÎÄ×ÖÏÔÊ¾º¯Êı
+ * @å›¾å½¢æ¨¡å¼ä¸‹æ–‡å­—æ˜¾ç¤ºå‡½æ•°
  */
 /**
-  * @brief  ÏÔÊ¾Ó¢ÎÄ×Ö·û
-  * @param  chr£º×Ö·ûµÄASCIIÂë
+  * @brief  æ˜¾ç¤ºè‹±æ–‡å­—ç¬¦
+  * @param  chrï¼šå­—ç¬¦çš„ASCIIç 
   * @retval None
   */
 void wd_show_char(wd_u16 x0,wd_u16 y0,wd_word chr)
@@ -631,8 +631,8 @@ void wd_show_char(wd_u16 x0,wd_u16 y0,wd_word chr)
 }
 
 /**
-  * @brief  ÏÔÊ¾ÖĞÎÄ×Ö·û
-  * @param  ch_h£ºÖĞÎÄ×Ö·ûµÄASCIIÂë¸ßÎ» ch_l£ºÖĞÎÄ×Ö·ûµÄASCIIÂëµÍÎ»
+  * @brief  æ˜¾ç¤ºä¸­æ–‡å­—ç¬¦
+  * @param  ch_hï¼šä¸­æ–‡å­—ç¬¦çš„ASCIIç é«˜ä½ ch_lï¼šä¸­æ–‡å­—ç¬¦çš„ASCIIç ä½ä½
   * @retval None
   */
 void wd_show_ch(wd_u16 x0,wd_u16 y0,wd_word ch_h,wd_word ch_l)
@@ -667,8 +667,8 @@ void wd_show_ch(wd_u16 x0,wd_u16 y0,wd_word ch_h,wd_word ch_l)
 }
 
 /**
-  * @brief  ÏÔÊ¾×Ö·û´®
-  * @param  *p£º×Ö·û´®
+  * @brief  æ˜¾ç¤ºå­—ç¬¦ä¸²
+  * @param  *pï¼šå­—ç¬¦ä¸²
   * @retval None
   */
 void wd_show_string(wd_u16 x0,wd_u16 y0,wd_word *p)
@@ -696,9 +696,9 @@ void wd_show_string(wd_u16 x0,wd_u16 y0,wd_word *p)
 }
 
 /**
-  * @brief  ÏÔÊ¾Êı×Ö
-  * @param  num£ºÊı×Ö
-  * @param  wei£ºÊı×ÖÎ»Êı
+  * @brief  æ˜¾ç¤ºæ•°å­—
+  * @param  numï¼šæ•°å­—
+  * @param  weiï¼šæ•°å­—ä½æ•°
   * @retval None
   */
 void wd_show_num(wd_u16 x,wd_u16 y,wd_u16 num,wd_u8 wei)
@@ -723,9 +723,9 @@ void wd_show_num(wd_u16 x,wd_u16 y,wd_u16 num,wd_u8 wei)
 
 
 /**
-  * @brief  ´òÓ¡Ò»ĞĞ×Ö·û´®
-  * @param  line£ºĞĞÊı
-  * @param  str£º×Ö·û´®
+  * @brief  æ‰“å°ä¸€è¡Œå­—ç¬¦ä¸²
+  * @param  lineï¼šè¡Œæ•°
+  * @param  strï¼šå­—ç¬¦ä¸²
   * @retval None
   */
 void wd_println(wd_u16 line,wd_word *str)
@@ -735,13 +735,13 @@ void wd_println(wd_u16 line,wd_word *str)
 
 
 /******************************************************************************************************
- * @ÎÄ±¾Ä£Ê½ÏÂÎÄ×ÖÏÔÊ¾º¯Êı @TODO
+ * @æ–‡æœ¬æ¨¡å¼ä¸‹æ–‡å­—æ˜¾ç¤ºå‡½æ•° @TODO
     
  */
 
 /**
-  * @brief  ÉèÖÃÎÄ±¾Ä£Ê½ÏÂµÄÎÄ±¾ÏÔÊ¾×ø±ê
-  * @param  (x,y)×ø±ê£¬´Ó0¿ªÊ¼
+  * @brief  è®¾ç½®æ–‡æœ¬æ¨¡å¼ä¸‹çš„æ–‡æœ¬æ˜¾ç¤ºåæ ‡
+  * @param  (x,y)åæ ‡ï¼Œä»0å¼€å§‹
   * @retval None
   */
 void wd_pos(u16 x,u16 y)
@@ -788,15 +788,15 @@ static void lcd_putc(int ch)
 }
 
 /*
- * º¯ÊıÃû£ºitoa
- * ÃèÊö  £º½«ÕûĞÎÊı¾İ×ª»»³É×Ö·û´®
- * ÊäÈë  £º-radix =10 ±íÊ¾10½øÖÆ£¬ÆäËû½á¹ûÎª0
- *         -value Òª×ª»»µÄÕûĞÎÊı
- *         -buf ×ª»»ºóµÄ×Ö·û´®
+ * å‡½æ•°åï¼šitoa
+ * æè¿°  ï¼šå°†æ•´å½¢æ•°æ®è½¬æ¢æˆå­—ç¬¦ä¸²
+ * è¾“å…¥  ï¼š-radix =10 è¡¨ç¤º10è¿›åˆ¶ï¼Œå…¶ä»–ç»“æœä¸º0
+ *         -value è¦è½¬æ¢çš„æ•´å½¢æ•°
+ *         -buf è½¬æ¢åçš„å­—ç¬¦ä¸²
  *         -radix = 10
- * Êä³ö  £ºÎŞ
- * ·µ»Ø  £ºÎŞ
- * µ÷ÓÃ  £º±»lcd_printf()µ÷ÓÃ
+ * è¾“å‡º  ï¼šæ— 
+ * è¿”å›  ï¼šæ— 
+ * è°ƒç”¨  ï¼šè¢«lcd_printf()è°ƒç”¨
  */
 static char *itoa(int value, char *string, int radix)
 {
@@ -846,7 +846,7 @@ static char *itoa(int value, char *string, int radix)
 
 } /* NCL_Itoa */
 
-//¸ñÊ½»¯´òÓ¡µ½ÄÚ´æ
+//æ ¼å¼åŒ–æ‰“å°åˆ°å†…å­˜
 void wd_sprintf(u8 *str,uint8_t *Data,...)
 {
     const char *s;
@@ -857,18 +857,18 @@ void wd_sprintf(u8 *str,uint8_t *Data,...)
     va_list ap;
     va_start(ap, Data);
 
-    while ( *Data != 0)     // ÅĞ¶ÏÊÇ·ñµ½´ï×Ö·û´®½áÊø·û
+    while ( *Data != 0)     // åˆ¤æ–­æ˜¯å¦åˆ°è¾¾å­—ç¬¦ä¸²ç»“æŸç¬¦
     {
         if ( *Data == 0x5c )  //'\'
         {
             switch ( *++Data )
             {
-            case 'r':							          //»Ø³µ·û
+            case 'r':							          //å›è½¦ç¬¦
                 *str++=0x0d;
                 Data ++;
                 break;
 
-            case 'n':							          //»»ĞĞ·û
+            case 'n':							          //æ¢è¡Œç¬¦
                 *str++=0x0a;
                 Data ++;
                 break;
@@ -882,7 +882,7 @@ void wd_sprintf(u8 *str,uint8_t *Data,...)
         {   //
             switch ( *++Data )
             {
-            case 's':										  //×Ö·û´®
+            case 's':										  //å­—ç¬¦ä¸²
                 s = va_arg(ap, const char *);
                 for ( ; *s; s++)
                 {
@@ -890,13 +890,13 @@ void wd_sprintf(u8 *str,uint8_t *Data,...)
                 }
                 Data++;
                 break;
-            case 'c':										  //×Ö·û
+            case 'c':										  //å­—ç¬¦
                 c = va_arg(ap, int);
                 *str++=(c);
                 Data++;
                 break;
 
-            case 'd':										//Ê®½øÖÆ
+            case 'd':										//åè¿›åˆ¶
                 d = va_arg(ap, int);
                 itoa(d, buf, 10);
                 for (s = buf; *s; s++)
@@ -914,7 +914,7 @@ void wd_sprintf(u8 *str,uint8_t *Data,...)
     }
     *str=0x00;
 }
-//¸ñÊ½»¯´òÓ¡µ½ÆÁÄ»
+//æ ¼å¼åŒ–æ‰“å°åˆ°å±å¹•
 void wd_printf(uint8_t *Data,...)
 {
     const char *s;
@@ -925,18 +925,18 @@ void wd_printf(uint8_t *Data,...)
     va_list ap;
     va_start(ap, Data);
 
-    while ( *Data != 0)     // ÅĞ¶ÏÊÇ·ñµ½´ï×Ö·û´®½áÊø·û
+    while ( *Data != 0)     // åˆ¤æ–­æ˜¯å¦åˆ°è¾¾å­—ç¬¦ä¸²ç»“æŸç¬¦
     {
         if ( *Data == 0x5c )  //'\'
         {
             switch ( *++Data )
             {
-            case 'r':							          //»Ø³µ·û
+            case 'r':							          //å›è½¦ç¬¦
                 lcd_putc(0x0d);
                 Data ++;
                 break;
 
-            case 'n':							          //»»ĞĞ·û
+            case 'n':							          //æ¢è¡Œç¬¦
                 lcd_putc(0x0a);
                 Data ++;
                 break;
@@ -950,7 +950,7 @@ void wd_printf(uint8_t *Data,...)
         {   //
             switch ( *++Data )
             {
-            case 's':										  //×Ö·û´®
+            case 's':										  //å­—ç¬¦ä¸²
                 s = va_arg(ap, const char *);
                 for ( ; *s; s++)
                 {
@@ -958,13 +958,13 @@ void wd_printf(uint8_t *Data,...)
                 }
                 Data++;
                 break;
-            case 'c':										  //×Ö·û
+            case 'c':										  //å­—ç¬¦
                 c = va_arg(ap, int);
                 lcd_putc(c);
                 Data++;
                 break;
 
-            case 'd':										//Ê®½øÖÆ
+            case 'd':										//åè¿›åˆ¶
                 d = va_arg(ap, int);
                 itoa(d, buf, 10);
                 for (s = buf; *s; s++)
@@ -994,13 +994,13 @@ void wd_printf(uint8_t *Data,...)
 }
 
 /******************************************************************************************************
- * @ÓÃ»§½»»¥Ä£Ê½ÏÂº¯Êı @TODO
+ * @ç”¨æˆ·äº¤äº’æ¨¡å¼ä¸‹å‡½æ•° @TODO
  */
 
 /**
-  * @brief  ÔÚÆÁÄ»»æÖÆbutton
-  * @param  num£ºbutton¸öÊı
-  * @param  button£ºWD_BUTTONÀàĞÍµÄbuttonÊı×é
+  * @brief  åœ¨å±å¹•ç»˜åˆ¶button
+  * @param  numï¼šbuttonä¸ªæ•°
+  * @param  buttonï¼šWD_BUTTONç±»å‹çš„buttonæ•°ç»„
   * @retval None
   */
 void wd_msg_button_draw(wd_u16 num,WD_BUTTON bt[])
@@ -1028,11 +1028,11 @@ void wd_msg_button_draw(wd_u16 num,WD_BUTTON bt[])
 }
 
 /**
-  * @brief  ÅĞ¶ÏbuttonÊÇ·ñ±»°´ÏÂ
-  * @param  num£ºbutton¸öÊı
-  * @param  button£ºWD_BUTTONÀàĞÍµÄbuttonÊı×é
-  * @param  type£ºÀàĞÍ£¬Îª0Ê±µÈ´ıÖ±µ½°´ÏÂ£¬·ñÔòÅĞ¶Ïtype´Î£¬
-  * @retval ·µ»Ø°´ÏÂbuttonµÄid£¬ÎŞ°´ÏÂÔò·µ»Ø0
+  * @brief  åˆ¤æ–­buttonæ˜¯å¦è¢«æŒ‰ä¸‹
+  * @param  numï¼šbuttonä¸ªæ•°
+  * @param  buttonï¼šWD_BUTTONç±»å‹çš„buttonæ•°ç»„
+  * @param  typeï¼šç±»å‹ï¼Œä¸º0æ—¶ç­‰å¾…ç›´åˆ°æŒ‰ä¸‹ï¼Œå¦åˆ™åˆ¤æ–­typeæ¬¡ï¼Œ
+  * @retval è¿”å›æŒ‰ä¸‹buttonçš„idï¼Œæ— æŒ‰ä¸‹åˆ™è¿”å›0
   */
 wd_u16 wd_msg_button_dect(wd_u16 num,WD_BUTTON bt[],wd_u16 type)
 {
@@ -1081,10 +1081,10 @@ wd_u16 wd_msg_button_dect(wd_u16 num,WD_BUTTON bt[],wd_u16 type)
 
 
 /**
-  * @brief  ÔÚÆÁÄ»»æÖÆbutton£¬²¢µÈ´ıÅĞ¶Ï°´ÏÂµÄÊÇÄÄ¸öbutton
-  * @param  num£ºbutton¸öÊı
-  * @param  button£ºWD_BUTTONÀàĞÍµÄbuttonÊı×é
-  * @retval ·µ»Ø°´ÏÂbuttonµÄid
+  * @brief  åœ¨å±å¹•ç»˜åˆ¶buttonï¼Œå¹¶ç­‰å¾…åˆ¤æ–­æŒ‰ä¸‹çš„æ˜¯å“ªä¸ªbutton
+  * @param  numï¼šbuttonä¸ªæ•°
+  * @param  buttonï¼šWD_BUTTONç±»å‹çš„buttonæ•°ç»„
+  * @retval è¿”å›æŒ‰ä¸‹buttonçš„id
   */
 wd_u16 wd_msg_button(wd_u16 num,WD_BUTTON bt[])
 {

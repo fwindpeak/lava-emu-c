@@ -269,7 +269,7 @@ structure has members that indicate FAT12/16/32, as well as the cluster size.
 /*-----------------------------------------------------------------------------
 Create a directory
 -----------------------------------------------------------------------------*/
-  fsresult = f_mkdir("mp3_1234567890123456789012345678901234567890123456789012345678901234567890ÖÐÎÄ");  //open/create directory for read/write 
+  fsresult = f_mkdir("mp3_1234567890123456789012345678901234567890123456789012345678901234567890ä¸­æ–‡");  //open/create directory for read/write 
   if (fsresult == FR_OK)
      printf("Directory create ok.\n");
   else

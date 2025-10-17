@@ -13,19 +13,19 @@
 #define     LAVA_KEY_F1          6      
 #define     LAVA_KEY_ESC         7    
 
-extern int keymapc;                                  //ÒÑ¾­±»mapµÄ°´¼üÊı
-extern unsigned char KeyMap[LAVA_KEY_NUM][2];        //ÓÃÓÚ´¢´ækeymapÊı¾İ
+extern int keymapc;                                  //å·²ç»è¢«mapçš„æŒ‰é”®æ•°
+extern unsigned char KeyMap[LAVA_KEY_NUM][2];        //ç”¨äºå‚¨å­˜keymapæ•°æ®
 
 u8 key_read(void);
 u8 key_get(void);
 void key_init(void);
 u8 key_check(u8 key);
-//ÊÍ·Å°´¼ü×´Ì¬
+//é‡Šæ”¾æŒ‰é”®çŠ¶æ€
 void key_release(u8 key);
 
-//»ñÈ¡°´¼üÓ³ÉäÖµ
+//è·å–æŒ‰é”®æ˜ å°„å€¼
 unsigned char key_getmap(unsigned char key);
-//¸ù¾İÓ³ÉäÖµ»ñÈ¡Êµ¼Ê¼üÖµ
+//æ ¹æ®æ˜ å°„å€¼è·å–å®é™…é”®å€¼
 unsigned char key_getmap2(unsigned char key);
 #endif
 

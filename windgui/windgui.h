@@ -6,7 +6,7 @@
 #define USE_SHOW_BMP
 //#define USE_DEBUG
 
-//∫Í∂®“Â
+//ÂÆèÂÆö‰πâ
 /******************************************************************************************************/
 #define BIT(x)  (1<<(x))
 #define SetBit(BYTE,N)  ((BYTE) |= BIT(N))
@@ -14,7 +14,7 @@
 #define GetBit(BYTE,N)  (((BYTE)&BIT(N))>>((N)))
 
 
-//≥£¡ø∂®“Â
+//Â∏∏ÈáèÂÆö‰πâ
 /******************************************************************************************************/
 #define WD_RGB(RED,GREEN,BLUE)     ((((RED)&0xF8)<<8)|(((GREEN)&0xFC)<<3)|(((BLUE)&0xF8)>>3))
 
@@ -31,7 +31,7 @@
 #define WD_COLOR_YELLOW         0xFFE0
 
 
-// ˝æ›¿‡–Õ∂®“Â
+//Êï∞ÊçÆÁ±ªÂûãÂÆö‰πâ
 /******************************************************************************************************/
 typedef signed   char                   wd_i8;      /**<  8bit integer type */
 typedef signed   short                  wd_i16;     /**< 16bit integer type */
@@ -56,7 +56,7 @@ typedef enum
     WD_ERROR,
 }wd_msg;
 
-//∆¡ƒª∑ΩœÚ
+//Â±èÂπïÊñπÂêë
 typedef enum
 {
     WD_UP = 0,
@@ -65,16 +65,16 @@ typedef enum
     WD_LEFT =3
 } WD_ORIEN;
 
-//—’…´÷µ
+//È¢úËâ≤ÂÄº
 typedef wd_u16							WD_COLOR;
 //windgui information
 typedef struct
 {
-    wd_u16 scale;                               //Àı∑≈º∂±£¨ƒø«∞÷ª÷ß≥÷’˚–ŒÀı∑≈
-    wd_u16 pixel_x;                              //∫·÷·œÒÀÿµ„∏ˆ ˝
-    wd_u16 pixel_y;                              //◊›÷·œÒÀÿµ„∏ˆ ˝
-    wd_u16 dpi_x;                               //∫·÷·œÒÀÿµ„∏ˆ ˝(–Èƒ‚)
-    wd_u16 dpi_y;                               //◊›÷·œÒÀÿµ„∏ˆ ˝(–Èƒ‚)
+    wd_u16 scale;                               //Áº©ÊîæÁ∫ßÂà´ÔºåÁõÆÂâçÂè™ÊîØÊåÅÊï¥ÂΩ¢Áº©Êîæ
+    wd_u16 pixel_x;                              //Ê®™ËΩ¥ÂÉèÁ¥†ÁÇπ‰∏™Êï∞
+    wd_u16 pixel_y;                              //Á∫µËΩ¥ÂÉèÁ¥†ÁÇπ‰∏™Êï∞
+    wd_u16 dpi_x;                               //Ê®™ËΩ¥ÂÉèÁ¥†ÁÇπ‰∏™Êï∞(ËôöÊãü)
+    wd_u16 dpi_y;                               //Á∫µËΩ¥ÂÉèÁ¥†ÁÇπ‰∏™Êï∞(ËôöÊãü)
     WD_ORIEN orientation;
     WD_COLOR FOR_COLOR;
     WD_COLOR BK_COLOR;
@@ -82,13 +82,13 @@ typedef struct
     sFONT *cnFont;
 } WD_INFO;
 
-//µ„¿‡–Õ
+//ÁÇπÁ±ªÂûã
 typedef struct
 {
     wd_u16 x,y;
 }WD_POINT;
 
-//æÿ–Œ
+//Áü©ÂΩ¢
 typedef struct
 {
     wd_u16 x0,y0,x1,y1;
@@ -97,13 +97,13 @@ typedef struct
 typedef struct
 {
     wd_u16 x0,y0,x1,y1;
-    wd_u8 *caption;       //button±ÍÃ‚
-    wd_u8 *bkpic;         //±≥æ∞Õº∆¨£¨º¥Õº∆¨Œƒº˛µÿ÷∑
+    wd_u8 *caption;       //buttonÊ†áÈ¢ò
+    wd_u8 *bkpic;         //ËÉåÊôØÂõæÁâáÔºåÂç≥ÂõæÁâáÊñá‰ª∂Âú∞ÂùÄ
 }WD_BUTTON;
 
 
 /*****************************************************************************************************/
-//◊÷ÃÂ∂®“Â
+//Â≠ó‰ΩìÂÆö‰πâ
 
 extern sFONT Font16x16_GB2312;
 extern sFONT Font12x12_GB2312;
@@ -116,9 +116,9 @@ extern sFONT Font6x12;
 
 
 /*****************************************************************************************************/
-//public µ˜”√
+//public Ë∞ÉÁî®
 
-extern WD_INFO wd_lcd;  //∆¡ƒª–≈œ¢
+extern WD_INFO wd_lcd;  //Â±èÂπï‰ø°ÊÅØ
 
 void wd_clr(void);
 void wd_set_orientation(WD_ORIEN  ori);

@@ -1,10 +1,10 @@
 /**
- * @ÎÄ¼þÃû£ºtouch.c
- * @°æ±¾£ºV0.1
- * @¼ò½é£º´¥ÃþÆÁÇý¶¯
+ * @æ–‡ä»¶åï¼štouch.c
+ * @ç‰ˆæœ¬ï¼šV0.1
+ * @ç®€ä»‹ï¼šè§¦æ‘¸å±é©±åŠ¨
  *
- * @ËµÃ÷£º²ÉÓÃSPIÍ¨ÐÅ
-          ¡¾PB10¡¿¼ì²âÊÇ·ñ°´ÏÂµÄÒý½Å£¬µÍµçÆ½°´ÏÂ
+ * @è¯´æ˜Žï¼šé‡‡ç”¨SPIé€šä¿¡
+          ã€PB10ã€‘æ£€æµ‹æ˜¯å¦æŒ‰ä¸‹çš„å¼•è„šï¼Œä½Žç”µå¹³æŒ‰ä¸‹
  */
 
 /* Includes ------------------------------------------------------------------*/
@@ -21,7 +21,7 @@
 #define LCD_SHORT   240
 
 //#define USE_TOUCH_CAL
-//1 ÊúÆÁ   0 ºáÆÁ
+//1 ç«–å±   0 æ¨ªå±
 #define LCD_VER
 //#define LCD_HOR
 
@@ -51,12 +51,12 @@ int tp_cal_y_start=200;
 #endif
 
 /***********************************************************************************************************/
-//È«¾Ö±äÁ¿
+//å…¨å±€å˜é‡
 static u8 touch_press_flag=0;
 
 
-//Íâ²¿ÖÐ¶Ï10·þÎñ³ÌÐò
-//ÓÃÓÚ´¦Àí´¥Ãþ°´ÏÂÐÅÏ¢
+//å¤–éƒ¨ä¸­æ–­10æœåŠ¡ç¨‹åº
+//ç”¨äºŽå¤„ç†è§¦æ‘¸æŒ‰ä¸‹ä¿¡æ¯
 void EXTI15_10_IRQHandler(void)
 {
     touch_press_flag=1;
@@ -65,18 +65,18 @@ void EXTI15_10_IRQHandler(void)
 
 
 /*******************************************************************************
-* º¯    Êý£ºSPI_Touch_Init
-* ¹¦    ÄÜ£º´¥ÃþÆÁ¹¦ÄÜ³õÊ¼»¯
-* Êä    Èë£ºÎÞ
-* Êä    ³ö£ºÎÞ
-* ·µ    »Ø£ºÎÞ
+* å‡½    æ•°ï¼šSPI_Touch_Init
+* åŠŸ    èƒ½ï¼šè§¦æ‘¸å±åŠŸèƒ½åˆå§‹åŒ–
+* è¾“    å…¥ï¼šæ— 
+* è¾“    å‡ºï¼šæ— 
+* è¿”    å›žï¼šæ— 
 *******************************************************************************/
 void SPI_Touch_Init(void)
 {
 //   SPI_InitTypeDef  SPI_InitStructure;
     GPIO_InitTypeDef GPIO_InitStructure;
-    NVIC_InitTypeDef NVIC_InitStructure;  //ÖÐ¶Ï
-    EXTI_InitTypeDef EXTI_InitStructure;	//Íâ²¿ÖÐ¶ÏÏß
+    NVIC_InitTypeDef NVIC_InitStructure;  //ä¸­æ–­
+    EXTI_InitTypeDef EXTI_InitStructure;	//å¤–éƒ¨ä¸­æ–­çº¿
 
     /* Enable SPI1 and GPIO clocks */
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_SPI1 | RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB |
@@ -131,21 +131,21 @@ void SPI_Touch_Init(void)
     SPI1_Init();
 
     /* Enable the EXTI10 Interrupt */
-    NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn; //Ê¹ÄÜ°´¼üËùÔÚµÄÍâ²¿ÖÐ¶ÏÍ¨µÀ
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2; //ÏÈÕ¼ÓÅÏÈ¼¶2¼¶
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2; //´ÓÓÅÏÈ¼¶0¼¶
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //Ê¹ÄÜÍâ²¿ÖÐ¶ÏÍ¨µÀ
-    NVIC_Init(&NVIC_InitStructure); //¸ù¾ÝNVIC_InitStructÖÐÖ¸¶¨µÄ²ÎÊý³õÊ¼»¯ÍâÉèNVIC¼Ä´æÆ÷
+    NVIC_InitStructure.NVIC_IRQChannel = EXTI15_10_IRQn; //ä½¿èƒ½æŒ‰é”®æ‰€åœ¨çš„å¤–éƒ¨ä¸­æ–­é€šé“
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2; //å…ˆå ä¼˜å…ˆçº§2çº§
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 2; //ä»Žä¼˜å…ˆçº§0çº§
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //ä½¿èƒ½å¤–éƒ¨ä¸­æ–­é€šé“
+    NVIC_Init(&NVIC_InitStructure); //æ ¹æ®NVIC_InitStructä¸­æŒ‡å®šçš„å‚æ•°åˆå§‹åŒ–å¤–è®¾NVICå¯„å­˜å™¨
 
     /* Connect Button EXTI Line to Button GPIO Pin */
-    GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource10);  	//Ñ¡ÔñPB10ËùÔÚµÄGPIO¹Ü½ÅÓÃ×÷Íâ²¿ÖÐ¶ÏÏßÂ·EXIT10
+    GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource10);  	//é€‰æ‹©PB10æ‰€åœ¨çš„GPIOç®¡è„šç”¨ä½œå¤–éƒ¨ä¸­æ–­çº¿è·¯EXIT10
 
     /* Configure Button EXTI line */
-    EXTI_InitStructure.EXTI_Line = EXTI_Line10;	//Íâ²¿ÏßÂ·EXIT10
-    EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;			//ÉèÍâÍâ²¿ÖÐ¶ÏÄ£Ê½:EXTIÏßÂ·ÎªÖÐ¶ÏÇëÇó
-    EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling ;  //Íâ²¿ÖÐ¶Ï´¥·¢ÑØÑ¡Ôñ:ÉèÖÃÊäÈëÏßÂ·ÏÂ½µÑØÎªÖÐ¶ÏÇëÇó
-    EXTI_InitStructure.EXTI_LineCmd = ENABLE;		//Ê¹ÄÜÍâ²¿ÖÐ¶ÏÐÂ×´Ì¬
-    EXTI_Init(&EXTI_InitStructure);		//¸ù¾ÝEXTI_InitStructÖÐÖ¸¶¨µÄ²ÎÊý³õÊ¼»¯ÍâÉèEXTI¼Ä´æÆ÷
+    EXTI_InitStructure.EXTI_Line = EXTI_Line10;	//å¤–éƒ¨çº¿è·¯EXIT10
+    EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;			//è®¾å¤–å¤–éƒ¨ä¸­æ–­æ¨¡å¼:EXTIçº¿è·¯ä¸ºä¸­æ–­è¯·æ±‚
+    EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling ;  //å¤–éƒ¨ä¸­æ–­è§¦å‘æ²¿é€‰æ‹©:è®¾ç½®è¾“å…¥çº¿è·¯ä¸‹é™æ²¿ä¸ºä¸­æ–­è¯·æ±‚
+    EXTI_InitStructure.EXTI_LineCmd = ENABLE;		//ä½¿èƒ½å¤–éƒ¨ä¸­æ–­æ–°çŠ¶æ€
+    EXTI_Init(&EXTI_InitStructure);		//æ ¹æ®EXTI_InitStructä¸­æŒ‡å®šçš„å‚æ•°åˆå§‹åŒ–å¤–è®¾EXTIå¯„å­˜å™¨
 
     GPIO_SetBits(GPIOB, GPIO_Pin_10);
 
@@ -339,7 +339,7 @@ static u8 touch_read_flag(void)
     if(touch_press_flag)
     {
         touch_press_flag=0;
-        delay_ms(2);//Ò»¸ö×¼±¸Ê±¼ä£¬²»È»´¥ÆÁÎ»ÖÃ²»ÕýÈ·
+        delay_ms(2);//ä¸€ä¸ªå‡†å¤‡æ—¶é—´ï¼Œä¸ç„¶è§¦å±ä½ç½®ä¸æ­£ç¡®
         return 1;
     }
     else return 0;
@@ -412,7 +412,7 @@ void touch_init()
 //     #endif
 }
 
-//µÈ´ý»ñÈ¡X£¬Y×ø±ê
+//ç­‰å¾…èŽ·å–Xï¼ŒYåæ ‡
 TP touch_get_xy(void)
 {
     TP tp;
@@ -421,13 +421,13 @@ TP touch_get_xy(void)
     tp.y = touch_read_y();
     return tp;
 }
-//ÅÐ¶ÏµãtpÊÇ²»ÊÇÔÚboxÖÐ
+//åˆ¤æ–­ç‚¹tpæ˜¯ä¸æ˜¯åœ¨boxä¸­
 u8 touch_is_inbox(TP tp,TBox tb)
 {
     if(tp.x>=tb.x_s && tp.x<=tb.x_e && tp.y>= tb.y_s && tp.y<=tb.y_e)return 1;
     else return 0;
 }
-//µÈ´ýÒ»´Î´¥ÃþÊÂ¼þ,°´ÏÂ²¢ËÉ¿ª
+//ç­‰å¾…ä¸€æ¬¡è§¦æ‘¸äº‹ä»¶,æŒ‰ä¸‹å¹¶æ¾å¼€
 void touch_wait(void)
 {
     while(touch_check()==0);

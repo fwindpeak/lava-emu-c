@@ -87,7 +87,7 @@ void SPI_FLASH_Init(void)
     /* Enable SPI1  */
     SPI_Cmd(SPI1, ENABLE);
     
-    //先读一段数据，避免出错
+    //鍏堣涓�娈垫暟鎹紝閬垮厤鍑洪敊
     for(i=0;i<100;i++)SPI_FLASH_BufferRead(dat,0,1);
     
 }
