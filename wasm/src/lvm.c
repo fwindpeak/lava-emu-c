@@ -1582,8 +1582,18 @@ int file_select(addr path,addr fn)
                 continue;
             }
             else {
-                if(path[strlen(path)-1]!='/')strcat(path,"/");
-                strcat(path,fn);
+                size_t len = strlen(path);
+                if (len >= LAVA_PATH_MAX) {
+                    return 0;
+                }
+                if (len == 0 || path[len - 1] != '/') {
+                    if (len + 1 >= LAVA_PATH_MAX) {
+                        return 0;
+                    }
+                    path[len++] = '/';
+                    path[len] = '\0';
+                }
+                strncat(path, fn, LAVA_PATH_MAX - len - 1);
             }
             continue;
         }
@@ -1719,7 +1729,7 @@ int word2num(addr word)
 // 3、没有被map的按键则为默认按键值
 int read_keymap(addr fn)
 {
-    char fn1[16];
+    char fn1[LAVA_FILENAME_MAX];
     char e[10];
     char dat[64];
     char word[16];
@@ -1816,10 +1826,10 @@ int read_keymap(addr fn)
 int file_load(void)
 {
     lava_log("file_load");
-    uchar path[64];
-    uchar fn[16];
-    path[0]=0;
-    strcat(path,"/LAVA");
+    uchar path[LAVA_PATH_MAX];
+    uchar fn[LAVA_FILENAME_MAX];
+    path[0] = '/';
+    path[1] = '\0';
     keymapc = 0;   //关闭按键映射
     while(1)
     {
@@ -1827,14 +1837,18 @@ int file_load(void)
         {
             lava_logf("file_select: %s",fn);
             lvm_fp = lava_fopen(fn,"rb");
+            if(!lvm_fp) {
+                SetScreen(1);
+                lava_printf("file open failed");
+                lava_getchar();
+                continue;
+            }
             if(lava_getc(lvm_fp) =='L' && lava_getc(lvm_fp)=='A' && lava_getc(lvm_fp)=='V')
             {
 
                 read_keymap(fn);//读取按键映射文件                 
                 SetScreen(0);
                 ClearScreen();
-                
-                 
 
                 lvm_pi = 0x10;
                 lava_fseek(lvm_fp,0,SEEK_END);
@@ -1845,7 +1859,7 @@ int file_load(void)
             else
             {
                 SetScreen(1);
-                lava_printf("不是lava文件");
+                lava_printf("not lava file");
                 lava_getchar();
                 lava_fclose(lvm_fp);
                 continue;

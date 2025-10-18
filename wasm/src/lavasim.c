@@ -18,6 +18,7 @@
 
 #include "boshi.h"
 #include "prtscr.h"
+#include "log.h"
 
 
 
@@ -2276,8 +2277,9 @@ int FindFile(int from,int num,addr buf)
         if(fno.fname[0]==0 || fno.fname[0]==0xff)break;
         if(f_readdir(&dj, &fno) == FR_OK)
         {
-            strcpy(buf,fno.fname);
-            buf += 16;
+            memset(buf, 0, LAVA_FILENAME_MAX);
+            strncpy(buf, fno.fname, LAVA_FILENAME_MAX - 1);
+            buf += LAVA_FILENAME_MAX;
             i++;
         }
     }
@@ -2296,7 +2298,7 @@ int FileList(addr filename)
     int fnum_show;      //每次需要显示的文件数
     int fnum_i;         //第一个文件
     int fpos;           //光标位置
-    uchar dirbuf[5*16];
+    uchar dirbuf[5*LAVA_FILENAME_MAX];
     uchar key;
     int i;
     uchar tmp[16];
@@ -2309,13 +2311,15 @@ int FileList(addr filename)
     if(fnum<1)return 0;
     while(1)
     {
+
         fnum_show = (fnum-fnum_i)>5?5:fnum-fnum_i;
         FindFile(fnum_i,fnum_show,(addr)dirbuf);
         ClearScreen();
         for(i=0; i<fnum_show; i++)
         {
-            TextOut(0,i*16,dirbuf+i*16,0x81);
+            TextOut(0,i*16,dirbuf+i*LAVA_FILENAME_MAX,0x81);
         }
+
         Block(0,fpos*16,LAVA_WIDTH-1,fpos*16+15,2);
         Refresh();
         key = key_getmap2(lava_getchar());
@@ -2349,7 +2353,9 @@ int FileList(addr filename)
             break;
         case LAVA_KEY_ENTER:
             filename[0] = '\0';
-            memcpy(filename,dirbuf+fpos*16,16);
+            strncpy(filename, (char *)(dirbuf + fpos * LAVA_FILENAME_MAX), LAVA_FILENAME_MAX - 1);
+            filename[LAVA_FILENAME_MAX - 1] = '\0';
+            lava_logf("filename: %s", filename);
             return 1;
         case LAVA_KEY_ESC:
             return 0;
@@ -2367,7 +2373,7 @@ const uchar xpt[1]= {0};
 
 void filelist_demo(void)
 {
-    uchar fn[16];
+    uchar fn[LAVA_FILENAME_MAX];
     ChDir("/LAVA");
     if(FileList(fn))
     {
@@ -2382,8 +2388,8 @@ void filelist_demo(void)
     return;
 }
 
-char path[4][16];
-char filename[16];
+char path[4][LAVA_FILENAME_MAX];
+char filename[LAVA_FILENAME_MAX];
 char pathpoint=0;
 char fopen_fp()
 {

@@ -26,6 +26,8 @@
 
 
 #define LAVA_FP_MAX      10
+#define LAVA_FILENAME_MAX 64
+#define LAVA_PATH_MAX 256
 
 //LAVAÆÁÄ»²ÎÊý
 #define LAVA_X_START        0

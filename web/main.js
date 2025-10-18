@@ -264,7 +264,13 @@ async function restartVm(basePath) {
     if (basePath) {
       module.ccall("lvm_set_base_path", "void", ["string"], [basePath]);
     }
-    module.ccall("lvm_request_restart", "void", [], []);
+    await module.ccall(
+      "lvm_request_restart",
+      "void",
+      [],
+      [],
+      { async: true }
+    );
   } catch (error) {
     console.warn("重启 Lava VM 失败", error);
   }
@@ -375,19 +381,7 @@ if (fsButton) {
       ensureDirectory("/app", module);
       chdir("/", module);
       // chdir("/app", module);
-      // await importDirectoryIntoFS(handle, "/app", module);
-      // let lavFiles = [];
-      // try {
-      //   lavFiles = module?.FS?.readdir?.("/app")?.filter((name) =>
-      //     name.toLowerCase().endsWith(".lav")
-      //   );
-      // } catch (error) {
-      //   console.warn("读取 /app 目录失败", error);
-      // }
-      // if (!lavFiles || lavFiles.length === 0) {
-      //   alert("目录已载入，但未找到任何 .lav 程序文件。");
-      //   return;
-      // }
+      await importDirectoryIntoFS(handle, "/app", module);
       await restartVm("/app");
       console.log("目录已载入虚拟文件系统");
     } catch (error) {
