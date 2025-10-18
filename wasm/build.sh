@@ -9,6 +9,18 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "${SCRIPT_DIR}/.." && pwd)"
 OUT_DIR="${ROOT_DIR}/web"
+CACHE_DIR_DEFAULT="${ROOT_DIR}/.emcache"
+
+if [[ -z "${EM_CACHE:-}" ]]; then
+  export EM_CACHE="${CACHE_DIR_DEFAULT}"
+fi
+
+if [[ "${EM_CACHE}" != /* ]]; then
+  echo "error: EM_CACHE 必须是绝对路径: ${EM_CACHE}" >&2
+  exit 2
+fi
+
+mkdir -p "${EM_CACHE}"
 
 mkdir -p "${OUT_DIR}"
 
@@ -29,11 +41,12 @@ emcc \
   "${SCRIPT_DIR}/src/ff_stub.c" \
   "${SCRIPT_DIR}/src/log_stub.c" \
   -O2 \
-  -sEXPORTED_FUNCTIONS="['_main','_lava_display_buffer','_lava_display_clear','_lava_display_fill_demo','_lava_enqueue_key','_PrtScr_All','_PrtScr_Init']" \
-  -sEXPORTED_RUNTIME_METHODS="['ccall','cwrap','HEAPU8']" \
+  -sEXPORTED_FUNCTIONS="['_main','_lava_display_buffer','_lava_display_clear','_lava_display_fill_demo','_lava_enqueue_key','_PrtScr_All','_PrtScr_Init','_lvm_set_base_path','_lvm_request_restart']" \
+  -sEXPORTED_RUNTIME_METHODS="['ccall','cwrap','HEAPU8','FS','PATH']" \
   -sASYNCIFY \
   -sALLOW_MEMORY_GROWTH=1 \
   -sNO_EXIT_RUNTIME=1 \
+  -sFORCE_FILESYSTEM=1 \
   -sMODULARIZE=1 \
   -sEXPORT_ES6=1 \
   -sEXPORT_NAME="createLavaModule" \

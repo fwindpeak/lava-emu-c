@@ -13,16 +13,47 @@ const screenshotButton = document.getElementById("screenshot-button");
 const imageData = ctx.createImageData(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 const pixelBuffer = new Uint8Array(DISPLAY_BUFFER_SIZE);
 let rootDirectoryHandle = null;
-const pendingFsOps = [];
+let wasmModule = null;
+let createModulePromise = null;
+let enqueueKey = null;
 
-function chdir(path) {
+async function ensureWasmModule() {
+  if (wasmModule) return wasmModule;
+  if (!createModulePromise) {
+    createModulePromise = import("./lava.js")
+      .then(({ default: createLavaModule }) => createLavaModule())
+      .then((module) => {
+        wasmModule = module;
+        enqueueKey =
+          module.cwrap?.("lava_enqueue_key", "void", ["number"]) ??
+          module._lava_enqueue_key;
+        chdir("/");
+        console.info("Lava WASM 模块已加载");
+        return module;
+      })
+      .catch((error) => {
+        console.warn("加载 WASM 模块失败", error);
+        wasmModule = null;
+        createModulePromise = null;
+        throw error;
+      });
+  }
+  return createModulePromise;
+}
+
+function chdir(path, module = wasmModule) {
   try {
-    if (!wasmModule?.FS) return;
-    wasmModule.FS.chdir(path);
+    const runtime = module;
+    const FS = runtime?.FS;
+    if (!FS || typeof FS.chdir !== "function") {
+      return;
+    }
+    FS.chdir(path);
   } catch (err) {
     console.warn("chdir error", path, err);
   }
 }
+
 
 const KEY_MAP = {
   ArrowUp: 1,
@@ -81,25 +112,8 @@ function mapKeyToCode(code) {
   }
 }
 
-let wasmModule = null;
-let enqueueKey = null;
-
-try {
-  const { default: createLavaModule } = await import("./lava.js");
-  wasmModule = await createLavaModule();
-  enqueueKey =
-    wasmModule.cwrap?.("lava_enqueue_key", "void", ["number"]) ??
-    wasmModule._lava_enqueue_key;
-  console.info("Lava WASM 模块已加载");
-  wasmModule.onFileWritten = (path) => {
-    if (path && rootDirectoryHandle) {
-      syncFileToDisk(path);
-    }
-  };
-  chdir("/");
-} catch (error) {
-  console.warn("未能加载 WASM 模块，使用演示模式。", error);
-}
+// let wasmModule = null;
+// let enqueueKey = null;
 
 const wasmExports = {
   bufferPtr: null,
@@ -151,23 +165,38 @@ const fallbackPattern = {
   },
 };
 
-function ensureDirectory(path) {
-  const FS = wasmModule?.FS;
-  if (!FS) return;
+function ensureDirectory(path, module = wasmModule) {
+  const runtime = module;
+  if (!runtime) return;
   const normalized = path.startsWith("/") ? path : `/${path}`;
   const parts = normalized.split("/").filter(Boolean);
-  let current = "";
+  let current = "/";
   for (const part of parts) {
-    current += `/${part}`;
-    if (!FS.analyzePath(current).exists) {
-      FS.mkdir(current);
+    const FS = runtime.FS;
+    const nextPath = current === "/" ? `/${part}` : `${current}/${part}`;
+    if (FS?.analyzePath) {
+      if (!FS.analyzePath(nextPath).exists) {
+        FS.mkdir(nextPath);
+      }
+    } else if (runtime.FS_createPath) {
+      try {
+        runtime.FS_createPath(current, part, true, true);
+      } catch {
+        // 已存在或不支持，忽略即可
+      }
     }
+    current = nextPath;
   }
 }
 
-async function importDirectoryIntoFS(dirHandle, targetPath = "") {
-  if (!wasmModule?.FS) return;
-  if (targetPath) ensureDirectory(targetPath);
+async function importDirectoryIntoFS(dirHandle, targetPath = "", module = null) {
+  const runtime = module ?? (await ensureWasmModule());
+  const FS = runtime?.FS;
+  if (!FS) {
+    console.warn("WASM FS 未初始化，无法导入目录");
+    return;
+  }
+  if (targetPath) ensureDirectory(targetPath, runtime);
   const basePath = targetPath
     ? targetPath.startsWith("/")
       ? targetPath
@@ -179,15 +208,20 @@ async function importDirectoryIntoFS(dirHandle, targetPath = "") {
       const file = await entry.getFile();
       const buffer = await file.arrayBuffer();
       const data = new Uint8Array(buffer);
-      const FS = wasmModule.FS;
-      if (FS.analyzePath(entryPath).exists) {
+      if (FS.analyzePath?.(entryPath)?.exists) {
         FS.unlink(entryPath);
+      } else {
+        try {
+          FS.unlink(entryPath);
+        } catch {
+          // 文件不存在时会抛出异常，忽略即可
+        }
       }
       FS.writeFile(entryPath, data, { canOwn: true });
       console.info("已导入文件:", entryPath, data.length, "bytes");
     } else if (entry.kind === "directory") {
-      ensureDirectory(entryPath);
-      await importDirectoryIntoFS(entry, entryPath);
+      ensureDirectory(entryPath, runtime);
+      await importDirectoryIntoFS(entry, entryPath, runtime);
     }
   }
 }
@@ -221,6 +255,18 @@ async function syncFileToDisk(path) {
     console.info("已同步文件到磁盘:", normalized);
   } catch (error) {
     console.warn("同步文件失败", path, error);
+  }
+}
+
+async function restartVm(basePath) {
+  try {
+    const module = await ensureWasmModule();
+    if (basePath) {
+      module.ccall("lvm_set_base_path", "void", ["string"], [basePath]);
+    }
+    module.ccall("lvm_request_restart", "void", [], []);
+  } catch (error) {
+    console.warn("重启 Lava VM 失败", error);
   }
 }
 
@@ -316,39 +362,34 @@ if (fsButton) {
       alert("当前浏览器不支持 File System Access API。");
       return;
     }
-    if (!wasmModule) {
-      alert("WASM 模块尚未加载完成。");
-      return;
-    }
+    // 允许先选择目录，再懒加载 WASM
     try {
       const handle = await window.showDirectoryPicker();
       rootDirectoryHandle = handle;
-      if (wasmModule?.FS) {
-        chdir("/");
-        try {
-          if (!wasmModule.FS.analyzePath("/app").exists) {
-            wasmModule.FS.mkdir("/app");
-          }
-        } catch (err) {
-          console.warn("mkdir app failed", err);
-        }
-        chdir("/app");
-        await importDirectoryIntoFS(handle);
-      } else {
-        pendingFsOps.push(async () => {
-          chdir("/");
-          try {
-            if (!wasmModule.FS.analyzePath("/app").exists) {
-              wasmModule.FS.mkdir("/app");
-            }
-          } catch (err) {
-            console.warn("mkdir app failed", err);
-          }
-          chdir("/app");
-          await importDirectoryIntoFS(handle);
-        });
+      const module = await ensureWasmModule();
+      const FS = module?.FS;
+      if (!FS && !module?.FS_createPath) {
+        alert("WASM 虚拟文件系统尚未就绪，请稍后重试。");
+        return;
       }
-      alert("目录已载入虚拟文件系统");
+      ensureDirectory("/app", module);
+      chdir("/", module);
+      // chdir("/app", module);
+      // await importDirectoryIntoFS(handle, "/app", module);
+      // let lavFiles = [];
+      // try {
+      //   lavFiles = module?.FS?.readdir?.("/app")?.filter((name) =>
+      //     name.toLowerCase().endsWith(".lav")
+      //   );
+      // } catch (error) {
+      //   console.warn("读取 /app 目录失败", error);
+      // }
+      // if (!lavFiles || lavFiles.length === 0) {
+      //   alert("目录已载入，但未找到任何 .lav 程序文件。");
+      //   return;
+      // }
+      await restartVm("/app");
+      console.log("目录已载入虚拟文件系统");
     } catch (error) {
       console.warn("目录授权或读取失败", error);
     }
@@ -356,10 +397,10 @@ if (fsButton) {
 }
 
 if (screenshotButton) {
-  screenshotButton.addEventListener("click", () => {
-    if (!wasmModule) return;
+  screenshotButton.addEventListener("click", async () => {
     try {
-      wasmModule.ccall("PrtScr_All", "void", [], []);
+      const module = await ensureWasmModule();
+      module.ccall("PrtScr_All", "void", [], []);
       alert("已截取当前画面");
     } catch (error) {
       console.warn("截屏失败", error);

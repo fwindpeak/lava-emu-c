@@ -19,3 +19,4 @@
 
 web/lava.js
 web/lava.wasm
+.emcache/

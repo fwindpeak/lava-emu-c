@@ -149,7 +149,7 @@ body {
   text-align: center;
 }
 
-@media (min-width: 1024px) {
+/* @media (min-width: 1024px) {
   .layout {
     flex-direction: row;
     align-items: flex-start;
@@ -160,4 +160,4 @@ body {
   .keyboard-panel {
     flex: 1;
   }
-}
+} */

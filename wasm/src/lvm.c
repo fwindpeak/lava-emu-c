@@ -49,6 +49,8 @@ int32_t lvm_buf[32];           //数据缓冲
 //char sbuf[512];               //字符串缓存
 
 struct TIME tTime;
+static char lvm_base_path[64] = ".";
+static int lvm_restart_requested = 0;
 
 //lvm stk push
 void lvm_stk_push(int n)
@@ -65,6 +67,20 @@ void lvm_stk_pop(int n)
 }
 
 //读取lav文件的数据
+void lvm_set_base_path(const char *path)
+{
+    if(!path) return;
+    size_t len = strlen(path);
+    if(len >= sizeof(lvm_base_path)) len = sizeof(lvm_base_path) - 1;
+    memcpy(lvm_base_path, path, len);
+    lvm_base_path[len] = '\0';
+}
+
+void lvm_request_restart(void)
+{
+    lvm_restart_requested = 1;
+}
+
 int lvm_read(addr dat,int b)
 {
     int n;
@@ -1851,13 +1867,17 @@ void lvm_fclose_all(void)
 
 void lvm_main()
 {
-
-     
     while(1)
     {
-        // lava_demo();
+        if(lvm_restart_requested)
+        {
+            lvm_restart_requested = 0;
+            lava_log("restart requested");
+            lvm_fclose_all();
+            lava_init();
+            continue;
+        }
         lvm_fclose_all();
-
         if(file_load())
         {
             lvm_run();
