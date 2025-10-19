@@ -1,0 +1,67 @@
+[
+  {
+    "directory": "/Users/guokai/code/myprj/lava-emu-c/wasm",
+    "command": "emcc -I/Users/guokai/code/myprj/lava-emu-c/wasm/include -I/Users/guokai/code/myprj/lava-emu-c/wasm /Users/guokai/code/myprj/lava-emu-c/wasm/src/lavasim.c",
+    "file": "/Users/guokai/code/myprj/lava-emu-c/wasm/src/lavasim.c"
+  },
+  {
+    "directory": "/Users/guokai/code/myprj/lava-emu-c/wasm",
+    "command": "emcc -I/Users/guokai/code/myprj/lava-emu-c/wasm/include -I/Users/guokai/code/myprj/lava-emu-c/wasm /Users/guokai/code/myprj/lava-emu-c/wasm/src/main.c",
+    "file": "/Users/guokai/code/myprj/lava-emu-c/wasm/src/main.c"
+  },
+  {
+    "directory": "/Users/guokai/code/myprj/lava-emu-c/wasm",
+    "command": "emcc -I/Users/guokai/code/myprj/lava-emu-c/wasm/include -I/Users/guokai/code/myprj/lava-emu-c/wasm /Users/guokai/code/myprj/lava-emu-c/wasm/src/display_stub.c",
+    "file": "/Users/guokai/code/myprj/lava-emu-c/wasm/src/display_stub.c"
+  },
+  {
+    "directory": "/Users/guokai/code/myprj/lava-emu-c/wasm",
+    "command": "emcc -I/Users/guokai/code/myprj/lava-emu-c/wasm/include -I/Users/guokai/code/myprj/lava-emu-c/wasm /Users/guokai/code/myprj/lava-emu-c/wasm/src/lcd_stub.c",
+    "file": "/Users/guokai/code/myprj/lava-emu-c/wasm/src/lcd_stub.c"
+  },
+  {
+    "directory": "/Users/guokai/code/myprj/lava-emu-c/wasm",
+    "command": "emcc -I/Users/guokai/code/myprj/lava-emu-c/wasm/include -I/Users/guokai/code/myprj/lava-emu-c/wasm /Users/guokai/code/myprj/lava-emu-c/wasm/src/delay_stub.c",
+    "file": "/Users/guokai/code/myprj/lava-emu-c/wasm/src/delay_stub.c"
+  },
+  {
+    "directory": "/Users/guokai/code/myprj/lava-emu-c/wasm",
+    "command": "emcc -I/Users/guokai/code/myprj/lava-emu-c/wasm/include -I/Users/guokai/code/myprj/lava-emu-c/wasm /Users/guokai/code/myprj/lava-emu-c/wasm/src/rtc_stub.c",
+    "file": "/Users/guokai/code/myprj/lava-emu-c/wasm/src/rtc_stub.c"
+  },
+  {
+    "directory": "/Users/guokai/code/myprj/lava-emu-c/wasm",
+    "command": "emcc -I/Users/guokai/code/myprj/lava-emu-c/wasm/include -I/Users/guokai/code/myprj/lava-emu-c/wasm /Users/guokai/code/myprj/lava-emu-c/wasm/src/lvm.c",
+    "file": "/Users/guokai/code/myprj/lava-emu-c/wasm/src/lvm.c"
+  },
+  {
+    "directory": "/Users/guokai/code/myprj/lava-emu-c/wasm",
+    "command": "emcc -I/Users/guokai/code/myprj/lava-emu-c/wasm/include -I/Users/guokai/code/myprj/lava-emu-c/wasm /Users/guokai/code/myprj/lava-emu-c/wasm/src/prtscr.c",
+    "file": "/Users/guokai/code/myprj/lava-emu-c/wasm/src/prtscr.c"
+  },
+  {
+    "directory": "/Users/guokai/code/myprj/lava-emu-c/wasm",
+    "command": "emcc -I/Users/guokai/code/myprj/lava-emu-c/wasm/include -I/Users/guokai/code/myprj/lava-emu-c/wasm /Users/guokai/code/myprj/lava-emu-c/wasm/src/fonts.c",
+    "file": "/Users/guokai/code/myprj/lava-emu-c/wasm/src/fonts.c"
+  },
+  {
+    "directory": "/Users/guokai/code/myprj/lava-emu-c/wasm",
+    "command": "emcc -I/Users/guokai/code/myprj/lava-emu-c/wasm/include -I/Users/guokai/code/myprj/lava-emu-c/wasm /Users/guokai/code/myprj/lava-emu-c/wasm/src/key_stub.c",
+    "file": "/Users/guokai/code/myprj/lava-emu-c/wasm/src/key_stub.c"
+  },
+  {
+    "directory": "/Users/guokai/code/myprj/lava-emu-c/wasm",
+    "command": "emcc -I/Users/guokai/code/myprj/lava-emu-c/wasm/include -I/Users/guokai/code/myprj/lava-emu-c/wasm /Users/guokai/code/myprj/lava-emu-c/wasm/src/spi_flash_stub.c",
+    "file": "/Users/guokai/code/myprj/lava-emu-c/wasm/src/spi_flash_stub.c"
+  },
+  {
+    "directory": "/Users/guokai/code/myprj/lava-emu-c/wasm",
+    "command": "emcc -I/Users/guokai/code/myprj/lava-emu-c/wasm/include -I/Users/guokai/code/myprj/lava-emu-c/wasm /Users/guokai/code/myprj/lava-emu-c/wasm/src/ff_stub.c",
+    "file": "/Users/guokai/code/myprj/lava-emu-c/wasm/src/ff_stub.c"
+  },
+  {
+    "directory": "/Users/guokai/code/myprj/lava-emu-c/wasm",
+    "command": "emcc -I/Users/guokai/code/myprj/lava-emu-c/wasm/include -I/Users/guokai/code/myprj/lava-emu-c/wasm /Users/guokai/code/myprj/lava-emu-c/wasm/src/log_stub.c",
+    "file": "/Users/guokai/code/myprj/lava-emu-c/wasm/src/log_stub.c"
+  }
+]

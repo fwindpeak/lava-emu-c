@@ -1,0 +1,11 @@
+CompileFlags:
+  Add: [-I/Users/guokai/code/myprj/lava-emu-c/wasm/include, -I/Users/guokai/code/myprj/lava-emu-c/wasm]
+  Remove: [-W*]
+Diagnostics:
+  UnusedIncludes: Strict
+  ClangTidy:
+    Add: [modernize-*, readability-*, performance-*]
+    Remove: [modernize-use-trailing-return-type]
+Index:
+  Background: true
+  Standard: c99

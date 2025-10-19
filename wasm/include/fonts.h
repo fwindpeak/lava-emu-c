@@ -8,8 +8,7 @@ extern "C" {
 
 #include "stm32f10x.h"
 
-#define     USE_EXT_CNFONT
-//#define     USE_INR_CNFONT
+#define     USE_INR_CNFONT
 
 typedef struct _tFont
 {

@@ -31285,9 +31285,6 @@ sFONT Font12x12_GB2312 =
   */
 void font_init(void)
 {
-//#ifdef USE_EXT_CNFONT
-    // SPI_FLASH_Init();
-//#endif
     
 }
 

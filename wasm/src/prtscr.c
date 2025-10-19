@@ -50,8 +50,8 @@ static char *GetPrtScrFileName(void)
 void PrtScr_Init(void)
 {
     MakeDir((addr)PrtScrDir);
-    lcd_info.length = LAVA_WIDTH;
-    lcd_info.width = LAVA_HEIGHT;
+    lcd_info.length = 160; // LAVA_WIDTH
+    lcd_info.width = 80;   // LAVA_HEIGHT
 }
 
 /*
