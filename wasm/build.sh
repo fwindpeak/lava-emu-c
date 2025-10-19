@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if ! command -v emcc >/dev/null 2>&1; then
-  echo "error: emcc (Emscripten) Êú™ÊâæÂà∞ÔºåËØ∑ÂÖàÈÖçÁΩÆ Emscripten ÁéØÂ¢É„ÄÇ" >&2
+  echo "error: emcc (Emscripten) Œ¥’“µΩ£¨«Îœ»≈‰÷√ Emscripten ª∑æ≥°£" >&2
   exit 1
 fi
 
@@ -16,7 +16,7 @@ if [[ -z "${EM_CACHE:-}" ]]; then
 fi
 
 if [[ "${EM_CACHE}" != /* ]]; then
-  echo "error: EM_CACHE ÂøÖÈ°ªÊòØÁªùÂØπË∑ØÂæÑ: ${EM_CACHE}" >&2
+  echo "error: EM_CACHE ±ÿ–Î «æ¯∂‘¬∑æ∂: ${EM_CACHE}" >&2
   exit 2
 fi
 
@@ -41,6 +41,8 @@ emcc \
   "${SCRIPT_DIR}/src/ff_stub.c" \
   "${SCRIPT_DIR}/src/log_stub.c" \
   -O2 \
+  -Wno-pointer-sign \
+  -Wno-incompatible-pointer-types \
   -sEXPORTED_FUNCTIONS="['_main','_lava_display_buffer','_lava_display_clear','_lava_display_fill_demo','_lava_enqueue_key','_PrtScr_All','_PrtScr_Init','_lvm_set_base_path','_lvm_request_restart']" \
   -sEXPORTED_RUNTIME_METHODS="['ccall','cwrap','HEAPU8','FS','PATH']" \
   -sASYNCIFY \
@@ -52,4 +54,4 @@ emcc \
   -sEXPORT_NAME="createLavaModule" \
   -o "${OUT_DIR}/lava.js"
 
-echo "ÁîüÊàêÂÆåÊàê: ${OUT_DIR}/lava.js ‰∏é lava.wasm"
+echo "…˙≥…ÕÍ≥…: ${OUT_DIR}/lava.js ”Î lava.wasm"

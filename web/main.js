@@ -412,4 +412,5 @@ function frameLoop() {
   requestAnimationFrame(frameLoop);
 }
 
+await ensureWasmModule();
 requestAnimationFrame(frameLoop);

@@ -17,6 +17,7 @@ int main(void)
     lava_init();
     ff_init();
     PrtScr_Init();
-    lvm_main();
+    // lvm_main();
+    lava_demo();
     return 0;
 }

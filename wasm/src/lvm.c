@@ -1883,20 +1883,18 @@ void lvm_main()
 {
     while(1)
     {
-
-        lava_demo();
-        // if(lvm_restart_requested)
-        // {
-        //     lvm_restart_requested = 0;
-        //     lava_log("restart requested");
-        //     lvm_fclose_all();
-        //     lava_init();
-        //     continue;
-        // }
-        // lvm_fclose_all();
-        // if(file_load())
-        // {
-        //     lvm_run();
-        // }
+        if(lvm_restart_requested)
+        {
+            lvm_restart_requested = 0;
+            lava_log("restart requested");
+            lvm_fclose_all();
+            lava_init();
+            continue;
+        }
+        lvm_fclose_all();
+        if(file_load())
+        {
+            lvm_run();
+        }
     }
 }

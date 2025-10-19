@@ -7,6 +7,7 @@
 #include <math.h>
 #include <stdarg.h>
 #include <string.h>
+#include <time.h>
 
 #include "delay.h"
 #include "ff.h"
@@ -19,6 +20,11 @@
 #include "boshi.h"
 #include "log.h"
 #include "prtscr.h"
+
+// 添加 emscripten.h 头文件以支持 EM_ASM 宏
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 
 // 空白区域颜色
 #define LAVA_NONE_COLOR LCD_RGB(0x28, 0x3C, 0x4E)
@@ -1614,7 +1620,7 @@ int Getms() {
 // 当second=0时，是1900年1月1日 12:00:00 星期一
 #define IS_LEAP_YEAR(year)                                                     \
   (((year) % 400 == 0) || ((year) % 4 == 0 && (year) % 100 != 0))
-#define YEAR_OFFSET 1900
+#define YEAR_OFFSET 1970
 void GetTime(struct TIME *t) {
   long day;
   int day_a_year; // 一年有几天
@@ -1631,7 +1637,7 @@ void GetTime(struct TIME *t) {
   t->week = day % 7;
 
   t->year = 0;
-  // 计算年
+  // // 计算年
   while (1) {
     day_a_year = IS_LEAP_YEAR(t->year + YEAR_OFFSET) ? 366 : 365;
     if (day >= day_a_year) {
@@ -1654,6 +1660,7 @@ void GetTime(struct TIME *t) {
       break;
   }
   t->day = day;
+  t->hour += 8;
 
   // 偏移便于显示
   t->year += YEAR_OFFSET;
@@ -2324,12 +2331,16 @@ void ShowTime() {
   t.second = 0;
   // SetTime(&t);
   ClearScreen();
+  
   while (1) {
+    // SetScreen(0);
     GetTime(&t);
-    lava_sprintf(s, "%d年%d月%d日 %d:%d:%d  ", t.year, t.month, t.day, t.hour,
+    lava_sprintf(s, "%d-%d-%d %d:%d:%d  ", t.year, t.month, t.day, t.hour,
                  t.minute, t.second);
-    TextOut(0, 0, s, 0x01);
+    TextOut(0, 0, s, 0x81);
     Refresh();
+    Delay(1000);
+    ClearScreen();
   }
 }
 
@@ -2404,31 +2415,31 @@ void CharTest() {
 
   // filelist_demo();
   SetScreen(0);
-  lava_printf("hello world\nhghfhdf中文kajhdshf\nnext\nnetxt\n");
-  lava_printf("jasdhfjashdfgasdfhasgfhasdgf\n");
+  // lava_printf("hello world\nhghfhdf中文kajhdshf\nnext\nnetxt\n");
+  // lava_printf("jasdhfjashdfgasdfhasgfhasdgf\n");
   lava_getchar();
 
   SetScreen(1);
-  lava_printf("line1\nline2\n");
-  lava_printf("\xD6\xD0\xCE\xC4\n");
+  // lava_printf("line1\nline2\n");
+  // lava_printf("\xD6\xD0\xCE\xC4\n");
   // lava_printf("中文\n");
-  lava_printf("long string testing,I am 中文 string,and you?\n");
-  lava_printf("New line 再来一个中文\n");
+  // lava_printf("long string testing,I am 中文 string,and you?\n");
+  // lava_printf("New line 再来一个中文\n");
   // lava_printf("long string testing,I am a long string,and you?\n");
   // lava_printf("long string testing,I am 中文?\n");
   lava_getchar();
-  lava_printf("测试\n");
+  // lava_printf("测试\n");
   lava_getchar();
   SetScreen(0);
-  lava_printf("现在是大字体,不知道大字体会不会有用");
+  // lava_printf("现在是大字体,不知道大字体会不会有用\n");
   lava_getchar();
 }
 
 void lava_demo(void) {
-  DrawTest();
+  // DrawTest();
   // CharTest();
   // PrtScr_Init();//截屏初始化
-  // ShowTime();
+  ShowTime();
   // boshi_main();
 }
 
