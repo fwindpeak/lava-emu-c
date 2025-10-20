@@ -11,7 +11,7 @@
 #include "key.h"
 #include "log.h"
 
-#define         USE_DEBUG
+// #define         USE_DEBUG
 
 #define         LVM_STACK_SIZE      0x500
 #define         LVM_DAT_SIZE        0x8000
@@ -362,8 +362,8 @@ static void pSetValue(int lp,int n){
 //指令运行
 int lvm_run(void)
 {
-    char code; //指令
-    char op; //指令
+    uchar code; //指令
+    uchar op; //指令
     
     uint32_t address;   //地址
     uint32_t i,j;
@@ -394,7 +394,7 @@ int lvm_run(void)
             i=0;
         }
 #endif
-        // lava_logf("%d %s ",lvm_pi,op);
+        // lava_logf("%d:%d",lvm_pi,op);
         // lava_logf("%d:",lvm_pi);
         switch(op)
         {
@@ -1858,6 +1858,8 @@ int file_load(void)
                 lava_fseek(lvm_fp,0,SEEK_END);
                 lvm_fsize = lava_ftell(lvm_fp);
                 lava_fseek(lvm_fp,0,SEEK_SET);
+
+                lava_logf("lavfile,file size: %dB",lvm_fsize);
                 return 1;
             }
             else
@@ -1887,16 +1889,19 @@ void lvm_main()
 {
     while(1)
     {
-        if(lvm_restart_requested)
-        {
-            lvm_restart_requested = 0;
-            lava_log("restart requested");
-            lvm_fclose_all();
-            lava_init();
-            continue;
-        }
+        // if(lvm_restart_requested)
+        // {
+        //     lvm_restart_requested = 0;
+        //     lava_log("restart requested");
+        //     lvm_fclose_all();
+        //     lava_init();
+        //     continue;
+        // }
+        lava_log("lava main");
         lvm_fclose_all();
-        if(file_load())
+        lava_init();
+        int ret = file_load();
+        if(ret)
         {
             lvm_run();
         }

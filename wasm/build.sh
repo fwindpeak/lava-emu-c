@@ -51,6 +51,7 @@ emcc \
   -sFORCE_FILESYSTEM=1 \
   -sMODULARIZE=1 \
   -sEXPORT_ES6=1 \
+  -O0 -g4 -sASSERTIONS=2 -sSAFE_HEAP=1 \
   -sEXPORT_NAME="createLavaModule" \
   -o "${OUT_DIR}/lava.js"
 

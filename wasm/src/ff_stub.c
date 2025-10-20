@@ -136,6 +136,7 @@ FRESULT f_unlink(const char* path)
 
 static void free_dir_entries(FATFS_DIR* dp)
 {
+    return;
     if (!dp || !dp->entries) return;
     struct dirent** list = (struct dirent**)dp->entries;
     for (size_t i = dp->index; i < dp->count; ++i)
