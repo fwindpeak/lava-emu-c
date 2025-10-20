@@ -27,8 +27,84 @@ async function ensureWasmModule() {
         enqueueKey =
           module.cwrap?.("lava_enqueue_key", "void", ["number"]) ??
           module._lava_enqueue_key;
-        chdir("/");
-        console.info("Lava WASM 模块已加载");
+        
+        // 确保WASM模块初始化后就在/app目录下
+        chdir("/app", module);
+        
+        // 重写FS对象的关键方法，确保只能访问/app目录
+        const FS = module.FS;
+        if (FS) {
+          // 保存原始方法
+          const originalOpen = FS.open;
+          const originalWriteFile = FS.writeFile;
+          const originalReadFile = FS.readFile;
+          const originalUnlink = FS.unlink;
+          const originalMkdir = FS.mkdir;
+          const originalRmdir = FS.rmdir;
+          const originalRename = FS.rename;
+          
+          // 辅助函数：确保路径在/app目录下
+          function ensureAppPath(path) {
+            const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+            if (normalizedPath.startsWith("/app")) {
+              return normalizedPath;
+            }
+            // 如果路径不是以/app开头，则添加/app前缀
+            return `/app${normalizedPath}`;
+          }
+          
+          // 重写open方法
+          FS.open = function(path, flags, mode) {
+            // 确保路径在/app目录下
+            const appPath = ensureAppPath(path);
+            return originalOpen.call(this, appPath, flags, mode);
+          };
+          
+          // 重写writeFile方法
+          FS.writeFile = function(path, data, options) {
+            // 确保路径在/app目录下
+            const appPath = ensureAppPath(path);
+            return originalWriteFile.call(this, appPath, data, options);
+          };
+          
+          // 重写readFile方法
+          FS.readFile = function(path, options) {
+            // 确保路径在/app目录下
+            const appPath = ensureAppPath(path);
+            return originalReadFile.call(this, appPath, options);
+          };
+          
+          // 重写unlink方法
+          FS.unlink = function(path) {
+            // 确保路径在/app目录下
+            const appPath = ensureAppPath(path);
+            return originalUnlink.call(this, appPath);
+          };
+          
+          // 重写mkdir方法
+          FS.mkdir = function(path, mode) {
+            // 确保路径在/app目录下
+            const appPath = ensureAppPath(path);
+            return originalMkdir.call(this, appPath, mode);
+          };
+          
+          // 重写rmdir方法
+          FS.rmdir = function(path) {
+            // 确保路径在/app目录下
+            const appPath = ensureAppPath(path);
+            return originalRmdir.call(this, appPath);
+          };
+          
+          // 重写rename方法
+          FS.rename = function(oldPath, newPath) {
+            // 确保旧路径和新路径都在/app目录下
+            const appOldPath = ensureAppPath(oldPath);
+            const appNewPath = ensureAppPath(newPath);
+            return originalRename.call(this, appOldPath, appNewPath);
+          };
+        }
+        
+        console.info("Lava WASM 模块已加载，已限制文件系统访问权限");
         return module;
       })
       .catch((error) => {
@@ -48,7 +124,12 @@ function chdir(path, module = wasmModule) {
     if (!FS || typeof FS.chdir !== "function") {
       return;
     }
-    FS.chdir(path);
+    
+    // 确保路径在/app目录下，如果不是则添加/app前缀
+    const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+    const appPath = normalizedPath.startsWith("/app") ? normalizedPath : `/app${normalizedPath}`;
+    
+    FS.chdir(appPath);
   } catch (err) {
     console.warn("chdir error", path, err);
   }
@@ -168,12 +249,17 @@ const fallbackPattern = {
 function ensureDirectory(path, module = wasmModule) {
   const runtime = module;
   if (!runtime) return;
+  
+  // 确保路径在/app目录下，如果不是则添加/app前缀
   const normalized = path.startsWith("/") ? path : `/${path}`;
-  const parts = normalized.split("/").filter(Boolean);
+  const appPath = normalized.startsWith("/app") ? normalized : `/app${normalized}`;
+  
+  const parts = appPath.split("/").filter(Boolean);
   let current = "/";
   for (const part of parts) {
     const FS = runtime.FS;
     const nextPath = current === "/" ? `/${part}` : `${current}/${part}`;
+    
     if (FS?.analyzePath) {
       if (!FS.analyzePath(nextPath).exists) {
         FS.mkdir(nextPath);
@@ -196,15 +282,22 @@ async function importDirectoryIntoFS(dirHandle, targetPath = "", module = null) 
     console.warn("WASM FS 未初始化，无法导入目录");
     return;
   }
-  if (targetPath) ensureDirectory(targetPath, runtime);
-  const basePath = targetPath
-    ? targetPath.startsWith("/")
-      ? targetPath
-      : `/${targetPath}`
+  
+  // 确保目标路径在/app目录下，如果不是则添加/app前缀
+  const normalizedTargetPath = targetPath.startsWith("/") ? targetPath : `/${targetPath}`;
+  const appPath = normalizedTargetPath.startsWith("/app") ? normalizedTargetPath : `/app${normalizedTargetPath}`;
+  
+  if (appPath) ensureDirectory(appPath, runtime);
+  const basePath = appPath
+    ? appPath.startsWith("/")
+      ? appPath
+      : `/${appPath}`
     : "";
   for await (const entry of dirHandle.values()) {
     if(entry.name.startsWith(".DS_")) continue;
+    if(entry.name.length > 16) continue;
     const entryPath = `${basePath}/${entry.name}`.replace(/\/+/g, "/");
+    
     if (entry.kind === "file") {
       const file = await entry.getFile();
       const buffer = await file.arrayBuffer();
@@ -229,7 +322,11 @@ async function importDirectoryIntoFS(dirHandle, targetPath = "", module = null) 
 
 async function getFileHandleFromRoot(relativePath, create = false) {
   if (!rootDirectoryHandle) return null;
-  const parts = relativePath.split("/").filter(Boolean);
+  
+  // 确保相对路径不会访问到上级目录
+  const sanitizedPath = relativePath.replace(/\.\./g, "");
+  const parts = sanitizedPath.split("/").filter(Boolean);
+  
   let current = rootDirectoryHandle;
   for (let i = 0; i < parts.length; i++) {
     const name = parts[i];
@@ -244,8 +341,13 @@ async function getFileHandleFromRoot(relativePath, create = false) {
 
 async function syncFileToDisk(path) {
   if (!wasmModule?.FS || !rootDirectoryHandle) return;
-  const normalized = path.replace(/^\/+/, "");
-  const fsPath = path.startsWith("/") ? path : `/${path}`;
+  
+  // 确保路径在/app目录下，如果不是则添加/app前缀
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  const appPath = normalizedPath.startsWith("/app") ? normalizedPath : `/app${normalizedPath}`;
+  
+  const normalized = appPath.replace(/^\/+/, "");
+  const fsPath = appPath;
   try {
     const data = wasmModule.FS.readFile(fsPath, { encoding: "binary" });
     const fileHandle = await getFileHandleFromRoot(normalized, true);
@@ -262,8 +364,12 @@ async function syncFileToDisk(path) {
 async function restartVm(basePath) {
   try {
     const module = await ensureWasmModule();
+    
+    // 确保基础路径在/app目录下，如果不是则添加/app前缀
     if (basePath) {
-      module.ccall("lvm_set_base_path", "void", ["string"], [basePath]);
+      const normalizedPath = basePath.startsWith("/") ? basePath : `/${basePath}`;
+      const appPath = normalizedPath.startsWith("/app") ? normalizedPath : `/app${normalizedPath}`;
+      module.ccall("lvm_set_base_path", "void", ["string"], [appPath]);
     }
     await module.ccall(
       "lvm_request_restart",
@@ -342,7 +448,7 @@ const keyboardListeners = new Set();
 function triggerKey(code) {
   
   const nativeCode = mapKeyToCode(code);
-  console.log("触发按键:", code, nativeCode);
+  // console.log("触发按键:", code, nativeCode);
   if (!nativeCode) return;
   const payload = { code, nativeCode, timestamp: performance.now() };
   for (const listener of keyboardListeners) {
@@ -381,9 +487,12 @@ if (fsButton) {
         alert("WASM 虚拟文件系统尚未就绪，请稍后重试。");
         return;
       }
+      
+      // 创建/app目录并切换到该目录
       ensureDirectory("/app", module);
-      chdir("/", module);
-      // chdir("/app", module);
+      chdir("/app", module);
+      
+      // 只导入到/app目录下
       await importDirectoryIntoFS(handle, "/app", module);
       await restartVm("/app");
       console.log("目录已载入虚拟文件系统");
