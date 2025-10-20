@@ -55,6 +55,7 @@ volatile int LAVA_posx, LAVA_posy;
 
 // 全局变量
 static uchar g_graph[1600];
+static uchar g_block_buf[GRAPH_SIZE];
 
 typedef enum { BIG = 0, SMALL } fType;
 
@@ -415,196 +416,70 @@ void lava_buf_lineV(uint x0, uint y0, uint l, uint type) {
  */
 // 取data中从offset_bit开始的n位，左对齐，空位0补齐
 void lava_buf_picHL(uint x0, uint y0, uint l, uint type, const addr data) {
-  uchar *pD; // 数据指针
-  uchar *pG; // 图像指针
-  uchar bit_left, bit_right;
-  uchar yanmo; // 掩膜
-  uchar dat;   // 数据
-  int b, a;
-  int tmp1;
+  uint width;
+  uint mode;
+  const uchar *src;
+  uchar *dst_row;
+  uint col;
 
-  if (x0 + l > LAVA_WIDTH_LOCAL)
-    l = LAVA_WIDTH_LOCAL - x0;
-  pD = (uchar *)data;
-  pG = GRAPH_BUF + y0 * (LAVA_WIDTH_LOCAL / 8) + x0 / 8;
+  if (y0 >= LAVA_HEIGHT_LOCAL || x0 >= LAVA_WIDTH_LOCAL)
+    return;
 
-  bit_right = x0 % 8;
-  bit_left = 8 - bit_right;
-  if (bit_left == 8)
-    bit_left = 0;
+  width = l;
+  if (width == 0)
+    return;
 
-  // 位置为8的整数的情况
-  if (bit_right == 0) {
-    b = l / 8;
-    a = l % 8;
-    switch (type & 0x07) {
+  if (x0 + width > LAVA_WIDTH_LOCAL)
+    width = LAVA_WIDTH_LOCAL - x0;
+
+  if (width == 0)
+    return;
+
+  src = (const uchar *)data;
+  mode = type & 0x07;
+  dst_row = GRAPH_BUF + y0 * (LAVA_WIDTH_LOCAL / 8);
+
+  for (col = 0; col < width; col++) {
+    uint src_byte = col / 8;
+    uint src_bit = 7 - (col % 8);
+    uchar bit = (src[src_byte] >> src_bit) & 0x01;
+    uint dest_x = x0 + col;
+    uchar *dst = dst_row + dest_x / 8;
+    uchar mask = (uchar)(0x80 >> (dest_x % 8));
+    uchar value = *dst;
+
+    switch (mode) {
     case 2:
-      while (b--)
-        *pG++ = ~(*pD++);
-      if (a) {
-        *pG &= 0xff >> a;
-        *pG |= (~(*pD)) & (0xff << (8 - a));
-      }
+      bit ^= 0x01;
+      if (bit)
+        value |= mask;
+      else
+        value &= (uchar)~mask;
       break;
     case 3:
-      while (b--)
-        *pG++ |= *pD++;
-      if (a)
-        *pG |= *pD & (0xff << (8 - a));
+    case 6:
+      if (bit)
+        value |= mask;
       break;
     case 4:
-      while (b--)
-        *pG++ &= *pD++;
-      if (a) {
-        *pG &= 0xff >> a;
-        *pG |= ((*pG & *pD)) & (0xff << (8 - a));
-      }
+      if (!bit)
+        value &= (uchar)~mask;
       break;
     case 5:
-      while (b--)
-        *pG++ ^= *pD++;
-      if (a) {
-        *pG &= 0xff >> a;
-        *pG |= ((*pG ^ *pD)) & (0xff << (8 - a));
-      }
+      if (bit)
+        value ^= mask;
       break;
-    case 0:
-    case 1:
     default:
-      while (b--)
-        *pG++ = *pD++;
-      if (a) {
-        *pG &= 0xff >> a;
-        *pG |= *pD & (0xff << (8 - a));
-      }
+      if (bit)
+        value |= mask;
+      else
+        value &= (uchar)~mask;
       break;
     }
+    *dst = value;
   }
-
-  // 位置不为8的整数的情况
-  else {
-    yanmo = 0xff << bit_left;
-    dat = *data >> bit_right;
-
-    if ((l + bit_right) / 8 == 0) // 如果不够1字节
-    {
-      yanmo |= 0xff >> (l + bit_right);
-    }
-
-    // 处理第一字节
-    // pG++;
-    switch (type & 0x07) {
-    case 2:
-      *pG &= (0xff << bit_left);
-      *pG |= dat;
-      *pG++ ^= ~yanmo;
-      break;
-    case 3:
-      *pG++ |= dat;
-      break;
-    case 4:
-      *pG++ &= yanmo | dat;
-      break;
-    case 5: // 异或
-      *pG++ ^= dat;
-      break;
-    case 0:
-    case 1:
-    default:
-      *pG &= yanmo;
-      *pG++ |= dat;
-      break;
-    }
-    // 处理中间字节
-    b = (l - bit_left) / 8;
-    switch (type & 0x07) {
-    case 2:
-      while (b--)
-        *pG++ = ~((*data << bit_left) | (*(++data) >> bit_right));
-      break;
-    case 3:
-      while (b--)
-        *pG++ |= (*data << bit_left) | (*(++data) >> bit_right);
-      break;
-    case 4:
-      while (b--)
-        *pG++ &= (*data << bit_left) | (*(++data) >> bit_right);
-      break;
-    case 5:
-      while (b--)
-        *pG++ ^= (*data << bit_left) | (*(++data) >> bit_right);
-      break;
-    case 0:
-    case 1:
-    default:
-      while (b--)
-        *pG++ = (*data << bit_left) | (*(++data) >> bit_right);
-      break;
-    }
-    // 处理最后一字节
-    if ((l + bit_right) / 8) {
-      tmp1 = (l + bit_right) % 8;
-      if (tmp1) {
-
-        yanmo = 0xff >> bit_right;
-        dat = *data << bit_left;
-
-        switch (type & 0x07) {
-        case 2:
-          *pG &= yanmo;
-          *pG |= dat;
-          *pG ^= ~yanmo;
-          break;
-        case 3:
-          *pG++ |= dat;
-          break;
-        case 4:
-          *pG++ &= dat | yanmo;
-          break;
-        case 5:
-          *pG++ ^= dat;
-          break;
-        case 0:
-        case 1:
-        default:
-          *pG &= yanmo;
-          *pG++ |= dat;
-          break;
-        }
-      }
-    }
-  }
-
-  // OR like this
-  /*
-  else
-  {
-      for(i=0; i<l; i++)
-      {
-          tmp = (*(data+(i/8))&(0x80>>(i%8)))?1:0;
-          switch(type&0x07)
-          {
-          case 0:
-          case 1:
-          default:
-              break;
-          case 2:
-              tmp=tmp?0:1;
-              break;
-          case 3:
-              tmp = lava_buf_get_point(x0,y0) | tmp;
-              break;
-          case 4:
-              tmp = lava_buf_get_point(x0,y0) & tmp;
-              break;
-          case 5:
-              tmp = lava_buf_get_point(x0,y0) ^ tmp;
-              break;
-          }
-          lava_buf_point(x0++,y0,tmp);
-      }
-  }*/
 }
+
 
 /**
  * @brief  显示英文字符
@@ -919,62 +794,81 @@ WriteBlock
 // TODO:在缓冲区绘图,目前采用画点方式，效率不高
 void WriteBlock(int x, int y, int width, int height, int type,
                 const addr data) {
-  int i, l;
-  uchar *pOld, *pNew;
-  pNew = (uchar *)data;
+  int i;
+  int row_bytes;
+  int total_bytes;
+  const uchar *src;
+  uchar *dst;
+  uchar *pOld;
+
+  if (x < 0 || y < 0 || width <= 0 || height <= 0)
+    return;
+
+  if (x >= LAVA_WIDTH_LOCAL || y >= LAVA_HEIGHT_LOCAL)
+    return;
 
   if (x + width > LAVA_WIDTH_LOCAL)
     width = LAVA_WIDTH_LOCAL - x;
   if (y + height > LAVA_HEIGHT_LOCAL)
     height = LAVA_HEIGHT_LOCAL - y;
 
-  if (type & 0x08)
-    while (l--)
-      *pNew++ = ~*pNew;
-  if (type & 0x40) // 直接在屏幕上绘图
-  {
-    l = width * height / 8;
+  if (width <= 0 || height <= 0)
+    return;
+
+  row_bytes = (width + 7) / 8;
+  total_bytes = row_bytes * height;
+  if (total_bytes <= 0 || total_bytes > GRAPH_SIZE)
+    return;
+
+  src = (const uchar *)data;
+  dst = g_block_buf;
+  memcpy(dst, src, total_bytes);
+
+  if (type & 0x08) {
+    for (i = 0; i < total_bytes; i++)
+      dst[i] = (uchar)~dst[i];
+  }
+
+  if (type & 0x40) {
     lcd_get_bw(x * LAVA_SCALE + LAVA_X_START, y * LAVA_SCALE + LAVA_Y_START,
                width, height, LAVA_SCALE, g_graph, LAVA_FOR_COLOR);
     pOld = g_graph;
     switch (type & 0x07) {
+    case 0:
     case 1:
       break;
-    case 2: //???TODO:
-      while (l--)
-        *pNew++ = ~*pNew;
+    case 2:
+      for (i = 0; i < total_bytes; i++)
+        dst[i] = (uchar)~dst[i];
       break;
     case 3:
-      while (l--)
-        *pNew++ |= *pOld++;
+      for (i = 0; i < total_bytes; i++)
+        dst[i] |= pOld[i];
       break;
     case 4:
-      while (l--)
-        *pNew++ &= *pOld++;
+      for (i = 0; i < total_bytes; i++)
+        dst[i] &= pOld[i];
       break;
     case 5:
-      while (l--)
-        *pNew++ ^= *pOld++;
+      for (i = 0; i < total_bytes; i++)
+        dst[i] ^= pOld[i];
       break;
     default:
       break;
     }
     lcd_draw_bw(x * LAVA_SCALE + LAVA_X_START, y * LAVA_SCALE + LAVA_Y_START,
-                width, height, LAVA_SCALE, data, LAVA_BK_COLOR, LAVA_FOR_COLOR);
+                width, height, LAVA_SCALE, dst, LAVA_BK_COLOR, LAVA_FOR_COLOR);
   } else {
-    l = width / 8;
-    if (width % 8)
-      l++;
+    const uchar *row = dst;
+    int row_stride = row_bytes;
     for (i = 0; i < height; i++) {
-      lava_buf_picHL(x, y + i, width, type, data);
-      data += l;
+      lava_buf_picHL(x, y + i, width, type, (const addr)row);
+      row += row_stride;
     }
   }
 }
 
 /*
-原型　void GetBlock(int x,int y,int width,int height,int type,addr data);
-
 功能　取屏幕图形
 
 说明　把屏幕或图形缓冲区的(x,y)坐标处的宽为width高height的矩形区域保存到内存地址data处。
@@ -2335,12 +2229,12 @@ void ShowTime() {
   while (1) {
     SetScreen(1);
     GetTime(&t);
-    // lava_sprintf(s, "%d-%d-%d %d:%d:%d  ", t.year, t.month, t.day, t.hour,
-    //              t.minute, t.second);
-    // TextOut(0, 0, s, 0x01);
-    // Refresh();
-    lava_printf("%d-%d-%d %d:%d:%d  ", t.year, t.month, t.day, t.hour,
+    lava_sprintf(s, "%d-%d-%d %d:%d:%d  ", t.year, t.month, t.day, t.hour,
                  t.minute, t.second);
+    TextOut(0, 0, s, 0x01);
+    Refresh();
+    // lava_printf("%d-%d-%d %d:%d:%d  ", t.year, t.month, t.day, t.hour,
+    //              t.minute, t.second);
     Delay(1000);
     ClearScreen();
   }
