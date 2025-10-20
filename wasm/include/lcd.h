@@ -19,6 +19,8 @@ typedef struct {
 
 void lcd_init(void);
 void lcd_clr(LCD_COLOR color);
+//»­µã
+void lcd_draw_point(unsigned int x0,unsigned int y0,LCD_COLOR color);
 void lcd_draw_block(unsigned int x0,unsigned int y0,unsigned int x1,unsigned int y1,LCD_COLOR color);
 void lcd_draw_square(unsigned int x,unsigned int y,unsigned int l,LCD_COLOR color);
 void lcd_draw_bw(unsigned int x,unsigned int y,unsigned int w,unsigned int h,unsigned int scale,const unsigned char *p,LCD_COLOR bcolor,LCD_COLOR fcolor);

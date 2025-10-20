@@ -17,6 +17,19 @@ void lcd_clr(LCD_COLOR color)
     lava_display_clear();
 }
 
+//画点
+void lcd_draw_point(unsigned int x0,unsigned int y0,LCD_COLOR color)
+{
+    unsigned char *buf = lava_display_buffer();
+    unsigned int index = y0 * (LAVA_DISPLAY_WIDTH / 8) + (x0 / 8);
+    unsigned char mask = BIT_MASK(x0);
+    if(color != g_back_color)
+        buf[index] |= mask;
+    else
+        buf[index] &= ~mask;
+}
+
+//画实心矩形
 void lcd_draw_block(unsigned int x0,unsigned int y0,unsigned int x1,unsigned int y1,LCD_COLOR color)
 {
     unsigned char *buf = lava_display_buffer();
@@ -34,6 +47,12 @@ void lcd_draw_block(unsigned int x0,unsigned int y0,unsigned int x1,unsigned int
     }
 }
 
+/**
+    @bref   画实心正方形
+    @param  x,y正方形左上角位置
+    @param  l 正方形边长
+    @param  color 正方形颜色
+*/
 void lcd_draw_square(unsigned int x,unsigned int y,unsigned int l,LCD_COLOR color)
 {
     lcd_draw_block(x,y,x+l-1,y+l-1,color);

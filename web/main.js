@@ -287,7 +287,7 @@ function drawFrame() {
       // 🔸 MSB-first，从bit7开始
       for (let bit = 7; bit >= 0; bit--) {
         const on = (byte >> bit) & 1;
-        const shade = on ? 230 : 20;
+        const shade = on ? 20 : 230;
         data[di++] = shade;
         data[di++] = shade;
         data[di++] = shade;

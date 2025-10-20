@@ -41,7 +41,8 @@
 #define GRAPH_SIZE (LAVA_WIDTH_LOCAL * LAVA_HEIGHT_LOCAL / 8)
 
 // 前景色
-int LAVA_FOR_COLOR = LCD_RGB(0, 0, 0);
+int LAVA_FOR_COLOR = 1;
+int LAVA_BACK_COLOR = LAVA_BK_COLOR;
 uchar GRAPH_BUF[GRAPH_SIZE];
 uchar TEXT_BUF[(LAVA_WIDTH_LOCAL / 12) * (LAVA_HEIGHT_LOCAL / 6)];
 
@@ -144,10 +145,10 @@ char lava_lcd_getpoint(int x, int y) {
 void lava_lcd_point(int x, int y, int type) {
   LCD_COLOR color;
 
-  y *= LAVA_SCALE;
-  x *= LAVA_SCALE;
-  y += LAVA_Y_START;
-  x += LAVA_X_START;
+  // y *= LAVA_SCALE;
+  // x *= LAVA_SCALE;
+  // y += LAVA_Y_START;
+  // x += LAVA_X_START;
 
   switch (type) {
   case 0:
@@ -161,7 +162,8 @@ void lava_lcd_point(int x, int y, int type) {
                                                     : LAVA_FOR_COLOR;
     break;
   }
-  lcd_draw_square(x, y, 2, color);
+  // lcd_draw_square(x, y, 2, color);
+  lcd_draw_point(x, y, color);
 }
 
 /**
@@ -2251,7 +2253,10 @@ void DrawTest() {
 
   for (i = 0; i < 40; i++) {
     Box(80 - i * 2, 40 - i, 80 + i * 2, 40 + i, 0, 1);
+    // lava_lcd_point(i,i,1);
+    // lcd_draw_point(i,i,1);
   }
+  // Line(0,0,179,79,1);
 
   lava_getchar();
 
@@ -2349,8 +2354,8 @@ void CharTest() {
 }
 
 void lava_demo(void) {
-  // DrawTest();
-  CharTest();
+  DrawTest();
+  // CharTest();
   // PrtScr_Init();//截屏初始化
   // ShowTime();
   // boshi_main();
