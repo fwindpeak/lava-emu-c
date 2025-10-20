@@ -966,7 +966,8 @@ void TextOut(int x, int y, addr string, int type) {
   lava_set_font(type & 0x80 ? 0 : 1);
 
   while (*string != '\0') {
-    if (*string < 0x80) {
+    uchar chr = *string;
+    if (chr < 0x80) {
       lava_show_enchar(x, y, *string, type);
       x += LAVA_enFont->Width;
       string++;
@@ -1174,8 +1175,10 @@ putchar
 说明:
 */
 void lava_putchar(char ch) {
-  int x = 0, y = 0;
-  if (ch >= 0x20) {
+  int x = 0;
+  int y = 0;
+  uchar chr = ch;
+  if (chr >= 0x20) {
     if (LAVA_posx >= LAVA_line_byte)
       lava_next_line();
     if (LAVA_posy >= LAVA_line_num) {
@@ -1188,7 +1191,7 @@ void lava_putchar(char ch) {
              LAVA_line_byte);
       UpdateLCD(0);
     }
-    if (ch >= 0x80) {
+    if (chr >= 0x80) {
       if (lava_str_buf[2] == 0x00) {
         if (LAVA_posx >= LAVA_line_byte - 1)
           lava_next_line();
@@ -2225,16 +2228,18 @@ void ShowTime() {
   t.second = 0;
   // SetTime(&t);
   ClearScreen();
+
+  char timeStr[] = {0xca,0xb1,'\0'};
   
   while (1) {
-    SetScreen(1);
-    GetTime(&t);
-    lava_sprintf(s, "%d-%d-%d %d:%d:%d  ", t.year, t.month, t.day, t.hour,
-                 t.minute, t.second);
-    TextOut(0, 0, s, 0x01);
-    Refresh();
-    // lava_printf("%d-%d-%d %d:%d:%d  ", t.year, t.month, t.day, t.hour,
+    SetScreen(0);
+    // GetTime(&t);
+    // lava_sprintf(s, "%s \n%d-%d-%d %d:%d:%d  ", timeStr, t.year, t.month, t.day, t.hour,
     //              t.minute, t.second);
+    // TextOut(0, 0, s, 0x01);
+    // Refresh();
+    lava_printf("%s \n%d-%d-%d %d:%d:%d  ", timeStr, t.year, t.month, t.day, t.hour,
+                 t.minute, t.second);
     Delay(1000);
     ClearScreen();
   }
@@ -2303,15 +2308,27 @@ void DrawTest() {
 // 文字显示测试
 void CharTest() {
   int i, n;
-  SetScreen(1);
 
+  char cnStr[] = {0xd6,0xd0,0xce,0xc4,'\0'};
+
+  SetScreen(1);
+  lava_show_cnchar(0, 1, 0xd6, 0xd0, 0x41);
+  lava_show_cnchar(16, 1, 0xce, 0xc4, 0x41);
+  lava_getchar();
+
+  TextOut(1, 32, cnStr, 0x41);
+  lava_getchar();
+
+  SetScreen(1);
   for (i = 'A'; i <= 'z'; i++) {
     lava_putchar(i);
   }
+  lava_getchar();
+
 
   // filelist_demo();
   SetScreen(0);
-  lava_printf("hello world\nhghfhdf中文kajhdshf\nnext\nnetxt\n");
+  lava_printf("hello world\nhghfhdf %s kajhdshf\nnext\nnetxt\n", cnStr);
   // lava_printf("jasdhfjashdfgasdfhasgfhasdgf\n");
   lava_getchar();
 
@@ -2333,9 +2350,9 @@ void CharTest() {
 
 void lava_demo(void) {
   // DrawTest();
-  // CharTest();
+  CharTest();
   // PrtScr_Init();//截屏初始化
-  ShowTime();
+  // ShowTime();
   // boshi_main();
 }
 
