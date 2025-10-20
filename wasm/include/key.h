@@ -5,13 +5,13 @@
 
 #define     LAVA_KEY_NUM         7
 
-#define     LAVA_KEY_UP          1
-#define     LAVA_KEY_DOWN        2
-#define     LAVA_KEY_RIGHT       3
-#define     LAVA_KEY_LEFT        4
-#define     LAVA_KEY_ENTER       5
+#define     LAVA_KEY_UP          20
+#define     LAVA_KEY_DOWN        21
+#define     LAVA_KEY_RIGHT       22
+#define     LAVA_KEY_LEFT        23
+#define     LAVA_KEY_ENTER       13
 #define     LAVA_KEY_F1          6      
-#define     LAVA_KEY_ESC         7    
+#define     LAVA_KEY_ESC         27
 
 extern int keymapc;
 extern unsigned char KeyMap[LAVA_KEY_NUM][2];

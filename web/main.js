@@ -56,11 +56,11 @@ function chdir(path, module = wasmModule) {
 
 
 const KEY_MAP = {
-  ArrowUp: 1,
-  ArrowDown: 2,
-  ArrowRight: 3,
-  ArrowLeft: 4,
-  Enter: 5,
+  ArrowUp: 20,
+  ArrowDown: 21,
+  ArrowRight: 22,
+  ArrowLeft: 23,
+  Enter: 13,
   F1: 6,
   F2: 101,
   F3: 102,
@@ -73,7 +73,7 @@ const KEY_MAP = {
   F10: 109,
   F11: 110,
   F12: 111,
-  Escape: 7,
+  Escape: 27,
   Space: 32,
   Tab: 9,
   Backspace: 8,
@@ -90,7 +90,7 @@ function mapKeyToCode(code) {
     return KEY_MAP[code];
   }
   if (code.startsWith("Key") && code.length === 4) {
-    return code.charCodeAt(3);
+    return code.toLowerCase().charCodeAt(3);
   }
   switch (code) {
     case "Slash":
@@ -340,7 +340,9 @@ function flashButton(button) {
 const keyboardListeners = new Set();
 
 function triggerKey(code) {
+  
   const nativeCode = mapKeyToCode(code);
+  console.log("触发按键:", code, nativeCode);
   if (!nativeCode) return;
   const payload = { code, nativeCode, timestamp: performance.now() };
   for (const listener of keyboardListeners) {

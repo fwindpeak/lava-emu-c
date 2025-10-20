@@ -545,12 +545,23 @@ rand
 int lava_rand() {
   uint32_t r, n;
   rtc_time now;
+  
+  // 获取当前时间
   now = get_time_rtc();
-  r = (now.microsec + lava_rand_seed);
-  now = get_time_rtc();
-  n = now.microsec % 10;
-  r = (r / n) % 0x7fff;
-  return r;
+  
+  // 使用线性同余生成器改进随机性
+  // 结合时间戳和种子值
+  lava_rand_seed = (lava_rand_seed * 1103515245 + 12345) & 0x7fffffff;
+  r = (now.microsec + lava_rand_seed) & 0x7fffffff;
+  
+  // 避免除零错误，确保n在1-10之间
+  n = (r % 9) + 1;
+  
+  // 进一步混合随机性
+  r = (r / n) ^ (now.seconds);
+  r = r % 0x7fff;
+  
+  return (int)r;
 }
 
 /*

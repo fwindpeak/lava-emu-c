@@ -19,5 +19,6 @@
 
 web/lava.js
 web/lava.wasm
+web/lava.wasm.map
 .emcache/
 .cache/
