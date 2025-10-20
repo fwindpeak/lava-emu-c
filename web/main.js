@@ -203,6 +203,7 @@ async function importDirectoryIntoFS(dirHandle, targetPath = "", module = null) 
       : `/${targetPath}`
     : "";
   for await (const entry of dirHandle.values()) {
+    if(entry.name.startsWith(".DS_")) continue;
     const entryPath = `${basePath}/${entry.name}`.replace(/\/+/g, "/");
     if (entry.kind === "file") {
       const file = await entry.getFile();

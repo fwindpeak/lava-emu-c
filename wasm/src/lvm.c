@@ -378,8 +378,10 @@ int lvm_run(void)
     lvm_stk_p = 0;
     lvm_dat_p = 0;
     lpStrBuf = LVM_STRBUF_SATRT;
+    
     while(lvm_pi<lvm_fsize)
     {
+        // Delay(1);
         i = j = 0;
         m = n = 0;
         a = 0;
@@ -392,6 +394,8 @@ int lvm_run(void)
             i=0;
         }
 #endif
+        // lava_logf("%d %s ",lvm_pi,op);
+        // lava_logf("%d:",lvm_pi);
         switch(op)
         {
         case 0://nop
