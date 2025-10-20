@@ -2333,12 +2333,14 @@ void ShowTime() {
   ClearScreen();
   
   while (1) {
-    // SetScreen(0);
+    SetScreen(1);
     GetTime(&t);
-    lava_sprintf(s, "%d-%d-%d %d:%d:%d  ", t.year, t.month, t.day, t.hour,
+    // lava_sprintf(s, "%d-%d-%d %d:%d:%d  ", t.year, t.month, t.day, t.hour,
+    //              t.minute, t.second);
+    // TextOut(0, 0, s, 0x01);
+    // Refresh();
+    lava_printf("%d-%d-%d %d:%d:%d  ", t.year, t.month, t.day, t.hour,
                  t.minute, t.second);
-    TextOut(0, 0, s, 0x81);
-    Refresh();
     Delay(1000);
     ClearScreen();
   }
@@ -2415,12 +2417,12 @@ void CharTest() {
 
   // filelist_demo();
   SetScreen(0);
-  // lava_printf("hello world\nhghfhdf中文kajhdshf\nnext\nnetxt\n");
+  lava_printf("hello world\nhghfhdf中文kajhdshf\nnext\nnetxt\n");
   // lava_printf("jasdhfjashdfgasdfhasgfhasdgf\n");
   lava_getchar();
 
   SetScreen(1);
-  // lava_printf("line1\nline2\n");
+  lava_printf("line134556\nline2\n");
   // lava_printf("\xD6\xD0\xCE\xC4\n");
   // lava_printf("中文\n");
   // lava_printf("long string testing,I am 中文 string,and you?\n");
