@@ -29,12 +29,13 @@ async function ensureWasmModule() {
           module._lava_enqueue_key;
         
         // 确保WASM模块初始化后就在/app目录下
-        chdir("/app", module);
+        // chdir("/app", module);
         
         // 重写FS对象的关键方法，确保只能访问/app目录
         const FS = module.FS;
         if (FS) {
           // 保存原始方法
+          const originalChdir = FS.chdir;
           const originalOpen = FS.open;
           const originalWriteFile = FS.writeFile;
           const originalReadFile = FS.readFile;
@@ -52,6 +53,12 @@ async function ensureWasmModule() {
             // 如果路径不是以/app开头，则添加/app前缀
             return `/app${normalizedPath}`;
           }
+
+          FS.chdir = function(path) {
+            // 确保路径在/app目录下
+            const appPath = ensureAppPath(path);
+            return originalChdir.call(this, appPath);
+          };
           
           // 重写open方法
           FS.open = function(path, flags, mode) {
@@ -477,27 +484,43 @@ if (fsButton) {
       alert("当前浏览器不支持 File System Access API。");
       return;
     }
-    // 允许先选择目录，再懒加载 WASM
+    // 先选择目录，再加载WASM模块
     try {
       const handle = await window.showDirectoryPicker();
       rootDirectoryHandle = handle;
+      
+      // 显示加载状态
+      fsButton.textContent = "加载中...";
+      fsButton.disabled = true;
+      
+      // 在选择目录后再加载WASM模块
       const module = await ensureWasmModule();
       const FS = module?.FS;
       if (!FS && !module?.FS_createPath) {
         alert("WASM 虚拟文件系统尚未就绪，请稍后重试。");
+        fsButton.textContent = "选择程序目录";
+        fsButton.disabled = false;
         return;
       }
       
       // 创建/app目录并切换到该目录
       ensureDirectory("/app", module);
-      chdir("/app", module);
+      // chdir("/app", module);
       
       // 只导入到/app目录下
       await importDirectoryIntoFS(handle, "/app", module);
-      await restartVm("/app");
+      
+      // 恢复按钮状态
+      fsButton.textContent = "重新选择目录";
+      fsButton.disabled = false;
+      
       console.log("目录已载入虚拟文件系统");
+      chdir("/app", module);
+      await restartVm("/app");
     } catch (error) {
       console.warn("目录授权或读取失败", error);
+      fsButton.textContent = "选择程序目录";
+      fsButton.disabled = false;
     }
   });
 }
@@ -524,5 +547,6 @@ function frameLoop() {
   requestAnimationFrame(frameLoop);
 }
 
-await ensureWasmModule();
+// 移除页面加载时的WASM模块初始化
+// await ensureWasmModule();
 requestAnimationFrame(frameLoop);

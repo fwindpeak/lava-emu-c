@@ -1889,6 +1889,10 @@ void lvm_main()
 {
     while(1)
     {
+        if(!lvm_restart_requested){
+            Delay(50);
+            continue;
+        }
         // if(lvm_restart_requested)
         // {
         //     lvm_restart_requested = 0;
@@ -1900,8 +1904,7 @@ void lvm_main()
         lava_log("lava main");
         lvm_fclose_all();
         lava_init();
-        int ret = file_load();
-        if(ret)
+        if(file_load())
         {
             lvm_run();
         }
