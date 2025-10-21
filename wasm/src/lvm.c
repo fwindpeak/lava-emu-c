@@ -1,6 +1,6 @@
 /**
   *
-  *  lavaÖ¸Áî½âÎö
+  *  lavaæŒ‡ä»¤è§£æ
   *
   **/
 
@@ -31,25 +31,25 @@
 #define         LVM_FN_LENGTH_MAX   16
 
 
-char lvm_run_flag;          //lvmÔËĞĞ×´Ì¬
+unsigned char lvm_run_flag;          //lvmè¿è¡ŒçŠ¶æ€
 
-char lvm_fp;                //Ö´ĞĞ.lavÎÄ¼şµÄ¾ä±ú
-long lvm_fsize;             //.lavÎÄ¼ş³¤¶È
-long lvm_pi;                //.lavÎÄ¼şÎ»ÖÃ
+unsigned char lvm_fp;                //æ‰§è¡Œ.lavæ–‡ä»¶çš„å¥æŸ„
+long lvm_fsize;             //.lavæ–‡ä»¶é•¿åº¦
+long lvm_pi;                //.lavæ–‡ä»¶ä½ç½®
 
-int32_t lvm_stk[ LVM_STACK_SIZE];        //¶ÑÕ»
-long lvm_stk_p;             //¶ÑÕ»Î»ÖÃ
-char lvm_dat[0x8000];        //´æ´¢Êı¾İ
-int lvm_dat_p;            //Êı¾İÎ»ÖÃ
-int lvm_dat_pb;            //Êı¾İÎ»ÖÃ±£´æ
-int lvm_dat_pb2;           //Êı¾İÎ»ÖÃ±£´æ2
-int lpStrBuf;              //×Ö·û´®Ö¸Õë
+int32_t lvm_stk[ LVM_STACK_SIZE];        //å †æ ˆ
+long lvm_stk_p;             //å †æ ˆä½ç½®
+unsigned char lvm_dat[0x8000];        //å­˜å‚¨æ•°æ®
+int lvm_dat_p;            //æ•°æ®ä½ç½®
+int lvm_dat_pb;            //æ•°æ®ä½ç½®ä¿å­˜
+int lvm_dat_pb2;           //æ•°æ®ä½ç½®ä¿å­˜2
+int lpStrBuf;              //å­—ç¬¦ä¸²æŒ‡é’ˆ
 
-int32_t lvm_buf[32];           //Êı¾İ»º³å
-//char sbuf[512];               //×Ö·û´®»º´æ
+int32_t lvm_buf[32];           //æ•°æ®ç¼“å†²
+//unsigned char sbuf[512];               //å­—ç¬¦ä¸²ç¼“å­˜
 
 struct TIME tTime;
-static char lvm_base_path[64] = ".";
+static unsigned char lvm_base_path[64] = ".";
 static int lvm_restart_requested = 0;
 
 //lvm stk push
@@ -66,11 +66,11 @@ void lvm_stk_pop(int n)
     while((--n)>=0)lvm_buf[n] = lvm_stk[lvm_stk_p+n];
 }
 
-//¶ÁÈ¡lavÎÄ¼şµÄÊı¾İ
-void lvm_set_base_path(const char *path)
+//è¯»å–lavæ–‡ä»¶çš„æ•°æ®
+void lvm_set_base_path(const unsigned char *path)
 {
     if(!path) return;
-    size_t len = strlen(path);
+    size_t len = strlen((const char *)path);
     if(len >= sizeof(lvm_base_path)) len = sizeof(lvm_base_path) - 1;
     memcpy(lvm_base_path, path, len);
     lvm_base_path[len] = '\0';
@@ -97,18 +97,18 @@ int lvm_read(addr dat,int b)
     return n;
 } 
 
-//¶ÁÈ¡lavÎÄ¼ş1b
+//è¯»å–lavæ–‡ä»¶1b
 unsigned char lvm_read1b(void)
 {
     int n;
-    char b;
+    unsigned char b;
     lava_fseek(lvm_fp,lvm_pi,SEEK_SET);
     n=lava_fread(&b,1,1,lvm_fp);
     lvm_pi += n;
     return b;
 }
 
-//¶ÁÈ¡lavÎÄ¼ş2b
+//è¯»å–lavæ–‡ä»¶2b
 unsigned short lvm_read2b(void)
 {
     int n;
@@ -119,7 +119,7 @@ unsigned short lvm_read2b(void)
     return b;
 }
 
-//¶ÁÈ¡lavÎÄ¼ş4b
+//è¯»å–lavæ–‡ä»¶4b
 uint32_t lvm_read4b(void)
 {
     int n;
@@ -133,21 +133,21 @@ uint32_t lvm_read4b(void)
 
 
 /*
- * º¯ÊıÃû£ºitoa
- * ÃèÊö  £º½«ÕûĞÎÊı¾İ×ª»»³É×Ö·û´®
- * ÊäÈë  £º-radix =10 ±íÊ¾10½øÖÆ£¬ÆäËû½á¹ûÎª0
- *         -value Òª×ª»»µÄÕûĞÎÊı
- *         -buf ×ª»»ºóµÄ×Ö·û´®
+ * å‡½æ•°åï¼šitoa
+ * æè¿°  ï¼šå°†æ•´å½¢æ•°æ®è½¬æ¢æˆå­—ç¬¦ä¸²
+ * è¾“å…¥  ï¼š-radix =10 è¡¨ç¤º10è¿›åˆ¶ï¼Œå…¶ä»–ç»“æœä¸º0
+ *         -value è¦è½¬æ¢çš„æ•´å½¢æ•°
+ *         -buf è½¬æ¢åçš„å­—ç¬¦ä¸²
  *         -radix = 10
- * Êä³ö  £ºÎŞ
- * ·µ»Ø  £ºÎŞ
- * µ÷ÓÃ  £º±»lava_printf()µ÷ÓÃ
+ * è¾“å‡º  ï¼šæ— 
+ * è¿”å›  ï¼šæ— 
+ * è°ƒç”¨  ï¼šè¢«lava_printf()è°ƒç”¨
  */
-static char *itoa(int value, char *string, int radix)
+static char *itoa(int value, unsigned char *string, int radix)
 {
     int     i, d;
     int     flag = 0;
-    char    *ptr = string;
+    unsigned char    *ptr = string;
 
     /* This implementation only works for decimal numbers. */
     if (radix != 10)
@@ -191,27 +191,27 @@ static char *itoa(int value, char *string, int radix)
 
 } /* NCL_Itoa */
 
-//¸ñÊ½»¯´òÓ¡µ½ÆÁÄ»
-void lvm_printf(char *Data,uint32_t *stk)
+//æ ¼å¼åŒ–æ‰“å°åˆ°å±å¹•
+void lvm_printf(unsigned char *Data,uint32_t *stk)
 {
-    const char *s;
+    const unsigned char *s;
     int d;
     int c;
-    char buf[16];
+    unsigned char buf[16];
 
 
-    while ( *Data != 0)     // ÅĞ¶ÏÊÇ·ñµ½´ï×Ö·û´®½áÊø·û
+    while ( *Data != 0)     // åˆ¤æ–­æ˜¯å¦åˆ°è¾¾å­—ç¬¦ä¸²ç»“æŸç¬¦
     {
         if ( *Data == 0x5c )  //'\'
         {
             switch ( *++Data )
             {
-            case 'r':							          //»Ø³µ·û
+            case 'r':							          //å›è½¦ç¬¦
                 lava_putchar(0x0d);
                 Data ++;
                 break;
 
-            case 'n':							          //»»ĞĞ·û
+            case 'n':							          //æ¢è¡Œç¬¦
                 lava_putchar(0x0a);
                 Data ++;
                 break;
@@ -224,7 +224,7 @@ void lvm_printf(char *Data,uint32_t *stk)
         {   //
             switch ( *++Data )
             {
-            case 's':										  //×Ö·û´®
+            case 's':										  //å­—ç¬¦ä¸²
                 s = &lvm_dat[*stk++];
                 for ( ; *s; s++)
                 {
@@ -232,13 +232,13 @@ void lvm_printf(char *Data,uint32_t *stk)
                 }
                 Data++;
                 break;
-            case 'c':										  //×Ö·û
+            case 'c':										  //å­—ç¬¦
                 c = (*stk++)&0xff;
                 lava_putchar(c);
                 Data++;
                 break;
 
-            case 'd':										//Ê®½øÖÆ
+            case 'd':										//åè¿›åˆ¶
                 d = *stk++;
                 itoa(d, buf, 10);
                 for (s = buf; *s; s++)
@@ -261,26 +261,26 @@ void lvm_printf(char *Data,uint32_t *stk)
 }
 
 
-//¸ñÊ½»¯´òÓ¡µ½ÄÚ´æ
-void lvm_sprintf(char *str,char *Data,uint32_t *stk)
+//æ ¼å¼åŒ–æ‰“å°åˆ°å†…å­˜
+void lvm_sprintf(unsigned char *str,unsigned char *Data,uint32_t *stk)
 {
-    const char *s;
+    const unsigned char *s;
     int d;
     int c;
-    char buf[16];
+    unsigned char buf[16];
 
-    while ( *Data != 0)     // ÅĞ¶ÏÊÇ·ñµ½´ï×Ö·û´®½áÊø·û
+    while ( *Data != 0)     // åˆ¤æ–­æ˜¯å¦åˆ°è¾¾å­—ç¬¦ä¸²ç»“æŸç¬¦
     {
         if ( *Data == 0x5c )  //'\'
         {
             switch ( *++Data )
             {
-            case 'r':							          //»Ø³µ·û
+            case 'r':							          //å›è½¦ç¬¦
                 *str++=0x0d;
                 Data ++;
                 break;
 
-            case 'n':							          //»»ĞĞ·û
+            case 'n':							          //æ¢è¡Œç¬¦
                 *str++=0x0a;
                 Data ++;
                 break;
@@ -294,7 +294,7 @@ void lvm_sprintf(char *str,char *Data,uint32_t *stk)
         {   //
             switch ( *++Data )
             {
-            case 's':										  //×Ö·û´®
+            case 's':										  //å­—ç¬¦ä¸²
                 s = &lvm_dat[*stk++];
                 for ( ; *s; s++)
                 {
@@ -302,13 +302,13 @@ void lvm_sprintf(char *str,char *Data,uint32_t *stk)
                 }
                 Data++;
                 break;
-            case 'c':										  //×Ö·û
+            case 'c':										  //å­—ç¬¦
                 c = (*stk++)&0xff;
                 *str++=(c);
                 Data++;
                 break;
 
-            case 'd':										//Ê®½øÖÆ
+            case 'd':										//åè¿›åˆ¶
                 d = *stk++;
                 itoa(d, buf, 10);
                 for (s = buf; *s; s++)
@@ -359,13 +359,13 @@ static void pSetValue(int lp,int n){
 }
 
 
-//Ö¸ÁîÔËĞĞ
+//æŒ‡ä»¤è¿è¡Œ
 int lvm_run(void)
 {
-    uchar code; //Ö¸Áî
-    uchar op; //Ö¸Áî
+    uchar code; //æŒ‡ä»¤
+    uchar op; //æŒ‡ä»¤
     
-    uint32_t address;   //µØÖ·
+    uint32_t address;   //åœ°å€
     uint32_t i,j;
     uint16_t m,n;
     int16_t  o;
@@ -701,24 +701,24 @@ int lvm_run(void)
             lvm_read((char *)&address,3);
             lvm_pi = address&0xffffff;
             break;
-        case 0x3C: //base ÉèÖÃÄÚ´æ»ù×¼
+        case 0x3C: //base è®¾ç½®å†…å­˜åŸºå‡†
             lvm_read((char *)&m,2);
             lvm_dat_pb = m;
             lvm_dat_pb2 = m;
             break;
-        case 0x3D://call  º¯Êıµ÷ÓÃ
-            //±£´æ·µ»ØµØÖ·
+        case 0x3D://call  å‡½æ•°è°ƒç”¨
+            //ä¿å­˜è¿”å›åœ°å€
             lvm_read((char *)&address,3);
             *(uint32_t *)(lvm_dat+lvm_dat_pb2) = lvm_pi;
             *(uint16_t *)(lvm_dat+lvm_dat_pb2+3) = lvm_dat_pb;
             lvm_dat_pb = lvm_dat_pb2;
             lvm_pi = address&0xffffff;
             break;
-        case 0x3E: //function ºó½Ó#NUM1(2B),#NUM2(B),ÓÃÓÚÃ¿¸öº¯ÊıµÄ¿ªÍ·,#NUM1±íÊ¾Õâ¸öº¯Êı±äÁ¿¶¨ÒåµÄ×Ö½ÚÊı+5,#NUM2±íÊ¾Õâ¸öº¯ÊıµÄ´«Èë²ÎÊıÓĞ¶àÉÙ¸ö
-            lvm_read((char *)&m,2);//º¯Êı¾Ö²¿±äÁ¿Õ¼ÓÃ×Ö½ÚÊı+5
+        case 0x3E: //function åæ¥#NUM1(2B),#NUM2(B),ç”¨äºæ¯ä¸ªå‡½æ•°çš„å¼€å¤´,#NUM1è¡¨ç¤ºè¿™ä¸ªå‡½æ•°å˜é‡å®šä¹‰çš„å­—èŠ‚æ•°+5,#NUM2è¡¨ç¤ºè¿™ä¸ªå‡½æ•°çš„ä¼ å…¥å‚æ•°æœ‰å¤šå°‘ä¸ª
+            lvm_read((char *)&m,2);//å‡½æ•°å±€éƒ¨å˜é‡å ç”¨å­—èŠ‚æ•°+5
             lvm_dat_pb2 += m;
-            lvm_read((char*)&a,1);//²ÎÊı¸öÊı
-            if(a)                 //pop²ÎÊı
+            lvm_read((char*)&a,1);//å‚æ•°ä¸ªæ•°
+            if(a)                 //popå‚æ•°
             {
                 lvm_stk_p -= a;
                 memcpy(lvm_dat+lvm_dat_pb+5,lvm_stk+lvm_stk_p,a*4);
@@ -739,7 +739,7 @@ int lvm_run(void)
             lvm_dat_pb2=lvm_dat_pb;
             break;
         case 61://call    
-            //±£´æ·µ»ØµØÖ·
+            //ä¿å­˜è¿”å›åœ°å€
             lvm_read((char *)&address,3);
             *(uint32_t *)(lvm_dat+lvm_dat_pb2) = lvm_pi;
             *(uint16_t *)(lvm_dat+lvm_dat_pb2+3) = lvm_dat_pb;
@@ -778,15 +778,15 @@ int lvm_run(void)
             lvm_read((char *)&c,4);
             lvm_stk[lvm_stk_p++] = c;
             break;
-            case 0x04://push char addr[data] È«¾Ö±äÁ¿
+            case 0x04://push char addr[data] å…¨å±€å˜é‡
             lvm_read((char *)&m,2);
             lvm_stk[lvm_stk_p++] = lvm_dat[m];
             break;
-            case 0x05://push int addr[data] È«¾Ö±äÁ¿
+            case 0x05://push int addr[data] å…¨å±€å˜é‡
             lvm_read((char *)&m,2);
             lvm_stk[lvm_stk_p++] = *(int16_t *)(lvm_dat+m);
             break;
-            case 0x06://push long addr[data] È«¾Ö±äÁ¿
+            case 0x06://push long addr[data] å…¨å±€å˜é‡
             lvm_read((char *)&m,2);
             lvm_stk[lvm_stk_p++] = *(int32_t *)(lvm_dat+m);
             break;
@@ -808,25 +808,25 @@ int lvm_run(void)
             m += lvm_stk[lvm_stk_p-1];
             lvm_stk[lvm_stk_p-1] = *(int32_t *)(lvm_dat+m);
             break;
-            case 0x0A://(ahc addr+[addr])  ºó½Óaddr(2B),°Ñaddr+[sp-4]µÄµØÖ··Å[sp-4]ÖĞ  addr+[sp-4](µØÖ·),01,00->[sp-4]
+            case 0x0A://(ahc addr+[addr])  åæ¥addr(2B),æŠŠaddr+[sp-4]çš„åœ°å€æ”¾[sp-4]ä¸­  addr+[sp-4](åœ°å€),01,00->[sp-4]
             lvm_read((char *)&m,2);
             lvm_stk[lvm_stk_p-1]&=0xffff;
             lvm_stk[lvm_stk_p-1] += m;
             lvm_stk[lvm_stk_p-1] |= 0x10000;
             break;
-            case 0x0B://(ahc addr+[addr])  ºó½Óaddr(2B),°Ñaddr+[sp-4]µÄµØÖ··Å[sp-4]ÖĞ  addr+[sp-4](µØÖ·),02,00->[sp-4]
+            case 0x0B://(ahc addr+[addr])  åæ¥addr(2B),æŠŠaddr+[sp-4]çš„åœ°å€æ”¾[sp-4]ä¸­  addr+[sp-4](åœ°å€),02,00->[sp-4]
             lvm_read((char *)&m,2);
             lvm_stk[lvm_stk_p-1]&=0xffff;
             lvm_stk[lvm_stk_p-1] += m;
             lvm_stk[lvm_stk_p-1] |= 0x20000;
             break;
-            case 0x0C://(ahc addr+[addr])  ºó½Óaddr(2B),°Ñaddr+[sp-4]µÄµØÖ··Å[sp-4]ÖĞ  addr+[sp-4](µØÖ·),04,00->[sp-4]
+            case 0x0C://(ahc addr+[addr])  åæ¥addr(2B),æŠŠaddr+[sp-4]çš„åœ°å€æ”¾[sp-4]ä¸­  addr+[sp-4](åœ°å€),04,00->[sp-4]
             lvm_read((char *)&m,2);
             lvm_stk[lvm_stk_p-1]&=0xffff;
             lvm_stk[lvm_stk_p-1] += m;
             lvm_stk[lvm_stk_p-1] |= 0x40000;
             break;
-            case 0x0D://(phn)  ºó½Ó×Ö·û´®,ÒÔ00½áÊø  (NC3000µÄ´æ·ÅµØÖ·Îª$7000)
+            case 0x0D://(phn)  åæ¥å­—ç¬¦ä¸²,ä»¥00ç»“æŸ  (NC3000çš„å­˜æ”¾åœ°å€ä¸º$7000)
             i=lpStrBuf;
             while(1)
             {
@@ -843,22 +843,22 @@ int lvm_run(void)
             lvm_stk_push(1);
             lpStrBuf += i;
             break;
-            case 0x0E://(phc oaddr[data])  ºó½Óoaddr(2B)£¬°Ñaddr´¦µÄcharÊı¾İËÍ¶ÑÕ»  sp+=4 ¾Ö²¿±äÁ¿
+            case 0x0E://(phc oaddr[data])  åæ¥oaddr(2B)ï¼ŒæŠŠaddrå¤„çš„charæ•°æ®é€å †æ ˆ  sp+=4 å±€éƒ¨å˜é‡
             lvm_read((char *)&m,2);
             m += lvm_dat_pb;
             lvm_stk[lvm_stk_p++] = lvm_dat[m];
             break;
-            case 0x0F://ºó½Óoaddr(2B)£¬°Ñaddr´¦µÄintÊı¾İËÍ¶ÑÕ»  sp+=4 ¾Ö²¿±äÁ¿
+            case 0x0F://åæ¥oaddr(2B)ï¼ŒæŠŠaddrå¤„çš„intæ•°æ®é€å †æ ˆ  sp+=4 å±€éƒ¨å˜é‡
             lvm_read((char *)&m,2);
             m += lvm_dat_pb;
             lvm_stk[lvm_stk_p++] = *(int16_t *)(lvm_dat+m);
             break;
-            case 0x10://ºó½Óoaddr(2B)£¬°Ñaddr´¦µÄlongÊı¾İËÍ¶ÑÕ»  sp+=4 ¾Ö²¿±äÁ¿
+            case 0x10://åæ¥oaddr(2B)ï¼ŒæŠŠaddrå¤„çš„longæ•°æ®é€å †æ ˆ  sp+=4 å±€éƒ¨å˜é‡
             lvm_read((char *)&m,2);
             m += lvm_dat_pb;
             lvm_stk[lvm_stk_p++] = *(int32_t *)(lvm_dat+m);
             break;
-            case 0x11://(phc oaddr+[data])  ºó½Óoaddr(2B)£¬°Ñaddr+[sp-4]´¦µÄÊı¾İ·Å[sp-4]ÖĞ£¬ÓÃÓÚcharÊı¾İ  addr+[sp-4]µÄÊı¾İ,0,0,0->[sp-4]
+            case 0x11://(phc oaddr+[data])  åæ¥oaddr(2B)ï¼ŒæŠŠaddr+[sp-4]å¤„çš„æ•°æ®æ”¾[sp-4]ä¸­ï¼Œç”¨äºcharæ•°æ®  addr+[sp-4]çš„æ•°æ®,0,0,0->[sp-4]
             lvm_read((char *)&m,2);
             lvm_stk[lvm_stk_p-1]&=0xffff;
             m += lvm_stk[lvm_stk_p-1]  + lvm_dat_pb;
@@ -876,45 +876,45 @@ int lvm_run(void)
             m += lvm_stk[lvm_stk_p-1]  + lvm_dat_pb;
             lvm_stk[lvm_stk_p-1] = *(int32_t *)(lvm_dat+m);
             break;
-            case 0x14://(ahc addr+[addr])  ºó½Óaddr(2B),°Ñaddr+[sp-4]µÄµØÖ··Å[sp-4]ÖĞ  addr+[sp-4](µØÖ·),01,00->[sp-4]
+            case 0x14://(ahc addr+[addr])  åæ¥addr(2B),æŠŠaddr+[sp-4]çš„åœ°å€æ”¾[sp-4]ä¸­  addr+[sp-4](åœ°å€),01,00->[sp-4]
             lvm_read((char *)&m,2);
             lvm_stk[lvm_stk_p-1] &= 0xffff;
             lvm_stk[lvm_stk_p-1] += m;
             lvm_stk[lvm_stk_p-1] |= 0x810000;
             break;
-            case 0x15://(ahc addr+[addr])  ºó½Óaddr(2B),°Ñaddr+[sp-4]µÄµØÖ··Å[sp-4]ÖĞ  addr+[sp-4](µØÖ·),02,00->[sp-4]
+            case 0x15://(ahc addr+[addr])  åæ¥addr(2B),æŠŠaddr+[sp-4]çš„åœ°å€æ”¾[sp-4]ä¸­  addr+[sp-4](åœ°å€),02,00->[sp-4]
             lvm_read((char *)&m,2);
             lvm_stk[lvm_stk_p-1] &= 0xffff;
             lvm_stk[lvm_stk_p-1] += m;
             lvm_stk[lvm_stk_p-1] |= 0x820000;
             break;
-            case 0x16://(ahc addr+[addr])  ºó½Óaddr(2B),°Ñaddr+[sp-4]µÄµØÖ··Å[sp-4]ÖĞ  addr+[sp-4](µØÖ·),04,00->[sp-4]
+            case 0x16://(ahc addr+[addr])  åæ¥addr(2B),æŠŠaddr+[sp-4]çš„åœ°å€æ”¾[sp-4]ä¸­  addr+[sp-4](åœ°å€),04,00->[sp-4]
             lvm_read((char *)&m,2);
             lvm_stk[lvm_stk_p-1] &= 0xffff;
             lvm_stk[lvm_stk_p-1] += m;
             lvm_stk[lvm_stk_p-1] |= 0x840000;
             break;
-            case 0x17:// (ah addr+[addr])  ºó½Óaddr(2B)£¬°Ñ[sp-4]ÖĞµÄµØÖ·¼ÓÉÏaddr(µØÖ·)È»ºó·Å[sp-4]ÖĞ,(»¹ÊÇµØÖ·!)
+            case 0x17:// (ah addr+[addr])  åæ¥addr(2B)ï¼ŒæŠŠ[sp-4]ä¸­çš„åœ°å€åŠ ä¸Šaddr(åœ°å€)ç„¶åæ”¾[sp-4]ä¸­,(è¿˜æ˜¯åœ°å€!)
             lvm_read((char *)&m,2);
             lvm_stk[lvm_stk_p-1] &= 0xffff;
             lvm_stk[lvm_stk_p-1] += m;
             break;
-            case 0x18://(ah oaddr+[addr])  ºó½Óaddr(2B)£¬°Ñ[sp-4]ÖĞµÄµØÖ·¼ÓÉÏaddr(µØÖ·)È»ºó·Å[sp-4]ÖĞ,(»¹ÊÇµØÖ·!)
+            case 0x18://(ah oaddr+[addr])  åæ¥addr(2B)ï¼ŒæŠŠ[sp-4]ä¸­çš„åœ°å€åŠ ä¸Šaddr(åœ°å€)ç„¶åæ”¾[sp-4]ä¸­,(è¿˜æ˜¯åœ°å€!)
             lvm_read((char *)&m,2);
             lvm_stk[lvm_stk_p-1] &= 0xffff;
             lvm_stk[lvm_stk_p-1] += m + lvm_dat_pb;
             break;
-            case 0x19://(ah oaddr[addr])  ºó½Óoaddr(2B)£¬°ÑµØÖ·addrËÍ¶ÑÕ»  sp+=4
+            case 0x19://(ah oaddr[addr])  åæ¥oaddr(2B)ï¼ŒæŠŠåœ°å€addré€å †æ ˆ  sp+=4
             lvm_read((char*)&m,2);
             lvm_stk[lvm_stk_p-1] &= 0xffff;
             lvm_stk[lvm_stk_p++] += m + lvm_dat_pb;
             break;
-            case 0x1A://ph_TEXT)  ²»½Ó£¬°Ñ_TEXTµÄµØÖ··ÅÈë¶ÑÕ»  sp+=4
+            case 0x1A://ph_TEXT)  ä¸æ¥ï¼ŒæŠŠ_TEXTçš„åœ°å€æ”¾å…¥å †æ ˆ  sp+=4
             lvm_buf[0] = (unsigned long)TEXT_BUF;
             lvm_stk_push(1);
             break;
-            case 0x1B://(ph_GEAPH)  ²»½Ó,°Ñ_GEAPHµÄµØÖ··ÅÈë¶ÑÕ»  SP+=4
-            lvm_buf[0] = LVM_GRAPH_BUF;////ÏÔ´æµØÖ·
+            case 0x1B://(ph_GEAPH)  ä¸æ¥,æŠŠ_GEAPHçš„åœ°å€æ”¾å…¥å †æ ˆ  SP+=4
+            lvm_buf[0] = LVM_GRAPH_BUF;////æ˜¾å­˜åœ°å€
             lvm_stk_push(1);
             break;
 
@@ -1061,12 +1061,12 @@ int lvm_run(void)
             if(i&0x800000)i+=lvm_dat_pb;
             i &= 0xffff;
 
-            //ÅĞ¶ÏÊÇ²»ÊÇ¸Ä±äÁËÏÔ´æÇø
+            //åˆ¤æ–­æ˜¯ä¸æ˜¯æ”¹å˜äº†æ˜¾å­˜åŒº
             if(i >=LVM_GRAPH_BUF && i<LVM_GRAPH_END)
             {
                 memcpy(GRAPH_BUF+i,&lvm_stk[lvm_stk_p],m);
             }
-            //·ñÔò
+            //å¦åˆ™
             else
             {
                 memcpy(&lvm_dat[i],&lvm_stk[lvm_stk_p],m);
@@ -1095,24 +1095,24 @@ int lvm_run(void)
             lvm_read((char *)&address,3);
             lvm_pi = address&0xffffff;
             break;
-            case 0x3C: //base ÉèÖÃÄÚ´æ»ù×¼
+            case 0x3C: //base è®¾ç½®å†…å­˜åŸºå‡†
             lvm_read((char *)&m,2);
             lvm_dat_pb = m;
             lvm_dat_pb2 = m;
             break;
-            case 0x3D://call  º¯Êıµ÷ÓÃ
-            //±£´æ·µ»ØµØÖ·
+            case 0x3D://call  å‡½æ•°è°ƒç”¨
+            //ä¿å­˜è¿”å›åœ°å€
             *(uint32_t *)(lvm_dat+lvm_dat_pb2) = lvm_pi;
             *(uint16_t *)(lvm_dat+lvm_dat_pb2+3) = lvm_dat_pb;
             lvm_dat_pb = lvm_dat_pb2;
             lvm_read((char *)&address,3);
             lvm_pi = address&0xffffff;
             break;
-            case 0x3E: //function ºó½Ó#NUM1(2B),#NUM2(B),ÓÃÓÚÃ¿¸öº¯ÊıµÄ¿ªÍ·,#NUM1±íÊ¾Õâ¸öº¯Êı±äÁ¿¶¨ÒåµÄ×Ö½ÚÊı+5,#NUM2±íÊ¾Õâ¸öº¯ÊıµÄ´«Èë²ÎÊıÓĞ¶àÉÙ¸ö
-            lvm_read((char *)&m,2);//º¯Êı¾Ö²¿±äÁ¿Õ¼ÓÃ×Ö½ÚÊı+5
+            case 0x3E: //function åæ¥#NUM1(2B),#NUM2(B),ç”¨äºæ¯ä¸ªå‡½æ•°çš„å¼€å¤´,#NUM1è¡¨ç¤ºè¿™ä¸ªå‡½æ•°å˜é‡å®šä¹‰çš„å­—èŠ‚æ•°+5,#NUM2è¡¨ç¤ºè¿™ä¸ªå‡½æ•°çš„ä¼ å…¥å‚æ•°æœ‰å¤šå°‘ä¸ª
+            lvm_read((char *)&m,2);//å‡½æ•°å±€éƒ¨å˜é‡å ç”¨å­—èŠ‚æ•°+5
             lvm_dat_pb2 += m;
-            lvm_read((char*)&a,1);//²ÎÊı¸öÊı
-            if(a)                 //pop²ÎÊı
+            lvm_read((char*)&a,1);//å‚æ•°ä¸ªæ•°
+            if(a)                 //popå‚æ•°
             {
                 lvm_stk_p -= a;
                 memcpy(lvm_dat+lvm_dat_pb+5,lvm_stk+lvm_stk_p,a*4);
@@ -1125,19 +1125,19 @@ int lvm_run(void)
             break;
             case 0x40://end
             return 0;
-            case 0x41: //init °áÔËÊı¾İ,È«¾Ö±äÁ¿¶¨Òå
+            case 0x41: //init æ¬è¿æ•°æ®,å…¨å±€å˜é‡å®šä¹‰
             lvm_read((char *)&m,2);
             lvm_read((char *)&n,2);
             lvm_read(lvm_dat+m,n);
             break;
-            case 0x42://(ph_GBUF)  ²»½Ó,°Ñ_GBUFµÄµØÖ··ÅÈë¶ÑÕ» sp+=4
-            lvm_buf[0] = LVM_GRAPH_BUF; //ÏÔÊ¾»º³åÇø
+            case 0x42://(ph_GBUF)  ä¸æ¥,æŠŠ_GBUFçš„åœ°å€æ”¾å…¥å †æ ˆ sp+=4
+            lvm_buf[0] = LVM_GRAPH_BUF; //æ˜¾ç¤ºç¼“å†²åŒº
             lvm_stk_push(1);
             break;
             case 0x43:
-            case 0x44: //#loadall,°ÑlavÎÄ¼şÔØÈëÄÚ´æÖĞ£¬ÕâÀïÃ»ÓĞÊµÏÖ
+            case 0x44: //#loadall,æŠŠlavæ–‡ä»¶è½½å…¥å†…å­˜ä¸­ï¼Œè¿™é‡Œæ²¡æœ‰å®ç°
             break;
-            case 0x45://(+NUM)  ºó½Ó#NUM(2B),´Ó[SP-4]ÖĞ¶Á³öaddr,È»ºó¸øaddr´¦µÄÊı¾İ¼ÓÉÏ#NUM,½á¹û·Å[SP-4]ÖĞ
+            case 0x45://(+NUM)  åæ¥#NUM(2B),ä»[SP-4]ä¸­è¯»å‡ºaddr,ç„¶åç»™addrå¤„çš„æ•°æ®åŠ ä¸Š#NUM,ç»“æœæ”¾[SP-4]ä¸­
             lvm_read((char*)&o,2);
             lvm_stk[lvm_stk_p-1] += o;
             break;
@@ -1206,7 +1206,7 @@ int lvm_run(void)
             break;
             //TODO
         case 0x82: //printf
-            i=(unsigned char)lvm_stk[lvm_stk_p-1];//²ÎÊı¸öÊı£¬°üÀ¨×Ö·û´®
+            i=(unsigned char)lvm_stk[lvm_stk_p-1];//å‚æ•°ä¸ªæ•°ï¼ŒåŒ…æ‹¬å­—ç¬¦ä¸²
             lvm_stk_p -= i+1;
             j=(unsigned short)(lvm_stk[lvm_stk_p]);
             lvm_printf((char*)&lvm_dat[j],&lvm_stk[lvm_stk_p+1]);
@@ -1447,7 +1447,7 @@ int lvm_run(void)
             break;
             //TODO:
         case 0xB8://sprintf
-            i=(unsigned char)lvm_stk[lvm_stk_p-1];//²ÎÊı¸öÊı
+            i=(unsigned char)lvm_stk[lvm_stk_p-1];//å‚æ•°ä¸ªæ•°
             lvm_stk_p -= i+1;
             lvm_sprintf(lvm_dat+lvm_stk[lvm_stk_p],lvm_dat+lvm_stk[lvm_stk_p+1],lvm_stk+lvm_stk_p+2);
             break;
@@ -1541,7 +1541,7 @@ int lvm_run(void)
     return 0;
 }
 
-//·µ»ØÉÏ¼¶Ä¿Â¼
+//è¿”å›ä¸Šçº§ç›®å½•
 int pop_dir(addr path)
 {
     int i, len;
@@ -1563,7 +1563,7 @@ int pop_dir(addr path)
     path[1] = 0;
     return 0;
 }
-//Ñ¡ÔñÒ»¸öÎÄ¼ş
+//é€‰æ‹©ä¸€ä¸ªæ–‡ä»¶
 int file_select(addr path,addr fn)
 {
     while(ChDir(path)==0)
@@ -1608,11 +1608,11 @@ int file_select(addr path,addr fn)
     return 1;
 }
 
-//·ÖÀëÎÄ¼şÃûºÍÍØÕ¹Ãû
+//åˆ†ç¦»æ–‡ä»¶åå’Œæ‹“å±•å
 int fn_split(addr fn,addr fn1,addr ext)
 {
     int i,l;
-    char *p = fn1;
+    unsigned char *p = fn1;
     *p=0;
     l=strlen(fn);
     //if(l > LVM_FN_LENGTH_MAX )return 0;
@@ -1629,28 +1629,11 @@ int fn_split(addr fn,addr fn1,addr ext)
     return 0;   
 }
 
-//¼ì²éÍØÕ¹Ãû
-int chk_ext(addr fn, addr ext)
-{
-    char e[10];
-    char fn1[32];
-    int i;
-    char *p=e;
-    if(fn_split(fn,fn1,e)==0)return 0;
-    else
-    {
-        for(i=0;i<strlen(e);i++)tolower(*p++);
-        if(strcmp(ext,e))return 0;
-        else return 1;
-    }
-}
-
-
-//¶ÁÈ¡Ò»ĞĞÊı¾İ£¬±£´æÔÚdatÖĞ£¬·µ»Ø×Ö·û´®datµÄ³¤¶È
-int fread_line(char fp,addr dat)
+//è¯»å–ä¸€è¡Œæ•°æ®ï¼Œä¿å­˜åœ¨datä¸­ï¼Œè¿”å›å­—ç¬¦ä¸²datçš„é•¿åº¦
+int fread_line(unsigned char fp,addr dat)
 {
     int c;
-    char *p = dat;
+    unsigned char *p = dat;
     if(lava_feof(fp))return -1;
     c=lava_getc(fp);
     if(c==-1)return -1;
@@ -1677,25 +1660,25 @@ int fread_line(char fp,addr dat)
     return strlen(dat);
 }
 
-//´Ó×Ö·û´®ÖĞ¶ÁÈ¡Ò»¸öµ¥´Ê
-//Ó¢ÎÄ×Ö·ûÆğÊ¼µÄµ½²Ù×÷·ûÖ¹ÎªÒ»¸öµ¥´Ê
-//Êı×Ö·ûÆğÊ¼µÄµ½·ÇÊı×Ö·ûÖ¹ÎªÒ»¸öµ¥´Ê
-//²Ù×÷·ûÆğÊ¼µÄµ½·Ç²Ù×÷·ûÖ¹ÎªÒ»¸öµ¥´Ê
-//·µ»Øµ¥´Ê´óĞ¡
-//Èç¹ûÊÇ¿Õ¸ñ»òÕß¿ØÖÆ·û£¬·µ»Ø-1
+//ä»å­—ç¬¦ä¸²ä¸­è¯»å–ä¸€ä¸ªå•è¯
+//è‹±æ–‡å­—ç¬¦èµ·å§‹çš„åˆ°æ“ä½œç¬¦æ­¢ä¸ºä¸€ä¸ªå•è¯
+//æ•°å­—ç¬¦èµ·å§‹çš„åˆ°éæ•°å­—ç¬¦æ­¢ä¸ºä¸€ä¸ªå•è¯
+//æ“ä½œç¬¦èµ·å§‹çš„åˆ°éæ“ä½œç¬¦æ­¢ä¸ºä¸€ä¸ªå•è¯
+//è¿”å›å•è¯å¤§å°
+//å¦‚æœæ˜¯ç©ºæ ¼æˆ–è€…æ§åˆ¶ç¬¦ï¼Œè¿”å›-1
 int read_word(addr dat,addr word)
 {
     int i;
     int l;
-    char c;
-    char ctype;
+    unsigned char c;
+    unsigned char ctype;
     l = strlen(dat);
     if(l==0)return 0;
     c = dat[0];
     word[0] = c;
-    if(isalpha(c) || c == '_')ctype = 1; //Ó¢ÎÄ×ÖÄ¸
-    else if(isdigit(c))ctype = 2; //Êı×Ö
-    else if(ispunct(c) && c != '_')ctype = 3; //·ûºÅ
+    if(isalpha(c) || c == '_')ctype = 1; //è‹±æ–‡å­—æ¯
+    else if(isdigit(c))ctype = 2; //æ•°å­—
+    else if(ispunct(c) && c != '_')ctype = 3; //ç¬¦å·
     else return -1;
     for(i=1;i<l;i++)
     {
@@ -1709,7 +1692,7 @@ int read_word(addr dat,addr word)
     return strlen(word);
 }
 
-//Êı×Ö×Ö·û´®×ªÎªintĞÍ
+//æ•°å­—å­—ç¬¦ä¸²è½¬ä¸ºintå‹
 int word2num(addr word)
 {
     int l,i;
@@ -1726,18 +1709,18 @@ int word2num(addr word)
     return num;
 }
 
-//¶ÁÈ¡key mapÎÄ¼ş
-// keymap ÎÄ¼ş¸ñÊ½
-// 1¡¢';'ÎªĞĞ×¢ÊÍ·û
-// 2¡¢Ö¸ÁîÊ¾Àı£ºkeymap LVM_KEY_UP,20
-// 3¡¢Ã»ÓĞ±»mapµÄ°´¼üÔòÎªÄ¬ÈÏ°´¼üÖµ
+//è¯»å–key mapæ–‡ä»¶
+// keymap æ–‡ä»¶æ ¼å¼
+// 1ã€';'ä¸ºè¡Œæ³¨é‡Šç¬¦
+// 2ã€æŒ‡ä»¤ç¤ºä¾‹ï¼škeymap LVM_KEY_UP,20
+// 3ã€æ²¡æœ‰è¢«mapçš„æŒ‰é”®åˆ™ä¸ºé»˜è®¤æŒ‰é”®å€¼
 int read_keymap(addr fn)
 {
-    char fn1[LAVA_FILENAME_MAX];
-    char e[10];
-    char dat[64];
-    char word[16];
-    char fp;
+    unsigned char fn1[LAVA_FILENAME_MAX];
+    unsigned char e[10];
+    unsigned char dat[64];
+    unsigned char word[16];
+    unsigned char fp;
     int l,i;
     
     int fun=0,argc=0;
@@ -1751,7 +1734,7 @@ int read_keymap(addr fn)
     ClearScreen();
     SetScreen(1);
     
-    lava_printf("ÕıÔÚ¶Á %s ",fn1);
+    lava_printf("æ­£åœ¨è¯» %s ",fn1);
     
     
     while(1)
@@ -1773,7 +1756,7 @@ int read_keymap(addr fn)
             {
                 i += l;
                 
-                if(strcmp(word,";") ==0)break; //×¢ÊÍ
+                if(strcmp(word,";") ==0)break; //æ³¨é‡Š
                 if(fun==0)
                 {
                     if(strcmp(word,"keymap")==0 || strcmp(word,"KEYMAP")==0)
@@ -1784,7 +1767,7 @@ int read_keymap(addr fn)
                 }
                 else if(fun==1)
                 {
-                    if(isalpha(word[0])) //Ó¢ÎÄ×Ö·û
+                    if(isalpha(word[0])) //è‹±æ–‡å­—ç¬¦
                     {
                         if(strcmp(word,"KEY_UP")==0)arg[argc++]=LAVA_KEY_UP;
                         else if(strcmp(word,"KEY_DOWN")==0)arg[argc++]=LAVA_KEY_DOWN;
@@ -1795,21 +1778,21 @@ int read_keymap(addr fn)
                         else if(strcmp(word,"KEY_Tamper")==0)arg[argc++]=LAVA_KEY_F1;
                         
                     }
-                    else if(isdigit(word[0])) //´¦ÀíÊı×Ö
+                    else if(isdigit(word[0])) //å¤„ç†æ•°å­—
                     {
                         arg[argc++] = word2num(word);
                     }
                     
-                    else if(ispunct(word[0]))//´¦Àí·ûºÅ
+                    else if(ispunct(word[0]))//å¤„ç†ç¬¦å·
                     {
                         if(word[0] == '\'') 
                         {
-                            arg[argc++] = *(dat+i);   //´¦Àí''×Ö·û
+                            arg[argc++] = *(dat+i);   //å¤„ç†''å­—ç¬¦
                             i+=2;
                         }
                     }
                      
-                    if(argc == 2)//´ïµ½²ÎÊı¸öÊı
+                    if(argc == 2)//è¾¾åˆ°å‚æ•°ä¸ªæ•°
                     {
                         argc = 0;
                         fun = 0;
@@ -1826,7 +1809,7 @@ int read_keymap(addr fn)
     return 1;
 }
 
-//ÔØÈëÒ»¸öÎÄ¼ş
+//è½½å…¥ä¸€ä¸ªæ–‡ä»¶
 int file_load(void)
 {
     lava_log("file_load");
@@ -1834,7 +1817,7 @@ int file_load(void)
     uchar fn[LAVA_FILENAME_MAX];
     path[0] = '/';
     path[1] = '\0';
-    keymapc = 0;   //¹Ø±Õ°´¼üÓ³Éä
+    keymapc = 0;   //å…³é—­æŒ‰é”®æ˜ å°„
     while(1)
     {
         if(file_select(path,fn))
@@ -1850,7 +1833,7 @@ int file_load(void)
             if(lava_getc(lvm_fp) =='L' && lava_getc(lvm_fp)=='A' && lava_getc(lvm_fp)=='V')
             {
 
-                read_keymap(fn);//¶ÁÈ¡°´¼üÓ³ÉäÎÄ¼ş                 
+                read_keymap(fn);//è¯»å–æŒ‰é”®æ˜ å°„æ–‡ä»¶                 
                 SetScreen(0);
                 ClearScreen();
 
@@ -1875,7 +1858,7 @@ int file_load(void)
 //    return 0;
 }
 
-//¹Ø±ÕËùÓĞ´ò¿ªµÄÎÄ¼ş
+//å…³é—­æ‰€æœ‰æ‰“å¼€çš„æ–‡ä»¶
 void lvm_fclose_all(void)
 {
     int i;

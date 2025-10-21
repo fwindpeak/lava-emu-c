@@ -18,7 +18,7 @@ typedef struct {
     void *handle;
     uint32_t fptr;
     uint32_t fsize;
-    char path[256];
+    unsigned char path[256];
 } FIL;
 
 typedef enum {
@@ -39,23 +39,23 @@ typedef struct {
     void *entries;
     size_t count;
     size_t index;
-    char path[256];
+    unsigned char path[256];
 } FATFS_DIR;
 
 typedef struct {
-    char fname[256];
+    unsigned char fname[256];
     unsigned long fsize;
 } FILINFO;
 
-FRESULT f_open(FIL* fp, const char* path, uint8_t mode);
+FRESULT f_open(FIL* fp, const unsigned char* path, uint8_t mode);
 FRESULT f_close(FIL* fp);
 FRESULT f_read(FIL* fp, void* buff, unsigned int btr, unsigned int* br);
 FRESULT f_write(FIL* fp, const void* buff, unsigned int btw, unsigned int* bw);
 FRESULT f_lseek(FIL* fp, unsigned long ofs);
-FRESULT f_chdir(const char* path);
-FRESULT f_mkdir(const char* path);
-FRESULT f_unlink(const char* path);
-FRESULT f_opendir(FATFS_DIR* dp, const char* path);
+FRESULT f_chdir(const unsigned char* path);
+FRESULT f_mkdir(const unsigned char* path);
+FRESULT f_unlink(const unsigned char* path);
+FRESULT f_opendir(FATFS_DIR* dp, const unsigned char* path);
 FRESULT f_readdir(FATFS_DIR* dp, FILINFO* fno);
 FRESULT f_closedir(FATFS_DIR* dp);
 

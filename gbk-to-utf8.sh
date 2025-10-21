@@ -30,6 +30,16 @@ find . -type f \( -name "*.c" -o -name "*.h" -o -name "*.txt" -o -name "*.md" -o
     if [[ "$file" == *".git"* ]]; then
         continue
     fi
+
+    # 跳过
+    if [[ "$file" == *".emcache"* ]]; then
+        continue
+    fi
+
+    # 跳过
+    if [[ "$file" == *".cache"* ]]; then
+        continue
+    fi
     
     # 检查文件是否已经是UTF-8编码
     if file -I "$file" | grep -q "utf-8"; then

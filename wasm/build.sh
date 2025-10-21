@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if ! command -v emcc >/dev/null 2>&1; then
-  echo "error: emcc (Emscripten) Î´ÕÒµ½£¬ÇëÏÈÅäÖÃ Emscripten »·¾³¡£" >&2
+  echo "error: emcc (Emscripten) æœªæ‰¾åˆ°ï¼Œè¯·å…ˆé…ç½® Emscripten ç¯å¢ƒã€‚" >&2
   exit 1
 fi
 
@@ -16,7 +16,7 @@ if [[ -z "${EM_CACHE:-}" ]]; then
 fi
 
 if [[ "${EM_CACHE}" != /* ]]; then
-  echo "error: EM_CACHE ±ØĞëÊÇ¾ø¶ÔÂ·¾¶: ${EM_CACHE}" >&2
+  echo "error: EM_CACHE å¿…é¡»æ˜¯ç»å¯¹è·¯å¾„: ${EM_CACHE}" >&2
   exit 2
 fi
 
@@ -51,8 +51,8 @@ emcc \
   -sFORCE_FILESYSTEM=1 \
   -sMODULARIZE=1 \
   -sEXPORT_ES6=1 \
-  -O0 -g4 -sASSERTIONS=2 -sSAFE_HEAP=1 \
+  -O0 -gsource-map -sASSERTIONS=2 -sSAFE_HEAP=1 \
   -sEXPORT_NAME="createLavaModule" \
   -o "${OUT_DIR}/lava.js"
 
-echo "Éú³ÉÍê³É: ${OUT_DIR}/lava.js Óë lava.wasm"
+echo "ç”Ÿæˆå®Œæˆ: ${OUT_DIR}/lava.js ä¸ lava.wasm"

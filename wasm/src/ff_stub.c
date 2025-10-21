@@ -48,7 +48,7 @@ static const char* mode_to_string(uint8_t mode)
     return "rb";
 }
 
-FRESULT f_open(FIL* fp, const char* path, uint8_t mode)
+FRESULT f_open(FIL* fp, const unsigned char* path, uint8_t mode)
 {
     if (!fp || !path) return FR_INVALID_OBJECT;
 
@@ -116,22 +116,22 @@ FRESULT f_lseek(FIL* fp, unsigned long ofs)
     return FR_OK;
 }
 
-FRESULT f_chdir(const char* path)
+FRESULT f_chdir(const unsigned char* path)
 {
     if (!path) return FR_INVALID_OBJECT;
-    return (chdir(path) == 0) ? FR_OK : FR_NO_PATH;
+    return (chdir((const char*)path) == 0) ? FR_OK : FR_NO_PATH;
 }
 
-FRESULT f_mkdir(const char* path)
+FRESULT f_mkdir(const unsigned char* path)
 {
     if (!path) return FR_INVALID_OBJECT;
-    return (mkdir(path, 0777) == 0) ? FR_OK : FR_DENIED;
+    return (mkdir((const char*)path, 0777) == 0) ? FR_OK : FR_DENIED;
 }
 
-FRESULT f_unlink(const char* path)
+FRESULT f_unlink(const unsigned char* path)
 {
     if (!path) return FR_INVALID_OBJECT;
-    return (remove(path) == 0) ? FR_OK : FR_NO_FILE;
+    return (remove((const char*)path) == 0) ? FR_OK : FR_NO_FILE;
 }
 
 static void free_dir_entries(FATFS_DIR* dp)
@@ -148,11 +148,11 @@ static void free_dir_entries(FATFS_DIR* dp)
     dp->count = dp->index = 0;
 }
 
-FRESULT f_opendir(FATFS_DIR* dp, const char* path)
+FRESULT f_opendir(FATFS_DIR* dp, const unsigned char* path)
 {
     if (!dp) return FR_INVALID_OBJECT;
     free_dir_entries(dp);
-    const char* target = (path && path[0]) ? path : ".";
+    const char* target = (path && path[0]) ? (const char*)path : ".";
     struct dirent** namelist = NULL;
     int n = scandir(target, &namelist, NULL, alphasort);
     if (n < 0)
@@ -181,9 +181,9 @@ FRESULT f_readdir(FATFS_DIR* dp, FILINFO* fno)
     fno->fname[sizeof(fno->fname) - 1] = '\0';
 
     struct stat st;
-    char fullpath[512];
-    snprintf(fullpath, sizeof(fullpath), "%s/%s", dp->path, entry->d_name);
-    if (stat(fullpath, &st) == 0)
+    unsigned char fullpath[512];
+    snprintf((char *)fullpath, sizeof(fullpath), "%s/%s", dp->path, entry->d_name);
+    if (stat((const char *)fullpath, &st) == 0)
         fno->fsize = (unsigned long)st.st_size;
     else
         fno->fsize = 0;

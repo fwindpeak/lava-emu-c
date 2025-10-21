@@ -8,8 +8,8 @@ rtc_time get_time_rtc(void)
 {
     rtc_time t;
     
-    // Ê¹ÓÃ JavaScript µÄ Date ¶ÔÏó»ñÈ¡µ±Ç°ÏµÍ³Ê±¼ä
-    // EM_ASM ºê¿ÉÒÔÄÚÁª JavaScript ´úÂë
+    // ä½¿ç”¨ JavaScript çš„ Date å¯¹è±¡è·å–å½“å‰ç³»ç»Ÿæ—¶é—´
+    // EM_ASM å®å¯ä»¥å†…è” JavaScript ä»£ç 
     EM_ASM({
         const t = Date.now();
         setValue($0, Math.floor(t / 1000), 'i32'); // seconds

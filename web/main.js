@@ -9,139 +9,113 @@ const scaleValue = document.getElementById("scale-value");
 const keyboardPanel = document.querySelector(".keyboard");
 const fsButton = document.getElementById("fs-button");
 const screenshotButton = document.getElementById("screenshot-button");
+const restartButton = document.getElementById("restart-button");
 
 const imageData = ctx.createImageData(DISPLAY_WIDTH, DISPLAY_HEIGHT);
 const pixelBuffer = new Uint8Array(DISPLAY_BUFFER_SIZE);
 let rootDirectoryHandle = null;
-let wasmModule = null;
-let createModulePromise = null;
-let enqueueKey = null;
+let wasmWorker = null;
+let workerReady = false;
 
-async function ensureWasmModule() {
-  if (wasmModule) return wasmModule;
-  if (!createModulePromise) {
-    createModulePromise = import("./lava.js")
-      .then(({ default: createLavaModule }) => createLavaModule())
-      .then((module) => {
-        wasmModule = module;
-        enqueueKey =
-          module.cwrap?.("lava_enqueue_key", "void", ["number"]) ??
-          module._lava_enqueue_key;
+// 初始化Web Worker
+function initWorker() {
+  wasmWorker = new Worker('./wasm-worker.js');
+  
+  // 处理来自Worker的消息
+  wasmWorker.addEventListener('message', (event) => {
+    const { type, data, error } = event.data;
+    
+    switch (type) {
+      case 'wasmLoaded':
+        console.log('WASM模块在Worker中加载成功');
+        workerReady = true;
+        break;
         
-        // 确保WASM模块初始化后就在/app目录下
-        // chdir("/app", module);
+      case 'wasmError':
+        console.error('WASM模块加载失败:', error);
+        alert('加载WASM模块失败: ' + error);
+        break;
         
-        // 重写FS对象的关键方法，确保只能访问/app目录
-        const FS = module.FS;
-        if (FS) {
-          // 保存原始方法
-          const originalChdir = FS.chdir;
-          const originalOpen = FS.open;
-          const originalWriteFile = FS.writeFile;
-          const originalReadFile = FS.readFile;
-          const originalUnlink = FS.unlink;
-          const originalMkdir = FS.mkdir;
-          const originalRmdir = FS.rmdir;
-          const originalRename = FS.rename;
-          
-          // 辅助函数：确保路径在/app目录下
-          function ensureAppPath(path) {
-            const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-            if (normalizedPath.startsWith("/app")) {
-              return normalizedPath;
-            }
-            // 如果路径不是以/app开头，则添加/app前缀
-            return `/app${normalizedPath}`;
-          }
-
-          FS.chdir = function(path) {
-            // 确保路径在/app目录下
-            const appPath = ensureAppPath(path);
-            return originalChdir.call(this, appPath);
-          };
-          
-          // 重写open方法
-          FS.open = function(path, flags, mode) {
-            // 确保路径在/app目录下
-            const appPath = ensureAppPath(path);
-            return originalOpen.call(this, appPath, flags, mode);
-          };
-          
-          // 重写writeFile方法
-          FS.writeFile = function(path, data, options) {
-            // 确保路径在/app目录下
-            const appPath = ensureAppPath(path);
-            return originalWriteFile.call(this, appPath, data, options);
-          };
-          
-          // 重写readFile方法
-          FS.readFile = function(path, options) {
-            // 确保路径在/app目录下
-            const appPath = ensureAppPath(path);
-            return originalReadFile.call(this, appPath, options);
-          };
-          
-          // 重写unlink方法
-          FS.unlink = function(path) {
-            // 确保路径在/app目录下
-            const appPath = ensureAppPath(path);
-            return originalUnlink.call(this, appPath);
-          };
-          
-          // 重写mkdir方法
-          FS.mkdir = function(path, mode) {
-            // 确保路径在/app目录下
-            const appPath = ensureAppPath(path);
-            return originalMkdir.call(this, appPath, mode);
-          };
-          
-          // 重写rmdir方法
-          FS.rmdir = function(path) {
-            // 确保路径在/app目录下
-            const appPath = ensureAppPath(path);
-            return originalRmdir.call(this, appPath);
-          };
-          
-          // 重写rename方法
-          FS.rename = function(oldPath, newPath) {
-            // 确保旧路径和新路径都在/app目录下
-            const appOldPath = ensureAppPath(oldPath);
-            const appNewPath = ensureAppPath(newPath);
-            return originalRename.call(this, appOldPath, appNewPath);
-          };
-        }
+      case 'displayUpdate':
+        // 更新显示缓冲区
+        // displayUpdate消息直接在event.data中包含pixelBuffer
+        pixelBuffer.set(event.data.pixelBuffer);
+        break;
         
-        console.info("Lava WASM 模块已加载，已限制文件系统访问权限");
-        return module;
-      })
-      .catch((error) => {
-        console.warn("加载 WASM 模块失败", error);
-        wasmModule = null;
-        createModulePromise = null;
-        throw error;
-      });
-  }
-  return createModulePromise;
-}
-
-function chdir(path, module = wasmModule) {
-  try {
-    const runtime = module;
-    const FS = runtime?.FS;
-    if (!FS || typeof FS.chdir !== "function") {
-      return;
+      case 'fallbackMode':
+        // WASM不可用，使用后备模式
+        fallbackPattern.update();
+        break;
+        
+      case 'filesystemCreated':
+        console.log('文件系统已创建');
+        // 恢复按钮状态
+        fsButton.textContent = "重新选择目录";
+        fsButton.disabled = false;
+        // 重启VM
+        wasmWorker.postMessage({ type: 'restart', data: { basePath: '/app' } });
+        break;
+        
+      case 'filesystemError':
+        console.error('创建文件系统失败:', error);
+        alert('创建文件系统失败: ' + error);
+        fsButton.textContent = "选择程序目录";
+        fsButton.disabled = false;
+        break;
+        
+      case 'vmRestarted':
+        console.log('VM已重启');
+        break;
+        
+      case 'vmError':
+        console.error('VM重启失败:', error);
+        alert('VM重启失败: ' + error);
+        break;
+        
+      case 'screenshotTaken':
+        alert('已截取当前画面');
+        break;
+        
+      case 'screenshotError':
+        console.error('截屏失败:', error);
+        alert('截屏失败: ' + error);
+        break;
     }
-    
-    // 确保路径在/app目录下，如果不是则添加/app前缀
-    const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-    const appPath = normalizedPath.startsWith("/app") ? normalizedPath : `/app${normalizedPath}`;
-    
-    FS.chdir(appPath);
-  } catch (err) {
-    console.warn("chdir error", path, err);
-  }
+  });
+  
+  // 初始化WASM模块
+  wasmWorker.postMessage({ type: 'init' });
 }
 
+// 递归读取目录中的所有文件
+async function readDirectoryFiles(dirHandle, path = '') {
+  const files = [];
+  
+  for await (const entry of dirHandle.values()) {
+    // 跳过隐藏文件和过长的文件名
+    if (entry.name.startsWith('.DS_')) continue;
+    if (entry.name.length > 16) continue;
+    
+    const entryPath = path ? `${path}/${entry.name}` : entry.name;
+    
+    if (entry.kind === 'file') {
+      const file = await entry.getFile();
+      const buffer = await file.arrayBuffer();
+      const data = new Uint8Array(buffer);
+      
+      files.push({
+        name: entryPath,
+        data: data
+      });
+    } else if (entry.kind === 'directory') {
+      // 递归读取子目录
+      const subFiles = await readDirectoryFiles(entry, entryPath);
+      files.push(...subFiles);
+    }
+  }
+  
+  return files;
+}
 
 const KEY_MAP = {
   ArrowUp: 20,
@@ -200,35 +174,6 @@ function mapKeyToCode(code) {
   }
 }
 
-// let wasmModule = null;
-// let enqueueKey = null;
-
-const wasmExports = {
-  bufferPtr: null,
-  heapView: null,
-  update() {
-    if (!wasmModule) return false;
-
-    if (this.bufferPtr === null) {
-      const getBufferPtr =
-        wasmModule.cwrap?.("lava_display_buffer", "number", []) ??
-        wasmModule._lava_display_buffer;
-      if (!getBufferPtr) return false;
-      this.bufferPtr = getBufferPtr();
-    }
-
-    if (!this.heapView) {
-      this.heapView = wasmModule.HEAPU8.subarray(
-        this.bufferPtr,
-        this.bufferPtr + DISPLAY_BUFFER_SIZE
-      );
-    }
-
-    pixelBuffer.set(this.heapView);
-    return true;
-  },
-};
-
 const fallbackPattern = {
   frame: 0,
   update() {
@@ -253,143 +198,6 @@ const fallbackPattern = {
   },
 };
 
-function ensureDirectory(path, module = wasmModule) {
-  const runtime = module;
-  if (!runtime) return;
-  
-  // 确保路径在/app目录下，如果不是则添加/app前缀
-  const normalized = path.startsWith("/") ? path : `/${path}`;
-  const appPath = normalized.startsWith("/app") ? normalized : `/app${normalized}`;
-  
-  const parts = appPath.split("/").filter(Boolean);
-  let current = "/";
-  for (const part of parts) {
-    const FS = runtime.FS;
-    const nextPath = current === "/" ? `/${part}` : `${current}/${part}`;
-    
-    if (FS?.analyzePath) {
-      if (!FS.analyzePath(nextPath).exists) {
-        FS.mkdir(nextPath);
-      }
-    } else if (runtime.FS_createPath) {
-      try {
-        runtime.FS_createPath(current, part, true, true);
-      } catch {
-        // 已存在或不支持，忽略即可
-      }
-    }
-    current = nextPath;
-  }
-}
-
-async function importDirectoryIntoFS(dirHandle, targetPath = "", module = null) {
-  const runtime = module ?? (await ensureWasmModule());
-  const FS = runtime?.FS;
-  if (!FS) {
-    console.warn("WASM FS 未初始化，无法导入目录");
-    return;
-  }
-  
-  // 确保目标路径在/app目录下，如果不是则添加/app前缀
-  const normalizedTargetPath = targetPath.startsWith("/") ? targetPath : `/${targetPath}`;
-  const appPath = normalizedTargetPath.startsWith("/app") ? normalizedTargetPath : `/app${normalizedTargetPath}`;
-  
-  if (appPath) ensureDirectory(appPath, runtime);
-  const basePath = appPath
-    ? appPath.startsWith("/")
-      ? appPath
-      : `/${appPath}`
-    : "";
-  for await (const entry of dirHandle.values()) {
-    if(entry.name.startsWith(".DS_")) continue;
-    if(entry.name.length > 16) continue;
-    const entryPath = `${basePath}/${entry.name}`.replace(/\/+/g, "/");
-    
-    if (entry.kind === "file") {
-      const file = await entry.getFile();
-      const buffer = await file.arrayBuffer();
-      const data = new Uint8Array(buffer);
-      if (FS.analyzePath?.(entryPath)?.exists) {
-        FS.unlink(entryPath);
-      } else {
-        try {
-          FS.unlink(entryPath);
-        } catch {
-          // 文件不存在时会抛出异常，忽略即可
-        }
-      }
-      FS.writeFile(entryPath, data, { canOwn: true });
-      console.info("已导入文件:", entryPath, data.length, "bytes");
-    } else if (entry.kind === "directory") {
-      ensureDirectory(entryPath, runtime);
-      await importDirectoryIntoFS(entry, entryPath, runtime);
-    }
-  }
-}
-
-async function getFileHandleFromRoot(relativePath, create = false) {
-  if (!rootDirectoryHandle) return null;
-  
-  // 确保相对路径不会访问到上级目录
-  const sanitizedPath = relativePath.replace(/\.\./g, "");
-  const parts = sanitizedPath.split("/").filter(Boolean);
-  
-  let current = rootDirectoryHandle;
-  for (let i = 0; i < parts.length; i++) {
-    const name = parts[i];
-    const isFile = i === parts.length - 1;
-    if (isFile) {
-      return await current.getFileHandle(name, { create });
-    }
-    current = await current.getDirectoryHandle(name, { create });
-  }
-  return current;
-}
-
-async function syncFileToDisk(path) {
-  if (!wasmModule?.FS || !rootDirectoryHandle) return;
-  
-  // 确保路径在/app目录下，如果不是则添加/app前缀
-  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-  const appPath = normalizedPath.startsWith("/app") ? normalizedPath : `/app${normalizedPath}`;
-  
-  const normalized = appPath.replace(/^\/+/, "");
-  const fsPath = appPath;
-  try {
-    const data = wasmModule.FS.readFile(fsPath, { encoding: "binary" });
-    const fileHandle = await getFileHandleFromRoot(normalized, true);
-    if (!fileHandle) return;
-    const writable = await fileHandle.createWritable();
-    await writable.write(data);
-    await writable.close();
-    console.info("已同步文件到磁盘:", normalized);
-  } catch (error) {
-    console.warn("同步文件失败", path, error);
-  }
-}
-
-async function restartVm(basePath) {
-  try {
-    const module = await ensureWasmModule();
-    
-    // 确保基础路径在/app目录下，如果不是则添加/app前缀
-    if (basePath) {
-      const normalizedPath = basePath.startsWith("/") ? basePath : `/${basePath}`;
-      const appPath = normalizedPath.startsWith("/app") ? normalizedPath : `/app${normalizedPath}`;
-      module.ccall("lvm_set_base_path", "void", ["string"], [appPath]);
-    }
-    await module.ccall(
-      "lvm_request_restart",
-      "void",
-      [],
-      [],
-      { async: true }
-    );
-  } catch (error) {
-    console.warn("重启 Lava VM 失败", error);
-  }
-}
-
 function drawFrame() {
   const data = imageData.data;
   let di = 0;
@@ -411,6 +219,7 @@ function drawFrame() {
 
   ctx.putImageData(imageData, 0, 0);
 }
+
 function setScale(scale) {
   const clamped = Math.max(1, Math.min(8, Number(scale) || 1));
   canvas.style.width = `${DISPLAY_WIDTH * clamped}px`;
@@ -453,10 +262,17 @@ function flashButton(button) {
 const keyboardListeners = new Set();
 
 function triggerKey(code) {
-  
   const nativeCode = mapKeyToCode(code);
-  // console.log("触发按键:", code, nativeCode);
   if (!nativeCode) return;
+  
+  // 发送按键事件到Worker
+  if (wasmWorker && workerReady) {
+    wasmWorker.postMessage({ 
+      type: 'keyPress', 
+      data: { code, nativeCode } 
+    });
+  }
+  
   const payload = { code, nativeCode, timestamp: performance.now() };
   for (const listener of keyboardListeners) {
     try {
@@ -468,9 +284,6 @@ function triggerKey(code) {
 }
 
 keyboardListeners.add((payload) => {
-  if (enqueueKey) {
-    enqueueKey(payload.nativeCode);
-  }
   console.debug("虚拟按键:", payload.code);
 });
 
@@ -484,7 +297,7 @@ if (fsButton) {
       alert("当前浏览器不支持 File System Access API。");
       return;
     }
-    // 先选择目录，再加载WASM模块
+    
     try {
       const handle = await window.showDirectoryPicker();
       rootDirectoryHandle = handle;
@@ -493,30 +306,35 @@ if (fsButton) {
       fsButton.textContent = "加载中...";
       fsButton.disabled = true;
       
-      // 在选择目录后再加载WASM模块
-      const module = await ensureWasmModule();
-      const FS = module?.FS;
-      if (!FS && !module?.FS_createPath) {
-        alert("WASM 虚拟文件系统尚未就绪，请稍后重试。");
-        fsButton.textContent = "选择程序目录";
-        fsButton.disabled = false;
-        return;
+      // 确保Worker已初始化
+      if (!wasmWorker) {
+        initWorker();
       }
       
-      // 创建/app目录并切换到该目录
-      ensureDirectory("/app", module);
-      // chdir("/app", module);
+      // 等待Worker准备就绪
+      if (!workerReady) {
+        // 等待WASM加载完成
+        await new Promise((resolve) => {
+          const checkReady = () => {
+            if (workerReady) resolve();
+            else setTimeout(checkReady, 100);
+          };
+          checkReady();
+        });
+      }
       
-      // 只导入到/app目录下
-      await importDirectoryIntoFS(handle, "/app", module);
+      // 读取目录中的所有文件
+      console.log("正在读取目录文件...");
+      const fileData = await readDirectoryFiles(handle);
+      console.log(`已读取 ${fileData.length} 个文件`);
       
-      // 恢复按钮状态
-      fsButton.textContent = "重新选择目录";
-      fsButton.disabled = false;
+      // 发送文件数据到Worker
+      wasmWorker.postMessage({ 
+        type: 'createFilesystem', 
+        data: { fileData, targetPath: '/app' } 
+      });
       
-      console.log("目录已载入虚拟文件系统");
-      chdir("/app", module);
-      await restartVm("/app");
+      console.log("正在创建虚拟文件系统");
     } catch (error) {
       console.warn("目录授权或读取失败", error);
       fsButton.textContent = "选择程序目录";
@@ -527,26 +345,36 @@ if (fsButton) {
 
 if (screenshotButton) {
   screenshotButton.addEventListener("click", async () => {
-    try {
-      const module = await ensureWasmModule();
-      module.ccall("PrtScr_All", "void", [], []);
-      alert("已截取当前画面");
-    } catch (error) {
-      console.warn("截屏失败", error);
+    if (!wasmWorker || !workerReady) {
+      alert("WASM模块尚未加载完成");
+      return;
     }
+    
+    wasmWorker.postMessage({ type: 'screenshot' });
+  });
+}
+
+if (restartButton) {
+  restartButton.addEventListener("click", async () => {
+    if (wasmWorker && workerReady) {
+      wasmWorker.postMessage({ type: 'restart', data: { basePath: '/app' } });
+    }
+    console.log("点击重新启动按钮");
+    setTimeout(() => {
+      location.reload();
+    }, 1000);
   });
 }
 
 setScale(scaleInput.value);
 
+// 初始化Worker
+initWorker();
+
+// 帧循环
 function frameLoop() {
-  if (!wasmExports.update()) {
-    fallbackPattern.update();
-  }
   drawFrame();
   requestAnimationFrame(frameLoop);
 }
 
-// 移除页面加载时的WASM模块初始化
-// await ensureWasmModule();
 requestAnimationFrame(frameLoop);

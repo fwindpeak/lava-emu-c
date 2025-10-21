@@ -1,6 +1,6 @@
 /**
  * @filename lavasim.c
- * @bref     lavaÄ£ÄâÆ÷£¬µ¥É«160*80ÆÁÄ»
+ * @bref     lavaæ¨¡æ‹Ÿå™¨ï¼Œå•è‰²160*80å±å¹•
  *
  */
 // #include <stdio.h>
@@ -21,26 +21,26 @@
 #include "log.h"
 #include "prtscr.h"
 
-// Ìí¼Ó emscripten.h Í·ÎÄ¼şÒÔÖ§³Ö EM_ASM ºê
+// æ·»åŠ  emscripten.h å¤´æ–‡ä»¶ä»¥æ”¯æŒ EM_ASM å®
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
 
-// ¿Õ°×ÇøÓòÑÕÉ«
+// ç©ºç™½åŒºåŸŸé¢œè‰²
 #define LAVA_NONE_COLOR LCD_RGB(0x28, 0x3C, 0x4E)
-// ±³¾°É«
+// èƒŒæ™¯è‰²
 // #define LAVA_BK_COLOR       LCD_RGB(83,88,66)
 
 #define LAVA_BK_COLOR LCD_RGB(103, 108, 86)
 
-// Ö±½Ó¶¨Òå³£Á¿£¬±ÜÃâºêÒÀÀµÎÊÌâ
+// ç›´æ¥å®šä¹‰å¸¸é‡ï¼Œé¿å…å®ä¾èµ–é—®é¢˜
 #define LAVA_WIDTH_LOCAL 160
 #define LAVA_HEIGHT_LOCAL 80
 #define LAVA_SCALE_LOCAL 1
 
 #define GRAPH_SIZE (LAVA_WIDTH_LOCAL * LAVA_HEIGHT_LOCAL / 8)
 
-// Ç°¾°É«
+// å‰æ™¯è‰²
 int LAVA_FOR_COLOR = 1;
 int LAVA_BACK_COLOR = LAVA_BK_COLOR;
 uchar GRAPH_BUF[GRAPH_SIZE];
@@ -50,11 +50,11 @@ static uchar *pG = GRAPH_BUF;
 static uchar *pT = TEXT_BUF;
 volatile int LAVA_posx, LAVA_posy;
 
-// ³£Á¿¶¨Òå
+// å¸¸é‡å®šä¹‰
 #define LAVA_GBUF_BYTE (LAVA_WIDTH_LOCAL * LAVA_HEIGHT_LOCAL / 8)
 #define LAVA_X_BYTE (LAVA_WIDTH_LOCAL / 8)
 
-// È«¾Ö±äÁ¿
+// å…¨å±€å˜é‡
 static uchar g_graph[1600];
 static uchar g_block_buf[GRAPH_SIZE];
 
@@ -65,7 +65,7 @@ sFONT *LAVA_enFont;
 sFONT *LAVA_cnFont;
 volatile int LAVA_line_byte, LAVA_line_num;
 
-/******************************************ÏµÍ³º¯Êı**********************************************************/
+/******************************************ç³»ç»Ÿå‡½æ•°**********************************************************/
 
 void swap(int *a, int *b) {
   int c;
@@ -86,8 +86,8 @@ int lava_lcd_check(int *x0, int *y0, int *x1, int *y1) {
 }
 
 /**
- * @brief  ÉèÖÃÏÔÊ¾µÄ×ÖÌå
- * @param  type£º1 Ğ¡×ÖÌå 0´ó×ÖÌå
+ * @brief  è®¾ç½®æ˜¾ç¤ºçš„å­—ä½“
+ * @param  typeï¼š1 å°å­—ä½“ 0å¤§å­—ä½“
  * @retval None
  */
 void lava_set_font(uchar type) {
@@ -108,12 +108,12 @@ void lava_set_font(uchar type) {
   }
 }
 /**
- * @brief  »ñÈ¡ÉèÖÃÏÔÊ¾µÄ×ÖÌå´óĞ¡
- * @retval None 1 Ğ¡×ÖÌå 0´ó×ÖÌå
+ * @brief  è·å–è®¾ç½®æ˜¾ç¤ºçš„å­—ä½“å¤§å°
+ * @retval None 1 å°å­—ä½“ 0å¤§å­—ä½“
  */
 uchar lava_get_font(void) { return LAVA_font_type == BIG ? 0 : 1; }
 
-// Çå³ıÆÁÄ»ÏÔÊ¾
+// æ¸…é™¤å±å¹•æ˜¾ç¤º
 void lava_clr(void) {
   // lcd_init();
   // lcd_clr(LAVA_NONE_COLOR);
@@ -124,11 +124,11 @@ void lava_clr(void) {
 }
 
 /**
- * @brief  ÆÁÄ»È¡µã
- * @param  (x,y)µã×ø±ê
- * @retval Ç°¾°É«·µ»Ø1 ±³¾°É«·µ»Ø0
+ * @brief  å±å¹•å–ç‚¹
+ * @param  (x,y)ç‚¹åæ ‡
+ * @retval å‰æ™¯è‰²è¿”å›1 èƒŒæ™¯è‰²è¿”å›0
  */
-char lava_lcd_getpoint(int x, int y) {
+unsigned char lava_lcd_getpoint(int x, int y) {
   y *= LAVA_SCALE;
   x *= LAVA_SCALE;
   y += LAVA_Y_START;
@@ -137,9 +137,9 @@ char lava_lcd_getpoint(int x, int y) {
 }
 
 /**
- * @brief  ÆÁÄ»»­µã
- * @param  (x,y)µã×ø±ê
- * @param  type 0Çå 1»­ 2È¡·´
+ * @brief  å±å¹•ç”»ç‚¹
+ * @param  (x,y)ç‚¹åæ ‡
+ * @param  type 0æ¸… 1ç”» 2å–å
  * @retval None
  */
 void lava_lcd_point(int x, int y, int type) {
@@ -167,8 +167,8 @@ void lava_lcd_point(int x, int y, int type) {
 }
 
 /**
- * @brief  ÆÁÄ»»­Ïß
- * @param  (x0,y0)ÆğÊ¼µã×ø±ê£¬(x1,y1)ÖÕÖ¹µã×ø±ê
+ * @brief  å±å¹•ç”»çº¿
+ * @param  (x0,y0)èµ·å§‹ç‚¹åæ ‡ï¼Œ(x1,y1)ç»ˆæ­¢ç‚¹åæ ‡
  * @retval None
  */
 void lava_lcd_line(uint x1, uint y1, uint x2, uint y2, uint type) {
@@ -176,35 +176,35 @@ void lava_lcd_line(uint x1, uint y1, uint x2, uint y2, uint type) {
   int xerr = 0, yerr = 0, delta_x, delta_y, distance;
   int incx, incy, uRow, uCol;
 
-  delta_x = x2 - x1; // ¼ÆËã×ø±êÔöÁ¿
+  delta_x = x2 - x1; // è®¡ç®—åæ ‡å¢é‡
   delta_y = y2 - y1;
   uRow = x1;
   uCol = y1;
   if (delta_x > 0)
-    incx = 1; // ÉèÖÃµ¥²½·½Ïò
+    incx = 1; // è®¾ç½®å•æ­¥æ–¹å‘
   else if (delta_x == 0)
-    incx = 0; // ´¹Ö±Ïß
+    incx = 0; // å‚ç›´çº¿
   else {
-    incx = -1; // ÖÕµã×ø±êĞ¡ÓÚÆğÊ¼×ø±ê,·´·½Ïò,½«×ø±êÖØĞÂ¶¨Î»ÎªÕı×ø±ê
+    incx = -1; // ç»ˆç‚¹åæ ‡å°äºèµ·å§‹åæ ‡,åæ–¹å‘,å°†åæ ‡é‡æ–°å®šä½ä¸ºæ­£åæ ‡
     delta_x = -delta_x;
   }
   if (delta_y > 0)
     incy = 1;
   else if (delta_y == 0)
-    incy = 0; // Ë®Æ½Ïß
+    incy = 0; // æ°´å¹³çº¿
   else {
-    incy = -1; // ÖÕµã×ø±êĞ¡ÓÚÆğÊ¼×ø±ê,·´·½Ïò,½«×ø±êÖØĞÂ¶¨Î»ÎªÕı×ø±ê
+    incy = -1; // ç»ˆç‚¹åæ ‡å°äºèµ·å§‹åæ ‡,åæ–¹å‘,å°†åæ ‡é‡æ–°å®šä½ä¸ºæ­£åæ ‡
     delta_y = -delta_y;
   }
   if (delta_x > delta_y)
-    distance = delta_x; // Ñ¡È¡»ù±¾ÔöÁ¿×ø±êÖá
+    distance = delta_x; // é€‰å–åŸºæœ¬å¢é‡åæ ‡è½´
   else
     distance = delta_y;
-  for (t = 0; t <= distance + 1; t++) // »­ÏßÊä³ö
+  for (t = 0; t <= distance + 1; t++) // ç”»çº¿è¾“å‡º
   {
-    lava_lcd_point(uRow, uCol, type); // ¸ù¾İ×ø±ê»­µã
-    xerr += delta_x;                  // X×ø±êÔöÁ¿
-    yerr += delta_y;                  // Y×ø±êÔöÁ¿
+    lava_lcd_point(uRow, uCol, type); // æ ¹æ®åæ ‡ç”»ç‚¹
+    xerr += delta_x;                  // Xåæ ‡å¢é‡
+    yerr += delta_y;                  // Yåæ ‡å¢é‡
     if (xerr > distance) {
       xerr -= distance;
       uRow += incx;
@@ -217,9 +217,9 @@ void lava_lcd_line(uint x1, uint y1, uint x2, uint y2, uint type) {
 }
 
 /**
- * @brief  »º³åÇø»­µã
- * @param  (x,y)µã×ø±ê
- * @param  type 0Çå 1»­ 2È¡·´
+ * @brief  ç¼“å†²åŒºç”»ç‚¹
+ * @param  (x,y)ç‚¹åæ ‡
+ * @param  type 0æ¸… 1ç”» 2å–å
  * @retval None
  */
 void lava_buf_point(uint x, uint y, uint type) {
@@ -249,19 +249,19 @@ void lava_buf_point(uint x, uint y, uint type) {
 }
 
 /**
- * @brief  »º³åÇøÈ¡µã
- * @param  (x,y)µã×ø±ê
- * @retval Ç°¾°É«·µ»Ø1 ±³¾°É«·µ»Ø0
+ * @brief  ç¼“å†²åŒºå–ç‚¹
+ * @param  (x,y)ç‚¹åæ ‡
+ * @retval å‰æ™¯è‰²è¿”å›1 èƒŒæ™¯è‰²è¿”å›0
  */
-char lava_buf_get_point(int x, int y) {
+unsigned char lava_buf_get_point(int x, int y) {
   uchar *p;
   p = GRAPH_BUF + y * 20 + x / 8;
   return (*p &= (0x80 >> (x % 8))) ? 1 : 0;
 }
 
 /**
- * @brief  »º³åÇø»­Ïß
- * @param  (x0,y0)ÆğÊ¼µã×ø±ê£¬(x1,y1)ÖÕÖ¹µã×ø±ê
+ * @brief  ç¼“å†²åŒºç”»çº¿
+ * @param  (x0,y0)èµ·å§‹ç‚¹åæ ‡ï¼Œ(x1,y1)ç»ˆæ­¢ç‚¹åæ ‡
  * @retval None
  */
 void lava_buf_line(uint x1, uint y1, uint x2, uint y2, uint type) {
@@ -269,35 +269,35 @@ void lava_buf_line(uint x1, uint y1, uint x2, uint y2, uint type) {
   int xerr = 0, yerr = 0, delta_x, delta_y, distance;
   int incx, incy, uRow, uCol;
 
-  delta_x = x2 - x1; // ¼ÆËã×ø±êÔöÁ¿
+  delta_x = x2 - x1; // è®¡ç®—åæ ‡å¢é‡
   delta_y = y2 - y1;
   uRow = x1;
   uCol = y1;
   if (delta_x > 0)
-    incx = 1; // ÉèÖÃµ¥²½·½Ïò
+    incx = 1; // è®¾ç½®å•æ­¥æ–¹å‘
   else if (delta_x == 0)
-    incx = 0; // ´¹Ö±Ïß
+    incx = 0; // å‚ç›´çº¿
   else {
-    incx = -1; // ÖÕµã×ø±êĞ¡ÓÚÆğÊ¼×ø±ê,·´·½Ïò,½«×ø±êÖØĞÂ¶¨Î»ÎªÕı×ø±ê
+    incx = -1; // ç»ˆç‚¹åæ ‡å°äºèµ·å§‹åæ ‡,åæ–¹å‘,å°†åæ ‡é‡æ–°å®šä½ä¸ºæ­£åæ ‡
     delta_x = -delta_x;
   }
   if (delta_y > 0)
     incy = 1;
   else if (delta_y == 0)
-    incy = 0; // Ë®Æ½Ïß
+    incy = 0; // æ°´å¹³çº¿
   else {
-    incy = -1; // ÖÕµã×ø±êĞ¡ÓÚÆğÊ¼×ø±ê,·´·½Ïò,½«×ø±êÖØĞÂ¶¨Î»ÎªÕı×ø±ê
+    incy = -1; // ç»ˆç‚¹åæ ‡å°äºèµ·å§‹åæ ‡,åæ–¹å‘,å°†åæ ‡é‡æ–°å®šä½ä¸ºæ­£åæ ‡
     delta_y = -delta_y;
   }
   if (delta_x > delta_y)
-    distance = delta_x; // Ñ¡È¡»ù±¾ÔöÁ¿×ø±êÖá
+    distance = delta_x; // é€‰å–åŸºæœ¬å¢é‡åæ ‡è½´
   else
     distance = delta_y;
-  for (t = 0; t <= distance + 1; t++) // »­ÏßÊä³ö
+  for (t = 0; t <= distance + 1; t++) // ç”»çº¿è¾“å‡º
   {
-    lava_buf_point(uRow, uCol, type); // ¸ù¾İ×ø±ê»­µã
-    xerr += delta_x;                  // X×ø±êÔöÁ¿
-    yerr += delta_y;                  // Y×ø±êÔöÁ¿
+    lava_buf_point(uRow, uCol, type); // æ ¹æ®åæ ‡ç”»ç‚¹
+    xerr += delta_x;                  // Xåæ ‡å¢é‡
+    yerr += delta_y;                  // Yåæ ‡å¢é‡
     if (xerr > distance) {
       xerr -= distance;
       uRow += incx;
@@ -309,10 +309,10 @@ void lava_buf_line(uint x1, uint y1, uint x2, uint y2, uint type) {
   }
 }
 /**
- * @brief  »º³åÇø»­Ë®Æ½Ïß
- * @param  (x0,y0)ÆğÊ¼µã×ø±ê
- * @param  l³¤¶È
- * @param  type ÀàĞÍ 0:Çå 1:»­ 2:·´ÏÔ
+ * @brief  ç¼“å†²åŒºç”»æ°´å¹³çº¿
+ * @param  (x0,y0)èµ·å§‹ç‚¹åæ ‡
+ * @param  lé•¿åº¦
+ * @param  type ç±»å‹ 0:æ¸… 1:ç”» 2:åæ˜¾
  * @retval None
  */
 void lava_buf_lineH(uint x0, uint y0, uint l, uint type) {
@@ -321,7 +321,7 @@ void lava_buf_lineH(uint x0, uint y0, uint l, uint type) {
   uchar temp;
   uchar *pG_end;
 
-  // ¼ì²é±ß½çÌõ¼ş
+  // æ£€æŸ¥è¾¹ç•Œæ¡ä»¶
   // if (x0 >= LAVA_WIDTH_LOCAL || y0 >= LAVA_HEIGHT_LOCAL || l == 0)
   //   return;
   if(x0 >= LAVA_WIDTH_LOCAL){
@@ -334,20 +334,20 @@ void lava_buf_lineH(uint x0, uint y0, uint l, uint type) {
     return;
   }
 
-  // È·±£²»»á³¬³öÆÁÄ»¿í¶È
+  // ç¡®ä¿ä¸ä¼šè¶…å‡ºå±å¹•å®½åº¦
   if (x0 + l > LAVA_WIDTH_LOCAL)
     l = LAVA_WIDTH_LOCAL - x0;
 
   pG = GRAPH_BUF + y0 * (LAVA_WIDTH_LOCAL / 8) + x0 / 8;
-  pG_end = GRAPH_BUF + LAVA_GBUF_BYTE; // »º³åÇø½áÊøÎ»ÖÃ
+  pG_end = GRAPH_BUF + LAVA_GBUF_BYTE; // ç¼“å†²åŒºç»“æŸä½ç½®
 
   bit_right = x0 % 8;
   if (bit_right)
     bit_left = 8 - bit_right;
   else
-    bit_left = 8; // µ± bit_right Îª 0 Ê±£¬ÉèÖÃ bit_left Îª 8
+    bit_left = 8; // å½“ bit_right ä¸º 0 æ—¶ï¼Œè®¾ç½® bit_left ä¸º 8
 
-  // ´¦ÀíµÚÒ»×Ö½Ú
+  // å¤„ç†ç¬¬ä¸€å­—èŠ‚
   if (bit_right && bit_right < 8) {
     if (bit_right + l < 8) {
       temp = 0xff >> (bit_right + l);
@@ -355,7 +355,7 @@ void lava_buf_lineH(uint x0, uint y0, uint l, uint type) {
       temp = 0;
     }
 
-    // È·±£²»»áÔ½½ç
+    // ç¡®ä¿ä¸ä¼šè¶Šç•Œ
     if (pG < pG_end) {
       switch (type & 0x07) {
       case 0:
@@ -373,10 +373,10 @@ void lava_buf_lineH(uint x0, uint y0, uint l, uint type) {
     }
   }
   
-  // ´¦ÀíÖĞ¼ä×Ö½Ú
+  // å¤„ç†ä¸­é—´å­—èŠ‚
   if (l > bit_left) {
     i = (l - bit_left) / 8;
-    // È·±£²»»áÔ½½ç
+    // ç¡®ä¿ä¸ä¼šè¶Šç•Œ
     while (i-- && pG < pG_end) {
       switch (type & 0x07) {
       case 0:
@@ -394,7 +394,7 @@ void lava_buf_lineH(uint x0, uint y0, uint l, uint type) {
     }
   }
   
-  // ´¦Àí×îºóÒ»×Ö½Ú
+  // å¤„ç†æœ€åä¸€å­—èŠ‚
   bit_right = (l - bit_left) % 8;
   if (bit_right && pG < pG_end) {
     bit_left = 8 - bit_right;
@@ -414,10 +414,10 @@ void lava_buf_lineH(uint x0, uint y0, uint l, uint type) {
 }
 
 /**
- * @brief  »º³åÇø»­ÊúÖ±Ïß
- * @param  (x0,y0)ÆğÊ¼µã×ø±ê
- * @param  l³¤¶È
- * @param  type ÀàĞÍ 0:Çå 1:»­ 2:·´ÏÔ
+ * @brief  ç¼“å†²åŒºç”»ç«–ç›´çº¿
+ * @param  (x0,y0)èµ·å§‹ç‚¹åæ ‡
+ * @param  lé•¿åº¦
+ * @param  type ç±»å‹ 0:æ¸… 1:ç”» 2:åæ˜¾
  * @retval None
  */
 void lava_buf_lineV(uint x0, uint y0, uint l, uint type) {
@@ -425,16 +425,16 @@ void lava_buf_lineV(uint x0, uint y0, uint l, uint type) {
   int dat = 0x80 >> (x0 % 8);
   uchar *pG_end;
   
-  // ¼ì²é±ß½çÌõ¼ş
+  // æ£€æŸ¥è¾¹ç•Œæ¡ä»¶
   if (x0 >= LAVA_WIDTH_LOCAL || y0 >= LAVA_HEIGHT_LOCAL || l == 0)
     return;
 
-  // È·±£²»»á³¬³öÆÁÄ»¸ß¶È
+  // ç¡®ä¿ä¸ä¼šè¶…å‡ºå±å¹•é«˜åº¦
   if (y0 + l > LAVA_HEIGHT_LOCAL)
     l = LAVA_HEIGHT_LOCAL - y0;
 
   pG = GRAPH_BUF + y0 * (LAVA_WIDTH_LOCAL / 8) + x0 / 8;
-  pG_end = GRAPH_BUF + LAVA_GBUF_BYTE; // »º³åÇø½áÊøÎ»ÖÃ
+  pG_end = GRAPH_BUF + LAVA_GBUF_BYTE; // ç¼“å†²åŒºç»“æŸä½ç½®
   
   for (i = 0; i < l && pG < pG_end; i++) {
     switch (type) {
@@ -453,14 +453,14 @@ void lava_buf_lineV(uint x0, uint y0, uint l, uint type) {
 }
 
 /**
- * @brief  »º³åÇøÓÃÊı¾İ»­Ò»ÌõË®Æ½Ïß
- * @param  (x0,y0)ÆğÊ¼µã×ø±ê
- * @param  l³¤¶È
- * @param  type ÀàĞÍ 1:copy 2:not 3:or 4:and 5:xor 6:Í¸Ã÷copy(½öÓÃÓÚ256É«Ä£Ê½)
- * @param  data Êı¾İËùÔÚµØÖ·
+ * @brief  ç¼“å†²åŒºç”¨æ•°æ®ç”»ä¸€æ¡æ°´å¹³çº¿
+ * @param  (x0,y0)èµ·å§‹ç‚¹åæ ‡
+ * @param  lé•¿åº¦
+ * @param  type ç±»å‹ 1:copy 2:not 3:or 4:and 5:xor 6:é€æ˜copy(ä»…ç”¨äº256è‰²æ¨¡å¼)
+ * @param  data æ•°æ®æ‰€åœ¨åœ°å€
  * @retval None
  */
-// È¡dataÖĞ´Óoffset_bit¿ªÊ¼µÄnÎ»£¬×ó¶ÔÆë£¬¿ÕÎ»0²¹Æë
+// å–dataä¸­ä»offset_bitå¼€å§‹çš„nä½ï¼Œå·¦å¯¹é½ï¼Œç©ºä½0è¡¥é½
 void lava_buf_picHL(uint x0, uint y0, uint l, uint type, const addr data) {
   uint width;
   uint mode;
@@ -528,9 +528,9 @@ void lava_buf_picHL(uint x0, uint y0, uint l, uint type, const addr data) {
 
 
 /**
- * @brief  ÏÔÊ¾Ó¢ÎÄ×Ö·û
- * @param  chr£º×Ö·ûµÄASCIIÂë
- * @param  type£º×Ö·ûÏÔÊ¾Ä£Ê½
+ * @brief  æ˜¾ç¤ºè‹±æ–‡å­—ç¬¦
+ * @param  chrï¼šå­—ç¬¦çš„ASCIIç 
+ * @param  typeï¼šå­—ç¬¦æ˜¾ç¤ºæ¨¡å¼
  * @retval None
  */
 void lava_show_enchar(int x0, int y0, int chr, int type) {
@@ -551,9 +551,9 @@ void lava_show_enchar(int x0, int y0, int chr, int type) {
 }
 
 /**
- * @brief  ÏÔÊ¾ÖĞÎÄ×Ö·û
- * @param  cnchar£ºÖĞÎÄ×Ö·ûµÄASCIIÂë¸ßÎ» ch_l£ºÖĞÎÄ×Ö·ûµÄASCIIÂëµÍÎ»
- * @param  type£º×Ö·ûÏÔÊ¾Ä£Ê½
+ * @brief  æ˜¾ç¤ºä¸­æ–‡å­—ç¬¦
+ * @param  cncharï¼šä¸­æ–‡å­—ç¬¦çš„ASCIIç é«˜ä½ ch_lï¼šä¸­æ–‡å­—ç¬¦çš„ASCIIç ä½ä½
+ * @param  typeï¼šå­—ç¬¦æ˜¾ç¤ºæ¨¡å¼
  * @retval None
  */
 void lava_show_cnchar(int x0, int y0, int ch_h, int ch_l, int type) {
@@ -574,34 +574,34 @@ void lava_show_cnchar(int x0, int y0, int ch_h, int ch_l, int type) {
   WriteBlock(x0, y0, x * 8, y, type, LAVA_cnFont->table + address);
 }
 
-/******************************************LAVAº¯Êı**********************************************************/
+/******************************************LAVAå‡½æ•°**********************************************************/
 
 /*********************************************************
- * @ÊıÑ§º¯Êı
+ * @æ•°å­¦å‡½æ•°
  */
 static long lava_rand_seed = 0;
 /*
 rand
-Ô­ĞÍ¡¡int lava_rand();
-¹¦ÄÜ¡¡È¡µÃÒ»¸öËæ»úÊıÖµ
-ËµÃ÷¡¡·µ»ØÖµµÄ·¶Î§ÊÇ0¡«32767
+åŸå‹ã€€int lava_rand();
+åŠŸèƒ½ã€€å–å¾—ä¸€ä¸ªéšæœºæ•°å€¼
+è¯´æ˜ã€€è¿”å›å€¼çš„èŒƒå›´æ˜¯0ï½32767
 */
 int lava_rand() {
   uint32_t r, n;
   rtc_time now;
   
-  // »ñÈ¡µ±Ç°Ê±¼ä
+  // è·å–å½“å‰æ—¶é—´
   now = get_time_rtc();
   
-  // Ê¹ÓÃÏßĞÔÍ¬ÓàÉú³ÉÆ÷¸Ä½øËæ»úĞÔ
-  // ½áºÏÊ±¼ä´ÁºÍÖÖ×ÓÖµ
+  // ä½¿ç”¨çº¿æ€§åŒä½™ç”Ÿæˆå™¨æ”¹è¿›éšæœºæ€§
+  // ç»“åˆæ—¶é—´æˆ³å’Œç§å­å€¼
   lava_rand_seed = (lava_rand_seed * 1103515245 + 12345) & 0x7fffffff;
   r = (now.microsec + lava_rand_seed) & 0x7fffffff;
   
-  // ±ÜÃâ³ıÁã´íÎó£¬È·±£nÔÚ1-10Ö®¼ä
+  // é¿å…é™¤é›¶é”™è¯¯ï¼Œç¡®ä¿nåœ¨1-10ä¹‹é—´
   n = (r % 9) + 1;
   
-  // ½øÒ»²½»ìºÏËæ»úĞÔ
+  // è¿›ä¸€æ­¥æ··åˆéšæœºæ€§
   r = (r / n) ^ (now.seconds);
   r = r % 0x7fff;
   
@@ -610,27 +610,27 @@ int lava_rand() {
 
 /*
 srand
-Ô­ĞÍ¡¡void lava_srand(long x);
+åŸå‹ã€€void lava_srand(long x);
 
-¹¦ÄÜ¡¡ÓÃx³õÊ¼»¯Ëæ»úÊı·¢ÉúÆ÷
+åŠŸèƒ½ã€€ç”¨xåˆå§‹åŒ–éšæœºæ•°å‘ç”Ÿå™¨
 
-ËµÃ÷¡¡
+è¯´æ˜ã€€
 */
 void lava_srand(long x) { lava_rand_seed = x; }
 
 /*********************************************************
- * @Í¼ĞÎÄ£Ê½ÏÂµÄÊ¸Á¿»æÍ¼º¯Êı
+ * @å›¾å½¢æ¨¡å¼ä¸‹çš„çŸ¢é‡ç»˜å›¾å‡½æ•°
  */
 
 /*
 Point
-Ô­ĞÍ¡¡void Point(int x,int y,int type);
-¹¦ÄÜ¡¡»­µã
-ËµÃ÷¡¡(x,y)ÎªµãµÄ×ø±ê£¬typeÖµº¬ÒåÈçÏÂ£º
-      type=0:2É«Ä£Ê½ÏÂ»­°×µã£¬16É«ºÍ256É«Ä£Ê½ÏÂÓÃ±³¾°É«»­µã
-           1:2É«Ä£Ê½ÏÂ»­ºÚµã£¬16É«ºÍ256É«Ä£Ê½ÏÂÓÃÇ°¾°É«»­µã
-           2:µãµÄÑÕÉ«È¡·´
-      typeµÄbit6=1Ê±ÏòÍ¼ĞÎ»º³åÇø×÷Í¼£¬·ñÔòÖ±½ÓÔÚÆÁÄ»×÷Í¼
+åŸå‹ã€€void Point(int x,int y,int type);
+åŠŸèƒ½ã€€ç”»ç‚¹
+è¯´æ˜ã€€(x,y)ä¸ºç‚¹çš„åæ ‡ï¼Œtypeå€¼å«ä¹‰å¦‚ä¸‹ï¼š
+      type=0:2è‰²æ¨¡å¼ä¸‹ç”»ç™½ç‚¹ï¼Œ16è‰²å’Œ256è‰²æ¨¡å¼ä¸‹ç”¨èƒŒæ™¯è‰²ç”»ç‚¹
+           1:2è‰²æ¨¡å¼ä¸‹ç”»é»‘ç‚¹ï¼Œ16è‰²å’Œ256è‰²æ¨¡å¼ä¸‹ç”¨å‰æ™¯è‰²ç”»ç‚¹
+           2:ç‚¹çš„é¢œè‰²å–å
+      typeçš„bit6=1æ—¶å‘å›¾å½¢ç¼“å†²åŒºä½œå›¾ï¼Œå¦åˆ™ç›´æ¥åœ¨å±å¹•ä½œå›¾
 */
 void Point(int x, int y, int type) {
   if (lava_lcd_check(&x, &y, &x, &y))
@@ -644,13 +644,13 @@ void Point(int x, int y, int type) {
 
 /*
 GetPoint
-Ô­ĞÍ¡¡int GetPoint(int x,int y);
+åŸå‹ã€€int GetPoint(int x,int y);
 
-¹¦ÄÜ¡¡È¡µãµÄÑÕÉ«
+åŠŸèƒ½ã€€å–ç‚¹çš„é¢œè‰²
 
-ËµÃ÷¡¡(x,y)ÎªµãµÄ×ø±ê
-      2É«Ä£Ê½ÏÂÈç¹ûÊÇ°×µã·µ»ØÁã£¬ºÚµã·µ»Ø·ÇÁãÖµ
-      16É«ºÍ256É«Ä£Ê½ÏÂ·µ»ØÑÕÉ«Ë÷ÒıÖµ
+è¯´æ˜ã€€(x,y)ä¸ºç‚¹çš„åæ ‡
+      2è‰²æ¨¡å¼ä¸‹å¦‚æœæ˜¯ç™½ç‚¹è¿”å›é›¶ï¼Œé»‘ç‚¹è¿”å›éé›¶å€¼
+      16è‰²å’Œ256è‰²æ¨¡å¼ä¸‹è¿”å›é¢œè‰²ç´¢å¼•å€¼
 
 */
 int GetPoint(int x, int y) {
@@ -661,16 +661,16 @@ int GetPoint(int x, int y) {
 
 /*
 Line
-Ô­ĞÍ¡¡void Line(int x0,int y0,int x1,int y1,int type);
+åŸå‹ã€€void Line(int x0,int y0,int x1,int y1,int type);
 
-¹¦ÄÜ¡¡»­Ö±Ïß
+åŠŸèƒ½ã€€ç”»ç›´çº¿
 
-ËµÃ÷¡¡(x0,y0)ºÍ(x1,y1)Ö¸¶¨Ö±ÏßµÄÁ½¸ö¶Ëµã×ø±ê¡£
-      type¾ö¶¨»­Í¼·½Ê½£¬ÆäÖµº¬ÒåÈçÏÂ£º
-      type=0:2É«Ä£Ê½ÏÂ»­°×Ïß£¬16É«ºÍ256É«Ä£Ê½ÏÂÓÃ±³¾°É«»­Ïß
-           1:2É«Ä£Ê½ÏÂ»­ºÚÏß£¬16É«ºÍ256É«Ä£Ê½ÏÂÓÃÇ°¾°É«»­Ïß
-           2:ÏßµÄËùÓĞµãÈ¡·´
-      typeµÄbit6=1Ê±ÏòÍ¼ĞÎ»º³åÇø×÷Í¼£¬·ñÔòÖ±½ÓÔÚÆÁÄ»×÷Í¼
+è¯´æ˜ã€€(x0,y0)å’Œ(x1,y1)æŒ‡å®šç›´çº¿çš„ä¸¤ä¸ªç«¯ç‚¹åæ ‡ã€‚
+      typeå†³å®šç”»å›¾æ–¹å¼ï¼Œå…¶å€¼å«ä¹‰å¦‚ä¸‹ï¼š
+      type=0:2è‰²æ¨¡å¼ä¸‹ç”»ç™½çº¿ï¼Œ16è‰²å’Œ256è‰²æ¨¡å¼ä¸‹ç”¨èƒŒæ™¯è‰²ç”»çº¿
+           1:2è‰²æ¨¡å¼ä¸‹ç”»é»‘çº¿ï¼Œ16è‰²å’Œ256è‰²æ¨¡å¼ä¸‹ç”¨å‰æ™¯è‰²ç”»çº¿
+           2:çº¿çš„æ‰€æœ‰ç‚¹å–å
+      typeçš„bit6=1æ—¶å‘å›¾å½¢ç¼“å†²åŒºä½œå›¾ï¼Œå¦åˆ™ç›´æ¥åœ¨å±å¹•ä½œå›¾
 */
 void Line(int x0, int y0, int x1, int y1, int type) {
   if (lava_lcd_check(&x0, &y0, &x1, &y1))
@@ -685,17 +685,17 @@ void Line(int x0, int y0, int x1, int y1, int type) {
 
 /*
 Box
-Ô­ĞÍ¡¡void Box(int x0,int y0,int x1,int y1,int fill,int type);
+åŸå‹ã€€void Box(int x0,int y0,int x1,int y1,int fill,int type);
 
-¹¦ÄÜ¡¡»­¾ØĞÎ
+åŠŸèƒ½ã€€ç”»çŸ©å½¢
 
-ËµÃ÷¡¡(x0,y0)Ö¸¶¨×óÉÏ½Ç×ø±ê£¬(x1,y1)Ö¸¶¨ÓÒÏÂ½Ç×ø±ê¡£
-      type¾ö¶¨»­Í¼·½Ê½£¬ÆäÖµº¬ÒåÈçÏÂ£º
-      type=0:2É«Ä£Ê½ÏÂ»­°×¾ØĞÎ£¬16É«ºÍ256É«Ä£Ê½ÏÂÓÃ±³¾°É«»­¾ØĞÎ
-           1:2É«Ä£Ê½ÏÂ»­ºÚ¾ØĞÎ£¬16É«ºÍ256É«Ä£Ê½ÏÂÓÃÇ°¾°É«»­¾ØĞÎ
-           2:¾ØĞÎµÄËùÓĞµãÈ¡·´
-      fill=0:²»Ìî³ä¾ØĞÎ
-           1:Ìî³ä¾ØĞÎ
+è¯´æ˜ã€€(x0,y0)æŒ‡å®šå·¦ä¸Šè§’åæ ‡ï¼Œ(x1,y1)æŒ‡å®šå³ä¸‹è§’åæ ‡ã€‚
+      typeå†³å®šç”»å›¾æ–¹å¼ï¼Œå…¶å€¼å«ä¹‰å¦‚ä¸‹ï¼š
+      type=0:2è‰²æ¨¡å¼ä¸‹ç”»ç™½çŸ©å½¢ï¼Œ16è‰²å’Œ256è‰²æ¨¡å¼ä¸‹ç”¨èƒŒæ™¯è‰²ç”»çŸ©å½¢
+           1:2è‰²æ¨¡å¼ä¸‹ç”»é»‘çŸ©å½¢ï¼Œ16è‰²å’Œ256è‰²æ¨¡å¼ä¸‹ç”¨å‰æ™¯è‰²ç”»çŸ©å½¢
+           2:çŸ©å½¢çš„æ‰€æœ‰ç‚¹å–å
+      fill=0:ä¸å¡«å……çŸ©å½¢
+           1:å¡«å……çŸ©å½¢
 
 */
 void Box(int x0, int y0, int x1, int y1, int fill, int type) {
@@ -728,63 +728,63 @@ void Box(int x0, int y0, int x1, int y1, int fill, int type) {
 
 /*
 Circle
-Ô­ĞÍ¡¡void Circle(int x,int y,int r,int fill,int type);
+åŸå‹ã€€void Circle(int x,int y,int r,int fill,int type);
 
-¹¦ÄÜ¡¡»­Ô²
+åŠŸèƒ½ã€€ç”»åœ†
 
-ËµÃ÷¡¡(x,y)Ö¸¶¨Ô²ĞÄ£¬rÖ¸¶¨°ë¾¶¡£
-      type¾ö¶¨»­Í¼·½Ê½£¬ÆäÖµº¬ÒåÈçÏÂ£º
-      type=0:2É«Ä£Ê½ÏÂ»­°×Ô²£¬16É«ºÍ256É«Ä£Ê½ÏÂÓÃ±³¾°É«»­Ô²
-           1:2É«Ä£Ê½ÏÂ»­ºÚÔ²£¬16É«ºÍ256É«Ä£Ê½ÏÂÓÃÇ°¾°É«»­Ô²
-           2:Ô²µÄËùÓĞµãÈ¡·´
-      fill=0:²»Ìî³ä
-           1:Ìî³ä
+è¯´æ˜ã€€(x,y)æŒ‡å®šåœ†å¿ƒï¼ŒræŒ‡å®šåŠå¾„ã€‚
+      typeå†³å®šç”»å›¾æ–¹å¼ï¼Œå…¶å€¼å«ä¹‰å¦‚ä¸‹ï¼š
+      type=0:2è‰²æ¨¡å¼ä¸‹ç”»ç™½åœ†ï¼Œ16è‰²å’Œ256è‰²æ¨¡å¼ä¸‹ç”¨èƒŒæ™¯è‰²ç”»åœ†
+           1:2è‰²æ¨¡å¼ä¸‹ç”»é»‘åœ†ï¼Œ16è‰²å’Œ256è‰²æ¨¡å¼ä¸‹ç”¨å‰æ™¯è‰²ç”»åœ†
+           2:åœ†çš„æ‰€æœ‰ç‚¹å–å
+      fill=0:ä¸å¡«å……
+           1:å¡«å……
 
 */
 void Circle(int x1, int y1, int r, int fill, int type) {
   int x = 0, y = r;
   int d =
-      1 - r; // Æğµã(0,R),ÏÂÒ»µãÖĞµã(1,R-0.5),d=1*1+(R-0.5)*(R-0.5)-R*R=1.25-R,
+      1 - r; // èµ·ç‚¹(0,R),ä¸‹ä¸€ç‚¹ä¸­ç‚¹(1,R-0.5),d=1*1+(R-0.5)*(R-0.5)-R*R=1.25-R,
 
   if (lava_lcd_check(&x1, &y1, &x1, &y1))
     return;
 
-  while (y > x) // y>x¼´µÚÒ»ÏóÏŞµÄµÚÇø°Ë·ÖÔ²
+  while (y > x) // y>xå³ç¬¬ä¸€è±¡é™çš„ç¬¬åŒºå…«åˆ†åœ†
   {
-    lava_lcd_point(x + x1, y + y1, type); // Ô²ĞÄ(x1,y1),»­µãÊ±Ö±½ÓÏà¼ÓÆ½ÒÆ,»­Çø
-    lava_lcd_point(y + x1, x + y1, type); // »­Çø
-    lava_lcd_point(-x + x1, y + y1, type);  // »­Çø
-    lava_lcd_point(-y + x1, x + y1, type);  // »­Çø
-    lava_lcd_point(-x + x1, -y + y1, type); // »­Çø
-    lava_lcd_point(-y + x1, -x + y1, type); // »­Çø
-    lava_lcd_point(x + x1, -y + y1, type);  // »­Çø
-    lava_lcd_point(y + x1, -x + y1, type);  // »­Çø
+    lava_lcd_point(x + x1, y + y1, type); // åœ†å¿ƒ(x1,y1),ç”»ç‚¹æ—¶ç›´æ¥ç›¸åŠ å¹³ç§»,ç”»åŒº
+    lava_lcd_point(y + x1, x + y1, type); // ç”»åŒº
+    lava_lcd_point(-x + x1, y + y1, type);  // ç”»åŒº
+    lava_lcd_point(-y + x1, x + y1, type);  // ç”»åŒº
+    lava_lcd_point(-x + x1, -y + y1, type); // ç”»åŒº
+    lava_lcd_point(-y + x1, -x + y1, type); // ç”»åŒº
+    lava_lcd_point(x + x1, -y + y1, type);  // ç”»åŒº
+    lava_lcd_point(y + x1, -x + y1, type);  // ç”»åŒº
     if (d < 0)
-      d = d + 2 * x + 3; // dµÄ±ä»¯
+      d = d + 2 * x + 3; // dçš„å˜åŒ–
     else {
-      d = d + 2 * (x - y) + 5; // d <= 0Ê±,dµÄ±ä»¯
-      y--;                     // y×ø±ê¼õ
+      d = d + 2 * (x - y) + 5; // d <= 0æ—¶,dçš„å˜åŒ–
+      y--;                     // yåæ ‡å‡
     }
-    x++; // x×ø±ê¼Ó
+    x++; // xåæ ‡åŠ 
   }
 }
 
 /*
 Ellipse
-Ô­ĞÍ¡¡void Ellipse(int x,int y,int a,int b,int fill,int type);
+åŸå‹ã€€void Ellipse(int x,int y,int a,int b,int fill,int type);
 
-¹¦ÄÜ¡¡»­ÍÖÔ²
+åŠŸèƒ½ã€€ç”»æ¤­åœ†
 
-ËµÃ÷¡¡(x,y)Ö¸¶¨Ô²ĞÄ£¬aÎªºá°ëÖá³¤¶È£¬bÎª×İ°ëÖá³¤¶È¡£
-      type¾ö¶¨»­Í¼·½Ê½£¬ÆäÖµº¬ÒåÈçÏÂ£º
-      type=0:2É«Ä£Ê½ÏÂ»­°×ÍÖÔ²£¬16É«ºÍ256É«Ä£Ê½ÏÂÓÃ±³¾°É«»­ÍÖÔ²
-           1:2É«Ä£Ê½ÏÂ»­ºÚÍÖÔ²£¬16É«ºÍ256É«Ä£Ê½ÏÂÓÃÇ°¾°É«»­ÍÖÔ²
-           2:ÍÖÔ²µÄËùÓĞµãÈ¡·´
-      fill=0:²»Ìî³ä
-           1:Ìî³ä
+è¯´æ˜ã€€(x,y)æŒ‡å®šåœ†å¿ƒï¼Œaä¸ºæ¨ªåŠè½´é•¿åº¦ï¼Œbä¸ºçºµåŠè½´é•¿åº¦ã€‚
+      typeå†³å®šç”»å›¾æ–¹å¼ï¼Œå…¶å€¼å«ä¹‰å¦‚ä¸‹ï¼š
+      type=0:2è‰²æ¨¡å¼ä¸‹ç”»ç™½æ¤­åœ†ï¼Œ16è‰²å’Œ256è‰²æ¨¡å¼ä¸‹ç”¨èƒŒæ™¯è‰²ç”»æ¤­åœ†
+           1:2è‰²æ¨¡å¼ä¸‹ç”»é»‘æ¤­åœ†ï¼Œ16è‰²å’Œ256è‰²æ¨¡å¼ä¸‹ç”¨å‰æ™¯è‰²ç”»æ¤­åœ†
+           2:æ¤­åœ†çš„æ‰€æœ‰ç‚¹å–å
+      fill=0:ä¸å¡«å……
+           1:å¡«å……
 
 */
-/**********»æÍÖÔ²»¡ÉÏ¶Ô³ÆµÄËÄ¸öÒªËØ**********/
+/**********ç»˜æ¤­åœ†å¼§ä¸Šå¯¹ç§°çš„å››ä¸ªè¦ç´ **********/
 static void EllipsePoints(long Center_x, long Center_y, long x, long y,
                           int type) {
   lava_lcd_point(Center_x + x, Center_y + y, type);
@@ -792,16 +792,16 @@ static void EllipsePoints(long Center_x, long Center_y, long x, long y,
   lava_lcd_point(Center_x - x, Center_y + y, type);
   lava_lcd_point(Center_x - x, Center_y - y, type);
 }
-/**********»æÍÖÔ²»¡Ö÷Òª³ÌĞò**********/
+/**********ç»˜æ¤­åœ†å¼§ä¸»è¦ç¨‹åº**********/
 void Ellipse(long Center_x, long Center_y, long a, long b, int fill, int type)
-/*?ÍÖÔ²ÖĞĞÄÔÚ(Center_x,Center_y),³¤°ëÖáÎªa£¬¶Ì°ëÖáÎªb */
+/*?æ¤­åœ†ä¸­å¿ƒåœ¨(Center_x,Center_y),é•¿åŠè½´ä¸ºaï¼ŒçŸ­åŠè½´ä¸ºb */
 {
   long x, y, d, P_x, P_y, Square_a, Square_b;
   Square_a = a * a;
   Square_b = b * b;
   P_x = (int)(0.5 + (float)Square_a / sqrt((float)(Square_a + Square_b)));
   P_y = (int)(0.5 + (float)Square_b / sqrt((float)(Square_a + Square_b)));
-  /*?Éú³ÉµÚÒ»ÏóÏŞÄÚµÄÉÏ°ë²¿·ÖÍÖÔ²»¡?*/
+  /*?ç”Ÿæˆç¬¬ä¸€è±¡é™å†…çš„ä¸ŠåŠéƒ¨åˆ†æ¤­åœ†å¼§?*/
   x = 0;
   y = b;
   d = 4 * (Square_b - b * Square_a) + Square_a;
@@ -816,7 +816,7 @@ void Ellipse(long Center_x, long Center_y, long a, long b, int fill, int type)
     x++;
     EllipsePoints(Center_x, Center_y, x, y, type);
   }
-  /*?Éú³ÉµÚÒ»ÏóÏŞÄÚµÄÉÏ°ë²¿·ÖÍÖÔ²»¡?*/
+  /*?ç”Ÿæˆç¬¬ä¸€è±¡é™å†…çš„ä¸ŠåŠéƒ¨åˆ†æ¤­åœ†å¼§?*/
   x = a;
   y = 0;
   d = 4 * (Square_a - a * Square_b) + Square_b;
@@ -834,21 +834,21 @@ void Ellipse(long Center_x, long Center_y, long a, long b, int fill, int type)
 }
 
 /*********************************************************
- * @Í¼ĞÎÄ£Ê½ÏÂµÄ¹âÕ¤»æÍ¼º¯Êı
+ * @å›¾å½¢æ¨¡å¼ä¸‹çš„å…‰æ …ç»˜å›¾å‡½æ•°
  */
 /*
 WriteBlock
-Ô­ĞÍ¡¡void WriteBlock(int x,int y,int width,int height,int type,addr data);
+åŸå‹ã€€void WriteBlock(int x,int y,int width,int height,int type,addr data);
 
-¹¦ÄÜ¡¡°ÑÎ»Í¼»æÖÆµ½ÆÁÄ»»º³åÇø
+åŠŸèƒ½ã€€æŠŠä½å›¾ç»˜åˆ¶åˆ°å±å¹•ç¼“å†²åŒº
 
-ËµÃ÷¡¡ÔÚÆÁÄ»µÄ(x,y)×ø±ê´¦»æÍ¼,Í¼µÄ¿íÎªwidth,¸ßÎªheight,Í¼ĞÎµÄÊı¾İµØÖ·Îªdata
-      typeµÄbit6Îª1Ê±Ö±½ÓÔÚÆÁÄ»ÉÏ»æÍ¼¡£
-            bit3Îª1Ê±Í¼ĞÎµÄËùÓĞµãÈ¡·´¡£
-            bit2-0: 1:copy 2:not 3:or 4:and 5:xor 6:Í¸Ã÷copy(½öÓÃÓÚ256É«Ä£Ê½)
+è¯´æ˜ã€€åœ¨å±å¹•çš„(x,y)åæ ‡å¤„ç»˜å›¾,å›¾çš„å®½ä¸ºwidth,é«˜ä¸ºheight,å›¾å½¢çš„æ•°æ®åœ°å€ä¸ºdata
+      typeçš„bit6ä¸º1æ—¶ç›´æ¥åœ¨å±å¹•ä¸Šç»˜å›¾ã€‚
+            bit3ä¸º1æ—¶å›¾å½¢çš„æ‰€æœ‰ç‚¹å–åã€‚
+            bit2-0: 1:copy 2:not 3:or 4:and 5:xor 6:é€æ˜copy(ä»…ç”¨äº256è‰²æ¨¡å¼)
 
 */
-// TODO:ÔÚ»º³åÇø»æÍ¼,Ä¿Ç°²ÉÓÃ»­µã·½Ê½£¬Ğ§ÂÊ²»¸ß
+// TODO:åœ¨ç¼“å†²åŒºç»˜å›¾,ç›®å‰é‡‡ç”¨ç”»ç‚¹æ–¹å¼ï¼Œæ•ˆç‡ä¸é«˜
 void WriteBlock(int x, int y, int width, int height, int type,
                 const addr data) {
   int i;
@@ -926,11 +926,11 @@ void WriteBlock(int x, int y, int width, int height, int type,
 }
 
 /*
-¹¦ÄÜ¡¡È¡ÆÁÄ»Í¼ĞÎ
+åŠŸèƒ½ã€€å–å±å¹•å›¾å½¢
 
-ËµÃ÷¡¡°ÑÆÁÄ»»òÍ¼ĞÎ»º³åÇøµÄ(x,y)×ø±ê´¦µÄ¿íÎªwidth¸ßheightµÄ¾ØĞÎÇøÓò±£´æµ½ÄÚ´æµØÖ·data´¦¡£
-      type=0:´ÓÍ¼ĞÎ»º³åÇøÈ¡Í¼ĞÎ£¬type=0x40:´ÓÆÁÄ»È¡Í¼ĞÎ¡£
-      ×¢Òâ£ºxºÍwidthºöÂÔbit0-bit2¡£
+è¯´æ˜ã€€æŠŠå±å¹•æˆ–å›¾å½¢ç¼“å†²åŒºçš„(x,y)åæ ‡å¤„çš„å®½ä¸ºwidthé«˜heightçš„çŸ©å½¢åŒºåŸŸä¿å­˜åˆ°å†…å­˜åœ°å€dataå¤„ã€‚
+      type=0:ä»å›¾å½¢ç¼“å†²åŒºå–å›¾å½¢ï¼Œtype=0x40:ä»å±å¹•å–å›¾å½¢ã€‚
+      æ³¨æ„ï¼šxå’Œwidthå¿½ç•¥bit0-bit2ã€‚
 */
 
 void GetBlock(int x, int y, int width, int height, int type, addr data) {
@@ -950,15 +950,15 @@ void GetBlock(int x, int y, int width, int height, int type, addr data) {
 }
 /*
 Block
-Ô­ĞÍ¡¡void Block(int x0,int y0,int x1,int y1,int type);
+åŸå‹ã€€void Block(int x0,int y0,int x1,int y1,int type);
 
-¹¦ÄÜ¡¡ÔÚÆÁÄ»»º³åÇø»­Ò»ÊµĞÄ¾ØĞÎ
+åŠŸèƒ½ã€€åœ¨å±å¹•ç¼“å†²åŒºç”»ä¸€å®å¿ƒçŸ©å½¢
 
-ËµÃ÷¡¡(x0,y0)Ö¸¶¨×óÉÏ½Ç×ø±ê£¬(x1,y1)Ö¸¶¨ÓÒÏÂ½Ç×ø±ê¡£
-      type¾ö¶¨»­Í¼·½Ê½£¬ÆäÖµº¬ÒåÈçÏÂ£º
-      type=0:ºÚ°×Ä£Ê½ÏÂ»­°×¾ØĞÎ£¬»Ò¶ÈÄ£Ê½ÏÂÓÃ±³¾°É«»­¾ØĞÎ
-           1:ºÚ°×Ä£Ê½ÏÂ»­ºÚ¾ØĞÎ£¬»Ò¶ÈÄ£Ê½ÏÂÓÃÇ°¾°É«»­¾ØĞÎ
-           2:¾ØĞÎµÄËùÓĞµãÈ¡·´
+è¯´æ˜ã€€(x0,y0)æŒ‡å®šå·¦ä¸Šè§’åæ ‡ï¼Œ(x1,y1)æŒ‡å®šå³ä¸‹è§’åæ ‡ã€‚
+      typeå†³å®šç”»å›¾æ–¹å¼ï¼Œå…¶å€¼å«ä¹‰å¦‚ä¸‹ï¼š
+      type=0:é»‘ç™½æ¨¡å¼ä¸‹ç”»ç™½çŸ©å½¢ï¼Œç°åº¦æ¨¡å¼ä¸‹ç”¨èƒŒæ™¯è‰²ç”»çŸ©å½¢
+           1:é»‘ç™½æ¨¡å¼ä¸‹ç”»é»‘çŸ©å½¢ï¼Œç°åº¦æ¨¡å¼ä¸‹ç”¨å‰æ™¯è‰²ç”»çŸ©å½¢
+           2:çŸ©å½¢çš„æ‰€æœ‰ç‚¹å–å
 */
 
 void Block(int x0, int y0, int x1, int y1, int type) {
@@ -985,15 +985,15 @@ void Block(int x0, int y0, int x1, int y1, int type) {
 }
 /*
 Rectangle
-Ô­ĞÍ¡¡void Rectangle(int x0,int y0,int x1,int y1,int type);
+åŸå‹ã€€void Rectangle(int x0,int y0,int x1,int y1,int type);
 
-¹¦ÄÜ¡¡ÔÚÆÁÄ»»º³åÇø»­Ò»¿ÕĞÄ¾ØĞÎ
+åŠŸèƒ½ã€€åœ¨å±å¹•ç¼“å†²åŒºç”»ä¸€ç©ºå¿ƒçŸ©å½¢
 
-ËµÃ÷¡¡(x0,y0)Ö¸¶¨×óÉÏ½Ç×ø±ê£¬(x1,y1)Ö¸¶¨ÓÒÏÂ½Ç×ø±ê¡£
-      type¾ö¶¨»­Í¼·½Ê½£¬ÆäÖµº¬ÒåÈçÏÂ£º
-      type=0:ºÚ°×Ä£Ê½ÏÂ»­°×¾ØĞÎ£¬»Ò¶ÈÄ£Ê½ÏÂÓÃ±³¾°É«»­¾ØĞÎ
-           1:ºÚ°×Ä£Ê½ÏÂ»­ºÚ¾ØĞÎ£¬»Ò¶ÈÄ£Ê½ÏÂÓÃÇ°¾°É«»­¾ØĞÎ
-           2:¾ØĞÎµÄËùÓĞµãÈ¡·´
+è¯´æ˜ã€€(x0,y0)æŒ‡å®šå·¦ä¸Šè§’åæ ‡ï¼Œ(x1,y1)æŒ‡å®šå³ä¸‹è§’åæ ‡ã€‚
+      typeå†³å®šç”»å›¾æ–¹å¼ï¼Œå…¶å€¼å«ä¹‰å¦‚ä¸‹ï¼š
+      type=0:é»‘ç™½æ¨¡å¼ä¸‹ç”»ç™½çŸ©å½¢ï¼Œç°åº¦æ¨¡å¼ä¸‹ç”¨èƒŒæ™¯è‰²ç”»çŸ©å½¢
+           1:é»‘ç™½æ¨¡å¼ä¸‹ç”»é»‘çŸ©å½¢ï¼Œç°åº¦æ¨¡å¼ä¸‹ç”¨å‰æ™¯è‰²ç”»çŸ©å½¢
+           2:çŸ©å½¢çš„æ‰€æœ‰ç‚¹å–å
 */
 void Rectangle(int x0, int y0, int x1, int y1, int type) {
   if (lava_lcd_check(&x0, &y0, &x1, &y1))
@@ -1007,14 +1007,14 @@ void Rectangle(int x0, int y0, int x1, int y1, int type) {
 
 /*
 TextOut
-Ô­ĞÍ¡¡void TextOut(int x,int y,addr string,int type);
+åŸå‹ã€€void TextOut(int x,int y,addr string,int type);
 
-¹¦ÄÜ¡¡°Ñ×Ö·û´®»æÖÆµ½ÆÁÄ»»º³åÇø
+åŠŸèƒ½ã€€æŠŠå­—ç¬¦ä¸²ç»˜åˆ¶åˆ°å±å¹•ç¼“å†²åŒº
 
-ËµÃ÷¡¡ÔÚÆÁÄ»µÄ(x,y)×ø±ê´¦»æÖÆ×Ö·û´®,stringÎª×Ö·û´®µÄµØÖ·
-      typeµÄbit7=1:´ó×ÖÌå£¬bit7=0:Ğ¡×ÖÌå¡£
-            bit6Îª1Ê±Ö±½ÓÔÚÆÁÄ»ÉÏ»æÍ¼¡£
-            bit3Îª1Ê±×ÖĞÎÈ¡·´¡£
+è¯´æ˜ã€€åœ¨å±å¹•çš„(x,y)åæ ‡å¤„ç»˜åˆ¶å­—ç¬¦ä¸²,stringä¸ºå­—ç¬¦ä¸²çš„åœ°å€
+      typeçš„bit7=1:å¤§å­—ä½“ï¼Œbit7=0:å°å­—ä½“ã€‚
+            bit6ä¸º1æ—¶ç›´æ¥åœ¨å±å¹•ä¸Šç»˜å›¾ã€‚
+            bit3ä¸º1æ—¶å­—å½¢å–åã€‚
             bit2-0: 1:copy 2:not 3:or 4:and 5:xor
 */
 void TextOut(int x, int y, addr string, int type) {
@@ -1042,17 +1042,17 @@ void TextOut(int x, int y, addr string, int type) {
 
 /*
 XDraw
-Ô­ĞÍ¡¡void XDraw(int mode);
+åŸå‹ã€€void XDraw(int mode);
 
-¹¦ÄÜ¡¡È«ÆÁÌØĞ§
+åŠŸèƒ½ã€€å…¨å±ç‰¹æ•ˆ
 
-ËµÃ÷¡¡mode=0:»º³åÇøµÄÍ¼ĞÎÈ«Ìå×óÒÆÒ»¸öµã¡£
-      mode=1:»º³åÇøµÄÍ¼ĞÎÈ«ÌåÓÒÒÆÒ»¸öµã¡£
-      mode=2:»º³åÇøµÄÍ¼ĞÎÈ«ÌåÉÏÒÆÒ»¸öµã¡£
-      mode=3:»º³åÇøµÄÍ¼ĞÎÈ«ÌåÏÂÒÆÒ»¸öµã¡£
-      mode=4:»º³åÇøµÄÍ¼ĞÎ×óÓÒ·´×ª¡£
-      mode=5:»º³åÇøµÄÍ¼ĞÎÉÏÏÂ·´×ª¡£
-      mode=6:ÆÁÄ»Í¼ĞÎ±£´æµ½»º³åÇø¡£
+è¯´æ˜ã€€mode=0:ç¼“å†²åŒºçš„å›¾å½¢å…¨ä½“å·¦ç§»ä¸€ä¸ªç‚¹ã€‚
+      mode=1:ç¼“å†²åŒºçš„å›¾å½¢å…¨ä½“å³ç§»ä¸€ä¸ªç‚¹ã€‚
+      mode=2:ç¼“å†²åŒºçš„å›¾å½¢å…¨ä½“ä¸Šç§»ä¸€ä¸ªç‚¹ã€‚
+      mode=3:ç¼“å†²åŒºçš„å›¾å½¢å…¨ä½“ä¸‹ç§»ä¸€ä¸ªç‚¹ã€‚
+      mode=4:ç¼“å†²åŒºçš„å›¾å½¢å·¦å³åè½¬ã€‚
+      mode=5:ç¼“å†²åŒºçš„å›¾å½¢ä¸Šä¸‹åè½¬ã€‚
+      mode=6:å±å¹•å›¾å½¢ä¿å­˜åˆ°ç¼“å†²åŒºã€‚
 
 */
 uchar swapBit(uchar ch) {
@@ -1071,7 +1071,7 @@ void XDraw(int mode) {
 
   pG = GRAPH_BUF;
   switch (mode) {
-  case 0: // ×óÒÆ
+  case 0: // å·¦ç§»
     for (i = 0; i < LAVA_HEIGHT; i++) {
       for (n = 0; n < LAVA_X_BYTE - 1; n++) {
         *pG <<= 1;
@@ -1081,7 +1081,7 @@ void XDraw(int mode) {
       *pG++ <<= 1;
     }
     break;
-  case 1: // ÓÒÒÆ
+  case 1: // å³ç§»
     pG += LAVA_GBUF_BYTE;
     for (i = 0; i < LAVA_HEIGHT + 1; i++) {
       *pG-- >>= 1;
@@ -1128,21 +1128,21 @@ void XDraw(int mode) {
 
 /*
 Fade
-Ô­ĞÍ¡¡void Fade(int bright);
+åŸå‹ã€€void Fade(int bright);
 
-¹¦ÄÜ¡¡µ­Èëµ­³öÌØĞ§
+åŠŸèƒ½ã€€æ·¡å…¥æ·¡å‡ºç‰¹æ•ˆ
 
-ËµÃ÷¡¡»º³åÇøµÄÍ¼ĞÎÒÔÖ¸¶¨µÄ×î´óÁÁ¶ÈÔÚÆÁÄ»ÉÏÏÔÊ¾
-      ½ö»Ò¶ÈÄ£Ê½ÏÂÓĞĞ§
+è¯´æ˜ã€€ç¼“å†²åŒºçš„å›¾å½¢ä»¥æŒ‡å®šçš„æœ€å¤§äº®åº¦åœ¨å±å¹•ä¸Šæ˜¾ç¤º
+      ä»…ç°åº¦æ¨¡å¼ä¸‹æœ‰æ•ˆ
 */
-// Î´Íê³É
+// æœªå®Œæˆ
 void Fade(int bright) { LAVA_FOR_COLOR = LCD_RGB(bright, bright, bright); }
 
 /*
 Refresh
-Ô­ĞÍ¡¡void Refresh();
-¹¦ÄÜ¡¡°Ñ»º³åÇøÄÚµÄÍ¼ÏóË¢ĞÂµ½ÆÁÄ»ÉÏÏÔÊ¾
-ËµÃ÷¡¡Í¨¹ıÊ¹ÓÃ»º³åÇø»æÍ¼,¿ÉÒÔÊµÏÖÎŞÉÁË¸»æÍ¼
+åŸå‹ã€€void Refresh();
+åŠŸèƒ½ã€€æŠŠç¼“å†²åŒºå†…çš„å›¾è±¡åˆ·æ–°åˆ°å±å¹•ä¸Šæ˜¾ç¤º
+è¯´æ˜ã€€é€šè¿‡ä½¿ç”¨ç¼“å†²åŒºç»˜å›¾,å¯ä»¥å®ç°æ— é—ªçƒç»˜å›¾
 */
 void Refresh() {
   lcd_draw_bw(LAVA_X_START, LAVA_Y_START, LAVA_WIDTH_LOCAL, LAVA_HEIGHT_LOCAL,
@@ -1151,25 +1151,25 @@ void Refresh() {
 
 /*
 ClearScreen
-Ô­ĞÍ¡¡void ClearScreen();
+åŸå‹ã€€void ClearScreen();
 
-¹¦ÄÜ¡¡°ÑÆÁÄ»»º³åÇøÄÚµÄÍ¼ÏóÇå³ı
+åŠŸèƒ½ã€€æŠŠå±å¹•ç¼“å†²åŒºå†…çš„å›¾è±¡æ¸…é™¤
 
-ËµÃ÷¡¡ºÚ°×Ä£Ê½ÏÂÓÃ°×É«Çå³ı£¬»Ò¶ÈÄ£Ê½ÏÂÓÃ±³¾°É«Çå³ı
+è¯´æ˜ã€€é»‘ç™½æ¨¡å¼ä¸‹ç”¨ç™½è‰²æ¸…é™¤ï¼Œç°åº¦æ¨¡å¼ä¸‹ç”¨èƒŒæ™¯è‰²æ¸…é™¤
 
 */
 void ClearScreen() { memset(GRAPH_BUF, 0, LAVA_GBUF_BYTE); }
 
 /***************************************************************************************************************************
-//¼üÅÌÊäÈëº¯Êı
+//é”®ç›˜è¾“å…¥å‡½æ•°
 */
 /*
 lava_getchar
-Ô­ĞÍ¡¡char lava_getchar();
+åŸå‹ã€€char lava_getchar();
 
-¹¦ÄÜ¡¡´Ó¼üÅÌÊäÈëÒ»¸ö×Ö·û
+åŠŸèƒ½ã€€ä»é”®ç›˜è¾“å…¥ä¸€ä¸ªå­—ç¬¦
 */
-char lava_getchar(void) {
+unsigned char lava_getchar(void) {
   //     #if DEBUG
   //         PrtScr_All();
   //     #endif
@@ -1180,44 +1180,44 @@ char lava_getchar(void) {
 
 /*
 Inkey
-Ô­ĞÍ¡¡char Inkey();
+åŸå‹ã€€unsigned char Inkey();
 
-¹¦ÄÜ¡¡´Ó¼üÅÌ»º³åÇøÖĞ¶ÁÈ¡°´¼ü
+åŠŸèƒ½ã€€ä»é”®ç›˜ç¼“å†²åŒºä¸­è¯»å–æŒ‰é”®
 
-ËµÃ÷¡¡²»µÈ´ı°´¼ü£¬Ö±½ÓÈ¡¼üÅÌ»º³åÇø£¬Èç¹ûÃ»ÓĞ¼üÖµÔòÖ±½Ó·µ»Ø0¡£
+è¯´æ˜ã€€ä¸ç­‰å¾…æŒ‰é”®ï¼Œç›´æ¥å–é”®ç›˜ç¼“å†²åŒºï¼Œå¦‚æœæ²¡æœ‰é”®å€¼åˆ™ç›´æ¥è¿”å›0ã€‚
 
 */
-char Inkey() { return key_read(); }
+unsigned char Inkey() { return key_read(); }
 
 /*ReleaseKey
-Ô­ĞÍ¡¡void ReleaseKey(char key);
+åŸå‹ã€€void ReleaseKey(unsigned char key);
 
-¹¦ÄÜ¡¡ÊÍ·Å°´¼ü
+åŠŸèƒ½ã€€é‡Šæ”¾æŒ‰é”®
 
-ËµÃ÷¡¡°ÑÖ¸¶¨µÄ°´¼ü×´Ì¬¸ÄÎªÊÍ·Å×´Ì¬£¨¼´Ê¹¸Ã¼üÕı°´ÏÂ£©¡£
-      lava_getcharºÍInkey¶ÔÓÚ³ÖĞø°´ÏÂµÄ¼üÖ»µÃµ½Ò»¸ö¼üÖµ£¬Ê¹ÓÃReleaseKey¿ÉÒÔ²úÉúÁ¬Ğø°´¼ü¡£
-      ×¢Òâ£ºµ±key>=128Ê±£¬ÊÍ·ÅËùÓĞ°´¼ü¡£
+è¯´æ˜ã€€æŠŠæŒ‡å®šçš„æŒ‰é”®çŠ¶æ€æ”¹ä¸ºé‡Šæ”¾çŠ¶æ€ï¼ˆå³ä½¿è¯¥é”®æ­£æŒ‰ä¸‹ï¼‰ã€‚
+      lava_getcharå’ŒInkeyå¯¹äºæŒç»­æŒ‰ä¸‹çš„é”®åªå¾—åˆ°ä¸€ä¸ªé”®å€¼ï¼Œä½¿ç”¨ReleaseKeyå¯ä»¥äº§ç”Ÿè¿ç»­æŒ‰é”®ã€‚
+      æ³¨æ„ï¼šå½“key>=128æ—¶ï¼Œé‡Šæ”¾æ‰€æœ‰æŒ‰é”®ã€‚
 */
 
-void ReleaseKey(char key) { key_release(key); }
+void ReleaseKey(unsigned char key) { key_release(key); }
 
 /*
 CheckKey
-Ô­ĞÍ¡¡int CheckKey(char key);
+åŸå‹ã€€int CheckKey(unsigned char key);
 
-¹¦ÄÜ¡¡¼ì²â°´¼ü
+åŠŸèƒ½ã€€æ£€æµ‹æŒ‰é”®
 
-ËµÃ÷¡¡¼ì²âÖ¸¶¨µÄ°´¼üÊÇ·ñ´¦ÓÚ°´ÏÂ×´Ì¬£¬°´ÏÂ·µ»Ø·Ç0£¬·ñÔò·µ»Ø0¡£
-      ×¢Òâ£ºµ±key>=128Ê±£¬¼ì²âËùÓĞ°´¼ü£¬ÓĞ¼ü°´ÏÂ·µ»Ø°´¼üÖµ£¬·ñÔò·µ»Ø0¡£
+è¯´æ˜ã€€æ£€æµ‹æŒ‡å®šçš„æŒ‰é”®æ˜¯å¦å¤„äºæŒ‰ä¸‹çŠ¶æ€ï¼ŒæŒ‰ä¸‹è¿”å›é0ï¼Œå¦åˆ™è¿”å›0ã€‚
+      æ³¨æ„ï¼šå½“key>=128æ—¶ï¼Œæ£€æµ‹æ‰€æœ‰æŒ‰é”®ï¼Œæœ‰é”®æŒ‰ä¸‹è¿”å›æŒ‰é”®å€¼ï¼Œå¦åˆ™è¿”å›0ã€‚
 
 */
-int CheckKey(char key) { return key_check(key); }
+int CheckKey(unsigned char key) { return key_check(key); }
 
 /************************************************************************************************************
-//ÎÄ±¾Ä£Ê½ÏÂµÄ×Ö·ûÏÔÊ¾º¯Êı
+//æ–‡æœ¬æ¨¡å¼ä¸‹çš„å­—ç¬¦æ˜¾ç¤ºå‡½æ•°
 */
-// ÏÂÒ»ĞĞ
-static char lava_str_buf[3] = {0, 0, 0};
+// ä¸‹ä¸€è¡Œ
+static unsigned char lava_str_buf[3] = {0, 0, 0};
 void lava_next_line(void) {
   LAVA_posy++;
   LAVA_posx = 0;
@@ -1225,13 +1225,13 @@ void lava_next_line(void) {
 }
 /*
 putchar
-Ô­ĞÍ: void putchar(char ch);
+åŸå‹: void putchar(unsigned char ch);
 
-¹¦ÄÜ: °Ñ×Ö·ûchÊä³öµ½ÆÁÄ»
+åŠŸèƒ½: æŠŠå­—ç¬¦chè¾“å‡ºåˆ°å±å¹•
 
-ËµÃ÷:
+è¯´æ˜:
 */
-void lava_putchar(char ch) {
+void lava_putchar(unsigned char ch) {
   int x = 0;
   int y = 0;
   uchar chr = ch;
@@ -1288,14 +1288,14 @@ void lava_putchar(char ch) {
 
 /*
 SetScreen
-Ô­ĞÍ¡¡void SetScreen(char mode);
+åŸå‹ã€€void SetScreen(unsigned char mode);
 
-¹¦ÄÜ¡¡ÇåÆÁ²¢ÉèÖÃ×ÖÌå´óĞ¡
+åŠŸèƒ½ã€€æ¸…å±å¹¶è®¾ç½®å­—ä½“å¤§å°
 
-ËµÃ÷¡¡mode=0:´ó×ÖÌå£¨8x16µãÕó£©
-      mode=1:Ğ¡×ÖÌå£¨6x12µãÕó£©
+è¯´æ˜ã€€mode=0:å¤§å­—ä½“ï¼ˆ8x16ç‚¹é˜µï¼‰
+      mode=1:å°å­—ä½“ï¼ˆ6x12ç‚¹é˜µï¼‰
 */
-void SetScreen(char mode) {
+void SetScreen(unsigned char mode) {
   LAVA_posx = LAVA_posy = 0;
   lava_set_font(mode);
   memset(TEXT_BUF, 0, sizeof(TEXT_BUF));
@@ -1304,11 +1304,11 @@ void SetScreen(char mode) {
 
 /*
 Locate
-Ô­ĞÍ¡¡void Locate(int y,int x);
+åŸå‹ã€€void Locate(int y,int x);
 
-¹¦ÄÜ¡¡¹â±ê¶¨Î»
+åŠŸèƒ½ã€€å…‰æ ‡å®šä½
 
-ËµÃ÷¡¡°Ñ×Ö·ûÏÔÊ¾µÄ¹â±ê¶¨Î»ÔÚyĞĞxÁĞ(x,y¾ù´Ó0¿ªÊ¼¼ÆËã)
+è¯´æ˜ã€€æŠŠå­—ç¬¦æ˜¾ç¤ºçš„å…‰æ ‡å®šä½åœ¨yè¡Œxåˆ—(x,yå‡ä»0å¼€å§‹è®¡ç®—)
 */
 void Locate(int y, int x) {
   // LAVA_text_pos = TEXT_BUF+y*LAVA_line_byte+x;
@@ -1318,14 +1318,14 @@ void Locate(int y, int x) {
 
 /*
 UpdateLCD
-Ô­ĞÍ: void UpdateLCD(char mode);
+åŸå‹: void UpdateLCD(unsigned char mode);
 
-¹¦ÄÜ: ÒÔÖ¸¶¨Ä£Ê½Ë¢ĞÂÆÁÄ»
+åŠŸèƒ½: ä»¥æŒ‡å®šæ¨¡å¼åˆ·æ–°å±å¹•
 
-ËµÃ÷: modeµÄÃ¿Ò»¸öbit£¬´Ó¸ßµ½µÍ¿ØÖÆÆÁÄ»µÄÃ¿Ò»ĞĞ£¬0±íÊ¾¸ÃĞĞ¸üĞÂ£¬1±íÊ¾¸ÃĞĞ²»¸üĞÂ
+è¯´æ˜: modeçš„æ¯ä¸€ä¸ªbitï¼Œä»é«˜åˆ°ä½æ§åˆ¶å±å¹•çš„æ¯ä¸€è¡Œï¼Œ0è¡¨ç¤ºè¯¥è¡Œæ›´æ–°ï¼Œ1è¡¨ç¤ºè¯¥è¡Œä¸æ›´æ–°
 */
 uchar dat_buf[27];
-void UpdateLCD(char mode) {
+void UpdateLCD(unsigned char mode) {
   int i;
   if (mode == 0)
     lava_clr();
@@ -1344,20 +1344,20 @@ void UpdateLCD(char mode) {
 }
 
 /*
- * º¯ÊıÃû£ºitoa
- * ÃèÊö  £º½«ÕûĞÎÊı¾İ×ª»»³É×Ö·û´®
- * ÊäÈë  £º-radix =10 ±íÊ¾10½øÖÆ£¬ÆäËû½á¹ûÎª0
- *         -value Òª×ª»»µÄÕûĞÎÊı
- *         -buf ×ª»»ºóµÄ×Ö·û´®
+ * å‡½æ•°åï¼šitoa
+ * æè¿°  ï¼šå°†æ•´å½¢æ•°æ®è½¬æ¢æˆå­—ç¬¦ä¸²
+ * è¾“å…¥  ï¼š-radix =10 è¡¨ç¤º10è¿›åˆ¶ï¼Œå…¶ä»–ç»“æœä¸º0
+ *         -value è¦è½¬æ¢çš„æ•´å½¢æ•°
+ *         -buf è½¬æ¢åçš„å­—ç¬¦ä¸²
  *         -radix = 10
- * Êä³ö  £ºÎŞ
- * ·µ»Ø  £ºÎŞ
- * µ÷ÓÃ  £º±»lava_printf()µ÷ÓÃ
+ * è¾“å‡º  ï¼šæ— 
+ * è¿”å›  ï¼šæ— 
+ * è°ƒç”¨  ï¼šè¢«lava_printf()è°ƒç”¨
  */
-static char *itoa(int value, char *string, int radix) {
+static unsigned char *itoa(int value, unsigned char *string, int radix) {
   int i, d;
   int flag = 0;
-  char *ptr = string;
+  unsigned char *ptr = string;
 
   /* This implementation only works for decimal numbers. */
   if (radix != 10) {
@@ -1396,27 +1396,27 @@ static char *itoa(int value, char *string, int radix) {
 
 } /* NCL_Itoa */
 
-// ¸ñÊ½»¯´òÓ¡µ½ÄÚ´æ
+// æ ¼å¼åŒ–æ‰“å°åˆ°å†…å­˜
 void lava_sprintf(uchar *str, uchar *Data, ...) {
-  const char *s;
+  const unsigned char *s;
   int d;
   int c;
-  char buf[16];
+  unsigned char buf[16];
 
   va_list ap;
   va_start(ap, Data);
 
-  while (*Data != 0) // ÅĞ¶ÏÊÇ·ñµ½´ï×Ö·û´®½áÊø·û
+  while (*Data != 0) // åˆ¤æ–­æ˜¯å¦åˆ°è¾¾å­—ç¬¦ä¸²ç»“æŸç¬¦
   {
     if (*Data == 0x5c) //'\'
     {
       switch (*++Data) {
-      case 'r': // »Ø³µ·û
+      case 'r': // å›è½¦ç¬¦
         *str++ = 0x0d;
         Data++;
         break;
 
-      case 'n': // »»ĞĞ·û
+      case 'n': // æ¢è¡Œç¬¦
         *str++ = 0x0a;
         Data++;
         break;
@@ -1427,20 +1427,20 @@ void lava_sprintf(uchar *str, uchar *Data, ...) {
       }
     } else if (*Data == '%') { //
       switch (*++Data) {
-      case 's': // ×Ö·û´®
-        s = va_arg(ap, const char *);
+      case 's': // å­—ç¬¦ä¸²
+        s = va_arg(ap, const unsigned char *);
         for (; *s; s++) {
           *str++ = (*s);
         }
         Data++;
         break;
-      case 'c': // ×Ö·û
+      case 'c': // å­—ç¬¦
         c = va_arg(ap, int);
         *str++ = (c);
         Data++;
         break;
 
-      case 'd': // Ê®½øÖÆ
+      case 'd': // åè¿›åˆ¶
         d = va_arg(ap, int);
         itoa(d, buf, 10);
         for (s = buf; *s; s++) {
@@ -1460,27 +1460,27 @@ void lava_sprintf(uchar *str, uchar *Data, ...) {
   *str = 0x00;
 }
 
-// ¸ñÊ½»¯´òÓ¡µ½ÄÚ´æ
+// æ ¼å¼åŒ–æ‰“å°åˆ°å†…å­˜
 void lava_printf(uchar *Data, ...) {
-  const char *s;
+  const unsigned char *s;
   int d;
   int c;
-  char buf[16];
+  unsigned char buf[16];
 
   va_list ap;
   va_start(ap, Data);
 
-  while (*Data != 0) // ÅĞ¶ÏÊÇ·ñµ½´ï×Ö·û´®½áÊø·û
+  while (*Data != 0) // åˆ¤æ–­æ˜¯å¦åˆ°è¾¾å­—ç¬¦ä¸²ç»“æŸç¬¦
   {
     if (*Data == 0x5c) //'\'
     {
       switch (*++Data) {
-      case 'r': // »Ø³µ·û
+      case 'r': // å›è½¦ç¬¦
         // lava_putchar(0x0d);
         Data++;
         break;
 
-      case 'n': // »»ĞĞ·û
+      case 'n': // æ¢è¡Œç¬¦
         lava_putchar(0x0a);
         Data++;
         break;
@@ -1491,20 +1491,20 @@ void lava_printf(uchar *Data, ...) {
       }
     } else if (*Data == '%') { //
       switch (*++Data) {
-      case 's': // ×Ö·û´®
-        s = va_arg(ap, const char *);
+      case 's': // å­—ç¬¦ä¸²
+        s = va_arg(ap, const unsigned char *);
         for (; *s; s++) {
           lava_putchar(*s);
         }
         Data++;
         break;
-      case 'c': // ×Ö·û
+      case 'c': // å­—ç¬¦
         c = va_arg(ap, int);
         lava_putchar(c);
         Data++;
         break;
 
-      case 'd': // Ê®½øÖÆ
+      case 'd': // åè¿›åˆ¶
         d = va_arg(ap, int);
         itoa(d, buf, 10);
         for (s = buf; *s; s++) {
@@ -1525,16 +1525,16 @@ void lava_printf(uchar *Data, ...) {
 }
 
 /*******************************************************************************
-//ÆäËûº¯Êı
+//å…¶ä»–å‡½æ•°
 */
 
 /*
 Delay
-Ô­ĞÍ¡¡void Delay(int ms);
+åŸå‹ã€€void Delay(int ms);
 
-¹¦ÄÜ¡¡ÑÓÊ±
+åŠŸèƒ½ã€€å»¶æ—¶
 
-ËµÃ÷¡¡ÑÓÊ±ms¸öºÁÃë,ms×î´óÈ¡Öµ32767(¼´:32.7Ãë)
+è¯´æ˜ã€€å»¶æ—¶msä¸ªæ¯«ç§’,msæœ€å¤§å–å€¼32767(å³:32.7ç§’)
 
 */
 
@@ -1542,11 +1542,11 @@ void Delay(int ms) { delay_ms(ms); }
 
 /*
 Getms
-Ô­ĞÍ¡¡char Getms();
+åŸå‹ã€€char Getms();
 
-¹¦ÄÜ¡¡È¡ÏµÍ³Ê±¼äµÄtickÊı
+åŠŸèƒ½ã€€å–ç³»ç»Ÿæ—¶é—´çš„tickæ•°
 
-ËµÃ÷¡¡1tick=1/256Ãë£¬·µ»ØÖµµÄ·¶Î§Îª0¡«255
+è¯´æ˜ã€€1tick=1/256ç§’ï¼Œè¿”å›å€¼çš„èŒƒå›´ä¸º0ï½255
 */
 int Getms() {
   rtc_time now;
@@ -1555,29 +1555,29 @@ int Getms() {
 }
 
 /*GetTime
-Ô­ĞÍ¡¡void GetTime(struct Time t);
+åŸå‹ã€€void GetTime(struct Time t);
 
-¹¦ÄÜ¡¡È¡ÏµÍ³ÈÕÆÚºÍÊ±¼ä
+åŠŸèƒ½ã€€å–ç³»ç»Ÿæ—¥æœŸå’Œæ—¶é—´
 
-ËµÃ÷¡¡ Ê¹ÓÃGetTime,SetTime,ÇëÔÚ³ÌĞòÀï¼ÓÉÏÈçÏÂ½á¹¹¶¨Òå£º
+è¯´æ˜ã€€ ä½¿ç”¨GetTime,SetTime,è¯·åœ¨ç¨‹åºé‡ŒåŠ ä¸Šå¦‚ä¸‹ç»“æ„å®šä¹‰ï¼š
       struct TIME
       {
       int year;
-      char month;
-      char day;
-      char hour;
-      char minute;
-      char second;
-      char week;
+      unsigned char month;
+    unsigned char day;
+    unsigned char hour;
+    unsigned char minute;
+    unsigned char second;
+    unsigned char week;
       };
 */
-// µ±second=0Ê±£¬ÊÇ1900Äê1ÔÂ1ÈÕ 12:00:00 ĞÇÆÚÒ»
+// å½“second=0æ—¶ï¼Œæ˜¯1900å¹´1æœˆ1æ—¥ 12:00:00 æ˜ŸæœŸä¸€
 #define IS_LEAP_YEAR(year)                                                     \
   (((year) % 400 == 0) || ((year) % 4 == 0 && (year) % 100 != 0))
 #define YEAR_OFFSET 1970
 void GetTime(struct TIME *t) {
   long day;
-  int day_a_year; // Ò»ÄêÓĞ¼¸Ìì
+  int day_a_year; // ä¸€å¹´æœ‰å‡ å¤©
   int i;
   uchar day_a_month[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
   rtc_time now;
@@ -1591,7 +1591,7 @@ void GetTime(struct TIME *t) {
   t->week = day % 7;
 
   t->year = 0;
-  // // ¼ÆËãÄê
+  // // è®¡ç®—å¹´
   while (1) {
     day_a_year = IS_LEAP_YEAR(t->year + YEAR_OFFSET) ? 366 : 365;
     if (day >= day_a_year) {
@@ -1600,7 +1600,7 @@ void GetTime(struct TIME *t) {
     } else
       break;
   }
-  // ¼ÆËãÔÂ
+  // è®¡ç®—æœˆ
   t->month = 0;
   if (IS_LEAP_YEAR(t->year + 1 + YEAR_OFFSET))
     day_a_month[1] = 29;
@@ -1616,7 +1616,7 @@ void GetTime(struct TIME *t) {
   t->day = day;
   t->hour += 8;
 
-  // Æ«ÒÆ±ãÓÚÏÔÊ¾
+  // åç§»ä¾¿äºæ˜¾ç¤º
   t->year += YEAR_OFFSET;
   t->month++;
   t->day++;
@@ -1624,32 +1624,32 @@ void GetTime(struct TIME *t) {
 }
 /*
 SetTime
-Ô­ĞÍ¡¡void SetTime(struct Time t);
+åŸå‹ã€€void SetTime(struct Time t);
 
-¹¦ÄÜ¡¡ÉèÖÃÏµÍ³ÈÕÆÚºÍÊ±¼ä
+åŠŸèƒ½ã€€è®¾ç½®ç³»ç»Ÿæ—¥æœŸå’Œæ—¶é—´
 
-ËµÃ÷¡¡ Ê¹ÓÃGetTime,SetTime,ÇëÔÚ³ÌĞòÀï¼ÓÉÏÈçÏÂ½á¹¹¶¨Òå£º
+è¯´æ˜ã€€ ä½¿ç”¨GetTime,SetTime,è¯·åœ¨ç¨‹åºé‡ŒåŠ ä¸Šå¦‚ä¸‹ç»“æ„å®šä¹‰ï¼š
       struct TIME
       {
       int year;
-      char month;
-      char day;
-      char hour;
-      char minute;
-      char second;
-      char week;
+      unsigned char month;
+    unsigned char day;
+    unsigned char hour;
+    unsigned char minute;
+    unsigned char second;
+    unsigned char week;
       };
 */
 void SetTime(struct TIME *t) {
   uint32_t seconds, day;
   int month, year;
-  //    int day_a_year; //Ò»ÄêÓĞ¼¸Ìì
+  //    int day_a_year; //ä¸€å¹´æœ‰å‡ å¤©
   uchar day_a_month[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
   rtc_time now = get_time_rtc();
 
   if (t->year < YEAR_OFFSET)
     return;
-  // Æ«ÒÆ±ãÓÚ¼ÆËã
+  // åç§»ä¾¿äºè®¡ç®—
   t->year -= YEAR_OFFSET;
   t->month--;
   t->day--;
@@ -1672,14 +1672,14 @@ void SetTime(struct TIME *t) {
 
 /*
 Crc16
-Ô­ĞÍ¡¡long Crc16(addr mem,int len);
+åŸå‹ã€€long Crc16(addr mem,int len);
 
-¹¦ÄÜ¡¡ÇóÄÚ´æµØÖ·mem¿ªÊ¼µÄlen¸ö×Ö½ÚµÄCRC16Ğ£ÑéÖµ
+åŠŸèƒ½ã€€æ±‚å†…å­˜åœ°å€memå¼€å§‹çš„lenä¸ªå­—èŠ‚çš„CRC16æ ¡éªŒå€¼
 */
 #define CRC_SEED                                                               \
-  0xFFFF // ¸ÃÎ»³ÆÎªÔ¤ÖÃÖµ£¬Ê¹ÓÃÈË¹¤Ëã·¨£¨³¤³ı·¨£©Ê±
-         // ĞèÒª½«³ıÊı¶àÏîÊ½ÏÈÓë¸ÃÓëÖ°Î» Òì»ò £¬²ÅÄÜµÃµ½×îºóµÄ³ıÊı¶àÏîÊ½
-#define POLY16 0x1021 // ¸ÃÎ»Îª¼òÊ½ÊéĞ´ Êµ¼ÊÎª0x11021
+  0xFFFF // è¯¥ä½ç§°ä¸ºé¢„ç½®å€¼ï¼Œä½¿ç”¨äººå·¥ç®—æ³•ï¼ˆé•¿é™¤æ³•ï¼‰æ—¶
+         // éœ€è¦å°†é™¤æ•°å¤šé¡¹å¼å…ˆä¸è¯¥ä¸èŒä½ å¼‚æˆ– ï¼Œæ‰èƒ½å¾—åˆ°æœ€åçš„é™¤æ•°å¤šé¡¹å¼
+#define POLY16 0x1021 // è¯¥ä½ä¸ºç®€å¼ä¹¦å†™ å®é™…ä¸º0x11021
 long Crc16(addr mem, int len) {
   uint16_t shift, data, val;
   int i;
@@ -1697,18 +1697,18 @@ long Crc16(addr mem, int len) {
 }
 /*
 Secret
-Ô­ĞÍ¡¡void Secret(addr mem,int len,addr string);
+åŸå‹ã€€void Secret(addr mem,int len,addr string);
 
-¹¦ÄÜ¡¡Êı¾İ¼ÓÃÜ
+åŠŸèƒ½ã€€æ•°æ®åŠ å¯†
 
-ËµÃ÷¡¡ÓÃÒ»¸ö×Ö·û´®string¶Ômem¿ªÊ¼µÄlen¸ö×Ö½Ú¼ÓÃÜ
-      ½âÃÜÊ±Í¬ÑùÊ¹ÓÃ´Ëº¯Êı
+è¯´æ˜ã€€ç”¨ä¸€ä¸ªå­—ç¬¦ä¸²stringå¯¹memå¼€å§‹çš„lenä¸ªå­—èŠ‚åŠ å¯†
+      è§£å¯†æ—¶åŒæ ·ä½¿ç”¨æ­¤å‡½æ•°
 */
 void Secret(addr mem, int len, addr string) {
 
   uchar *p;
   int i, n;
-  int str_len = strlen((const char *)string);
+  int str_len = strlen((const unsigned char *)string);
   i = 0;
   while (1) {
     p = string;
@@ -1722,23 +1722,23 @@ void Secret(addr mem, int len, addr string) {
 
 /*
 Beep
-Ô­ĞÍ¡¡void Beep();
+åŸå‹ã€€void Beep();
 
-¹¦ÄÜ¡¡ÏìÁå
+åŠŸèƒ½ã€€å“é“ƒ
 */
 void Beep(void) {}
 
 /*
-Ô­ĞÍ:void FillArea(int x, int y, int type);
-¹¦ÄÜ:¶ÔÒ»¿é±ÕºÏµÄÍ¹ÇøÓò½øĞĞÌî³ä
-ËµÃ÷:´Óx,y×ø±ê¿ªÊ¼Ìî³ä
-     type=0:Ìî³äÍ¼ĞÎ»º³åÇø,type=0x40:Ìî³äÆÁÄ»
+åŸå‹:void FillArea(int x, int y, int type);
+åŠŸèƒ½:å¯¹ä¸€å—é—­åˆçš„å‡¸åŒºåŸŸè¿›è¡Œå¡«å……
+è¯´æ˜:ä»x,yåæ ‡å¼€å§‹å¡«å……
+     type=0:å¡«å……å›¾å½¢ç¼“å†²åŒº,type=0x40:å¡«å……å±å¹•
 */
 
 void FillArea(int x, int y, int type) {}
 
 /**********************************************************************************************************************/
-// ÎÄ¼ş²Ù×÷º¯Êı
+// æ–‡ä»¶æ“ä½œå‡½æ•°
 /************************************/
 
 typedef enum { CLOSE = 0, OPEN } FP_MODE;
@@ -1749,14 +1749,14 @@ FRESULT file_result;
 
 /*
 fopen
-Ô­ĞÍ¡¡char fopen(addr filename,addr mode);
+åŸå‹ã€€unsigned char fopen(addr filename, addr mode);
 
-¹¦ÄÜ¡¡´ò¿ªÎÄ¼ş
+åŠŸèƒ½ã€€æ‰“å¼€æ–‡ä»¶
 
-ËµÃ÷¡¡ÒÔmodeÖ¸¶¨µÄ·½Ê½´ò¿ªÃûÎªfilenameµÄÎÄ¼ş
-      ³É¹¦£¬·µ»ØÒ»¸öÎÄ¼ş¾ä±ú£¬·ñÔò·µ»Ø0
+è¯´æ˜ã€€ä»¥modeæŒ‡å®šçš„æ–¹å¼æ‰“å¼€åä¸ºfilenameçš„æ–‡ä»¶
+      æˆåŠŸï¼Œè¿”å›ä¸€ä¸ªæ–‡ä»¶å¥æŸ„ï¼Œå¦åˆ™è¿”å›0
 */
-char lava_fopen(const addr filename, const addr mode) {
+unsigned char lava_fopen(const addr filename, const addr mode) {
   int i;
   uint8_t mode_fs = 0;
   if (strcmp(mode, "r") == 0 || strcmp(mode, "rb") == 0) {
@@ -1766,7 +1766,7 @@ char lava_fopen(const addr filename, const addr mode) {
   } else if (strcmp(mode, "w+") == 0 || strcmp(mode, "wb+") == 0) {
     mode_fs = FA_WRITE | FA_READ | FA_OPEN_ALWAYS;
   } else {
-    for (i = 0; i < strlen((const char *)mode); i++) {
+    for (i = 0; i < strlen((const unsigned char *)mode); i++) {
       switch (*mode) {
       case 'r':
         mode_fs |= FA_READ;
@@ -1790,7 +1790,7 @@ char lava_fopen(const addr filename, const addr mode) {
       return 0;
     }
   }
-  if (f_open(&lava_fp[i], (const char *)filename, mode_fs) == FR_OK) {
+  if (f_open(&lava_fp[i], (const unsigned char *)filename, mode_fs) == FR_OK) {
     lava_fp_i[i] = OPEN;
     return i + 1;
   } else
@@ -1799,13 +1799,13 @@ char lava_fopen(const addr filename, const addr mode) {
 
 /*
 fclose
-Ô­ĞÍ¡¡void fclose(char fp);
+åŸå‹ã€€void fclose(unsigned char fp);
 
-¹¦ÄÜ¡¡¹Ø±ÕÎÄ¼ş
+åŠŸèƒ½ã€€å…³é—­æ–‡ä»¶
 
-ËµÃ÷¡¡¹Ø±Õ¾ä±úÎªfpµÄÎÄ¼ş
+è¯´æ˜ã€€å…³é—­å¥æŸ„ä¸ºfpçš„æ–‡ä»¶
 */
-void lava_fclose(char fp) {
+void lava_fclose(unsigned char fp) {
   if (fp > 0) {
     fp--;
     f_close(&lava_fp[fp]);
@@ -1815,18 +1815,18 @@ void lava_fclose(char fp) {
 
 /*
 fread
-Ô­ĞÍ¡¡int fread(addr pt,int size,int n,char fp);
+åŸå‹ã€€int fread(addr pt, int size, int n, unsigned char fp);
 
-¹¦ÄÜ¡¡¶ÁÎÄ¼ş
+åŠŸèƒ½ã€€è¯»æ–‡ä»¶
 
-ËµÃ÷¡¡´Ó¾ä±úÎªfpµÄÎÄ¼şÖĞ¶ÁÈ¡n¸ö×Ö½Ú£¬´æµ½ptËùÖ¸ÏòµÄÄÚ´æÇø
-      ·µ»ØËù¶ÁµÄ×Ö½ÚÊı£¬ÈçÓöÎÄ¼ş½áÊø»ò³ö´í·µ»Ø0
-      ×¢Òâ:freadºÍfwriteµÄ²ÎÊısize»á±»ºöÂÔ£¬Êµ¼Ê¶ÁĞ´µÄ×Ö½ÚÊıÊÇ²ÎÊın¡£Ö®ËùÒÔ±£ÁôsizeÊÇÎªÁËÓëc¼æÈİ¡£½¨ÒésizeÖµÈ¡1¡£
+è¯´æ˜ã€€ä»å¥æŸ„ä¸ºfpçš„æ–‡ä»¶ä¸­è¯»å–nä¸ªå­—èŠ‚ï¼Œå­˜åˆ°ptæ‰€æŒ‡å‘çš„å†…å­˜åŒº
+      è¿”å›æ‰€è¯»çš„å­—èŠ‚æ•°ï¼Œå¦‚é‡æ–‡ä»¶ç»“æŸæˆ–å‡ºé”™è¿”å›0
+      æ³¨æ„:freadå’Œfwriteçš„å‚æ•°sizeä¼šè¢«å¿½ç•¥ï¼Œå®é™…è¯»å†™çš„å­—èŠ‚æ•°æ˜¯å‚æ•°nã€‚ä¹‹æ‰€ä»¥ä¿ç•™sizeæ˜¯ä¸ºäº†ä¸cå…¼å®¹ã€‚å»ºè®®sizeå€¼å–1ã€‚
 
 */
-// Ôö¼ÓÃ¿´Î¶ÁÈ¡µÄ×Ö½ÚÊı£¬µ«ÈÔ±£³Ö·Ö¿é¶ÁÈ¡ÒÔ±ÜÃâÄÚ´æÎÊÌâ
+// å¢åŠ æ¯æ¬¡è¯»å–çš„å­—èŠ‚æ•°ï¼Œä½†ä»ä¿æŒåˆ†å—è¯»å–ä»¥é¿å…å†…å­˜é—®é¢˜
 #define FREAD_CHUNK_SIZE 4096
-int lava_fread(addr pt, int size, int n, char fp) {
+int lava_fread(addr pt, int size, int n, unsigned char fp) {
   int i, num, byteleft;
   unsigned int byte_read, byte_read2 = 0;
   addr p = pt;
@@ -1837,13 +1837,13 @@ int lava_fread(addr pt, int size, int n, char fp) {
 
   for (i = 0; i < num; i++) {
     if (f_read(&lava_fp[fp], p, FREAD_CHUNK_SIZE, &byte_read) != FR_OK)
-      return byte_read2; // ·µ»ØÒÑ¶ÁÈ¡µÄ×Ö½ÚÊı£¬¶ø²»ÊÇ0
+      return byte_read2; // è¿”å›å·²è¯»å–çš„å­—èŠ‚æ•°ï¼Œè€Œä¸æ˜¯0
     p += FREAD_CHUNK_SIZE;
     byte_read2 += byte_read;
   }
   if (byteleft > 0) {
     if (f_read(&lava_fp[fp], p, byteleft, &byte_read) != FR_OK)
-      return byte_read2; // ·µ»ØÒÑ¶ÁÈ¡µÄ×Ö½ÚÊı£¬¶ø²»ÊÇ0
+      return byte_read2; // è¿”å›å·²è¯»å–çš„å­—èŠ‚æ•°ï¼Œè€Œä¸æ˜¯0
     byte_read2 += byte_read;
   }
   return byte_read2;
@@ -1851,16 +1851,16 @@ int lava_fread(addr pt, int size, int n, char fp) {
 
 /*
 fwrite
-Ô­ĞÍ¡¡int fwrite(addr pt,int size,int n,char fp);
+åŸå‹ã€€int fwrite(addr pt, int size, int n, unsigned char fp);
 
-¹¦ÄÜ¡¡Ğ´ÎÄ¼ş
+åŠŸèƒ½ã€€å†™æ–‡ä»¶
 
-ËµÃ÷¡¡°ÑptËùÖ¸ÏòµÄn¸ö×Ö½ÚÊä³öµ½¾ä±úÎªfpµÄÎÄ¼şÖĞ
-      ·µ»ØĞ´µ½fpÎÄ¼şÖĞµÄ×Ö½ÚÊı
-      ×¢Òâ:freadºÍfwriteµÄ²ÎÊısize»á±»ºöÂÔ£¬Êµ¼Ê¶ÁĞ´µÄ×Ö½ÚÊıÊÇ²ÎÊın¡£Ö®ËùÒÔ±£ÁôsizeÊÇÎªÁËÓëc¼æÈİ¡£½¨ÒésizeÖµÈ¡1¡£
+è¯´æ˜ã€€æŠŠptæ‰€æŒ‡å‘çš„nä¸ªå­—èŠ‚è¾“å‡ºåˆ°å¥æŸ„ä¸ºfpçš„æ–‡ä»¶ä¸­
+      è¿”å›å†™åˆ°fpæ–‡ä»¶ä¸­çš„å­—èŠ‚æ•°
+      æ³¨æ„:freadå’Œfwriteçš„å‚æ•°sizeä¼šè¢«å¿½ç•¥ï¼Œå®é™…è¯»å†™çš„å­—èŠ‚æ•°æ˜¯å‚æ•°nã€‚ä¹‹æ‰€ä»¥ä¿ç•™sizeæ˜¯ä¸ºäº†ä¸cå…¼å®¹ã€‚å»ºè®®sizeå€¼å–1ã€‚
 
 */
-int lava_fwrite(const addr pt, int size, int n, char fp) {
+int lava_fwrite(const addr pt, int size, int n, unsigned char fp) {
   unsigned int byte_write;
   fp--;
   if (f_write(&lava_fp[fp], pt, n, &byte_write) == FR_OK) {
@@ -1871,14 +1871,14 @@ int lava_fwrite(const addr pt, int size, int n, char fp) {
 
 /*
 getc
-Ô­ĞÍ¡¡int getc(char fp);
+åŸå‹ã€€int getc(unsigned char fp);
 
-¹¦ÄÜ¡¡´ÓÎÄ¼ş¶ÁÒ»¸ö×Ö·û
+åŠŸèƒ½ã€€ä»æ–‡ä»¶è¯»ä¸€ä¸ªå­—ç¬¦
 
-ËµÃ÷¡¡´Ó¾ä±úÎªfpµÄÎÄ¼şÖĞ¶ÁÈëÒ»¸ö×Ö·û
-      ·µ»ØËù¶ÁµÄ×Ö·û¡£ÈôÎÄ¼ş½áÊø»ò³ö´í£¬·µ»Ø-1¡£
+è¯´æ˜ã€€ä»å¥æŸ„ä¸ºfpçš„æ–‡ä»¶ä¸­è¯»å…¥ä¸€ä¸ªå­—ç¬¦
+      è¿”å›æ‰€è¯»çš„å­—ç¬¦ã€‚è‹¥æ–‡ä»¶ç»“æŸæˆ–å‡ºé”™ï¼Œè¿”å›-1ã€‚
 */
-int lava_getc(char fp) {
+int lava_getc(unsigned char fp) {
   uchar dat;
   uint byte_read;
   fp--;
@@ -1894,14 +1894,14 @@ int lava_getc(char fp) {
 
 /*
 putc
-Ô­ĞÍ¡¡int putc(char ch,char fp);
+åŸå‹ã€€int putc(unsigned char ch, unsigned char fp);
 
-¹¦ÄÜ¡¡Ğ´Ò»¸ö×Ö·ûµ½ÎÄ¼ş
+åŠŸèƒ½ã€€å†™ä¸€ä¸ªå­—ç¬¦åˆ°æ–‡ä»¶
 
-ËµÃ÷¡¡°ÑÒ»¸ö×Ö·ûchÊä³öµ½¾ä±úÎªfpµÄÎÄ¼şÖĞ
-      ·µ»ØÊä³öµÄ×Ö·ûch¡£Èô³ö´í£¬·µ»Ø-1¡£
+è¯´æ˜ã€€æŠŠä¸€ä¸ªå­—ç¬¦chè¾“å‡ºåˆ°å¥æŸ„ä¸ºfpçš„æ–‡ä»¶ä¸­
+      è¿”å›è¾“å‡ºçš„å­—ç¬¦chã€‚è‹¥å‡ºé”™ï¼Œè¿”å›-1ã€‚
 */
-int lava_putc(char ch, char fp) {
+int lava_putc(unsigned char ch, unsigned char fp) {
   uint byte_read;
   fp--;
   if (f_write(&lava_fp[fp], &ch, 1, &byte_read) == FR_OK) {
@@ -1911,27 +1911,27 @@ int lava_putc(char ch, char fp) {
   }
 }
 /*rewind
-Ô­ĞÍ¡¡void rewind(char fp);
+åŸå‹ã€€void rewind(unsigned char fp);
 
-¹¦ÄÜ¡¡ÎÄ¼şÖ¸Õë¸´Î»
+åŠŸèƒ½ã€€æ–‡ä»¶æŒ‡é’ˆå¤ä½
 
-ËµÃ÷¡¡½«¾ä±úÎªfpµÄÎÄ¼şÖĞµÄÎ»ÖÃÖ¸ÕëÖÃÓÚÎÄ¼ş¿ªÍ·Î»ÖÃ
+è¯´æ˜ã€€å°†å¥æŸ„ä¸ºfpçš„æ–‡ä»¶ä¸­çš„ä½ç½®æŒ‡é’ˆç½®äºæ–‡ä»¶å¼€å¤´ä½ç½®
 */
-void lava_rewind(char fp) {
+void lava_rewind(unsigned char fp) {
   fp--;
   f_lseek(&lava_fp[fp], 0);
 }
 
 /*
 fseek
-Ô­ĞÍ¡¡long fseek(char fp,long offset,char base);
+åŸå‹ã€€long fseek(unsigned char fp, long offset, unsigned char base);
 
-¹¦ÄÜ¡¡ÎÄ¼şÖ¸Õë¶¨Î»
+åŠŸèƒ½ã€€æ–‡ä»¶æŒ‡é’ˆå®šä½
 
-ËµÃ÷¡¡½«¾ä±úÎªfpµÄÎÄ¼şµÄÎ»ÖÃÖ¸ÕëÒÆµ½ÒÔbaseËùÖ¸³öµÄÎ»ÖÃÎª»ù×¼£¬ÒÔoffsetÎªÎ»ÒÆÁ¿µÄÎ»ÖÃ
-      ·µ»Øµ±Ç°Î»ÖÃ¡£Èô³ö´í£¬·µ»Ø-1¡£
+è¯´æ˜ã€€å°†å¥æŸ„ä¸ºfpçš„æ–‡ä»¶çš„ä½ç½®æŒ‡é’ˆç§»åˆ°ä»¥baseæ‰€æŒ‡å‡ºçš„ä½ç½®ä¸ºåŸºå‡†ï¼Œä»¥offsetä¸ºä½ç§»é‡çš„ä½ç½®
+      è¿”å›å½“å‰ä½ç½®ã€‚è‹¥å‡ºé”™ï¼Œè¿”å›-1ã€‚
 */
-long lava_fseek(char fp, long offset, char base) {
+long lava_fseek(unsigned char fp, long offset, unsigned char base) {
   long pos;
   fp--;
   switch (base) {
@@ -1952,77 +1952,77 @@ long lava_fseek(char fp, long offset, char base) {
 }
 /*
 ftell
-Ô­ĞÍ¡¡long ftell(char fp);
+åŸå‹ã€€long ftell(unsigned char fp);
 
-¹¦ÄÜ¡¡È¡ÎÄ¼şÖ¸Õë
+åŠŸèƒ½ã€€å–æ–‡ä»¶æŒ‡é’ˆ
 
-ËµÃ÷¡¡·µ»Ø¾ä±úÎªfpµÄÎÄ¼şÖĞµÄ¶ÁĞ´Î»ÖÃ
+è¯´æ˜ã€€è¿”å›å¥æŸ„ä¸ºfpçš„æ–‡ä»¶ä¸­çš„è¯»å†™ä½ç½®
 */
-long lava_ftell(char fp) {
+long lava_ftell(unsigned char fp) {
   fp--;
   return lava_fp[fp].fptr;
 }
 
 /*
 feof
-Ô­ĞÍ¡¡int feof(char fp);
+åŸå‹ã€€int feof(unsigned char fp);
 
-¹¦ÄÜ¡¡¼ì²éÎÄ¼şÊÇ·ñ½áÊø
+åŠŸèƒ½ã€€æ£€æŸ¥æ–‡ä»¶æ˜¯å¦ç»“æŸ
 
-ËµÃ÷¡¡ÓöÎÄ¼ş½áÊø·û·µ»Ø·Ç0Öµ£¬·ñÔò·µ»Ø0
+è¯´æ˜ã€€é‡æ–‡ä»¶ç»“æŸç¬¦è¿”å›é0å€¼ï¼Œå¦åˆ™è¿”å›0
 
 */
-int lava_feof(char fp) {
+int lava_feof(unsigned char fp) {
   fp--;
   return (lava_fp[fp].fptr == lava_fp[fp].fsize) ? 1 : 0;
 }
 
 /*
 ChDir
-Ô­ĞÍ¡¡int ChDir(addr path);
+åŸå‹ã€€int ChDir(addr path);
 
-¹¦ÄÜ¡¡¸Ä±äµ±Ç°¹¤×÷Ä¿Â¼
+åŠŸèƒ½ã€€æ”¹å˜å½“å‰å·¥ä½œç›®å½•
 
-ËµÃ÷¡¡³É¹¦·µ»Ø·Ç0Öµ£¬Ê§°Ü·µ»Ø0
+è¯´æ˜ã€€æˆåŠŸè¿”å›é0å€¼ï¼Œå¤±è´¥è¿”å›0
 */
 int ChDir(addr path) {
-  if (f_chdir((const char *)path) == FR_OK)
+  if (f_chdir((const unsigned char *)path) == FR_OK)
     return 1;
   else
     return 0;
 }
 
 /*MakeDir
-Ô­ĞÍ¡¡int MakeDir(addr path);
+åŸå‹ã€€int MakeDir(addr path);
 
-¹¦ÄÜ¡¡´´½¨×ÓÄ¿Â¼
+åŠŸèƒ½ã€€åˆ›å»ºå­ç›®å½•
 
-ËµÃ÷¡¡³É¹¦·µ»Ø·Ç0Öµ£¬Ê§°Ü·µ»Ø0
+è¯´æ˜ã€€æˆåŠŸè¿”å›é0å€¼ï¼Œå¤±è´¥è¿”å›0
 
 */
 int MakeDir(const addr path) {
-  if (f_mkdir((const char *)path) == FR_OK)
+  if (f_mkdir((const unsigned char *)path) == FR_OK)
     return 1;
   else
     return 0;
 }
 
 /*DeleteFile
-Ô­ĞÍ¡¡int DeleteFile(addr filename);
+åŸå‹ã€€int DeleteFile(addr filename);
 
-¹¦ÄÜ¡¡É¾³ıÎÄ¼ş
+åŠŸèƒ½ã€€åˆ é™¤æ–‡ä»¶
 
-ËµÃ÷¡¡³É¹¦·µ»Ø·Ç0Öµ£¬Ê§°Ü·µ»Ø0
+è¯´æ˜ã€€æˆåŠŸè¿”å›é0å€¼ï¼Œå¤±è´¥è¿”å›0
 */
 
 int DeleteFile(addr filename) { return (f_unlink(filename) == FR_OK) ? 1 : 0; }
 
 /*GetFileNum
-Ô­ĞÍ¡¡int GetFileNum(addr path);
+åŸå‹ã€€int GetFileNum(addr path);
 
-¹¦ÄÜ¡¡È¡Ö¸¶¨Ä¿Â¼ÏÂµÄÎÄ¼şÊı
+åŠŸèƒ½ã€€å–æŒ‡å®šç›®å½•ä¸‹çš„æ–‡ä»¶æ•°
 
-ËµÃ÷¡¡
+è¯´æ˜ã€€
 */
 int GetFileNum(addr path) {
   FATFS_DIR dj; /* Pointer to the open directory object */
@@ -2036,15 +2036,15 @@ int GetFileNum(addr path) {
 }
 
 /*FindFile
-Ô­ĞÍ¡¡int FindFile(int from,int num,addr buf);
+åŸå‹ã€€int FindFile(int from,int num,addr buf);
 
-¹¦ÄÜ¡¡È¡µ±Ç°Ä¿Â¼ÏÂµÄÎÄ¼şÃû
+åŠŸèƒ½ã€€å–å½“å‰ç›®å½•ä¸‹çš„æ–‡ä»¶å
 
-ËµÃ÷¡¡fromÎªµÚÒ»¸öÎÄ¼şÔÚÄ¿Â¼ÖĞµÄĞòºÅ
-      numÎªÒªÈ¡µÄÎÄ¼şÃûµÄ¸öÊı
-      bufÎªÄÚ´æµØÖ·£¬±£´æ·µ»ØµÄÎÄ¼şÃû£¬Ã¿16¸ö×Ö½Ú±£´æÒ»¸öÎÄ¼şÃû
-      ·µ»ØÖµÎªÊµ¼ÊÈ¡µÃµÄÎÄ¼şÃûÊı
-      ³ö´í·µ»Ø0
+è¯´æ˜ã€€fromä¸ºç¬¬ä¸€ä¸ªæ–‡ä»¶åœ¨ç›®å½•ä¸­çš„åºå·
+      numä¸ºè¦å–çš„æ–‡ä»¶åçš„ä¸ªæ•°
+      bufä¸ºå†…å­˜åœ°å€ï¼Œä¿å­˜è¿”å›çš„æ–‡ä»¶åï¼Œæ¯16ä¸ªå­—èŠ‚ä¿å­˜ä¸€ä¸ªæ–‡ä»¶å
+      è¿”å›å€¼ä¸ºå®é™…å–å¾—çš„æ–‡ä»¶åæ•°
+      å‡ºé”™è¿”å›0
 */
 int FindFile(int from, int num, addr buf) {
   FATFS_DIR dj; /* Pointer to the open directory object */
@@ -2056,7 +2056,7 @@ int FindFile(int from, int num, addr buf) {
   if (f_readdir(&dj, &fno) != FR_OK)
     return 0;
   i = 0;
-  // Ìø×ªindexÖÁfrom
+  // è·³è½¬indexè‡³from
   while (i < from) {
     if ((f_readdir(&dj, &fno) == FR_OK) && fno.fname[0])
       i++;
@@ -2076,16 +2076,16 @@ int FindFile(int from, int num, addr buf) {
 }
 
 /*FileList
-Ô­ĞÍ:int FileList(int filename);
-¹¦ÄÜ:ÁĞ³öµ±Ç°¹¤×÷Ä¿Â¼ÏÂµÄÎÄ¼ş¹©ÓÃ»§Ñ¡Ôñ
-ËµÃ÷:ÓÃ»§Ñ¡ÔñµÄÎÄ¼şÃû(»òÄ¿Â¼Ãû)»á·ÅÔÚfilenameÖ¸ÏòµÄÄÚ´æ
-     Èç¹ûÓÃ»§·ÅÆúÑ¡Ôñ·µ»Ø0,·ñÔò·µ»Ø·Ç0
+åŸå‹:int FileList(int filename);
+åŠŸèƒ½:åˆ—å‡ºå½“å‰å·¥ä½œç›®å½•ä¸‹çš„æ–‡ä»¶ä¾›ç”¨æˆ·é€‰æ‹©
+è¯´æ˜:ç”¨æˆ·é€‰æ‹©çš„æ–‡ä»¶å(æˆ–ç›®å½•å)ä¼šæ”¾åœ¨filenameæŒ‡å‘çš„å†…å­˜
+     å¦‚æœç”¨æˆ·æ”¾å¼ƒé€‰æ‹©è¿”å›0,å¦åˆ™è¿”å›é0
 */
 int FileList(addr filename) {
-  int fnum;      // ÎÄ¼ş¼ĞÄÚµÄÎÄ¼şÊı
-  int fnum_show; // Ã¿´ÎĞèÒªÏÔÊ¾µÄÎÄ¼şÊı
-  int fnum_i;    // µÚÒ»¸öÎÄ¼ş
-  int fpos;      // ¹â±êÎ»ÖÃ
+  int fnum;      // æ–‡ä»¶å¤¹å†…çš„æ–‡ä»¶æ•°
+  int fnum_show; // æ¯æ¬¡éœ€è¦æ˜¾ç¤ºçš„æ–‡ä»¶æ•°
+  int fnum_i;    // ç¬¬ä¸€ä¸ªæ–‡ä»¶
+  int fpos;      // å…‰æ ‡ä½ç½®
   uchar dirbuf[5 * LAVA_FILENAME_MAX];
   uchar key;
   int i;
@@ -2144,7 +2144,7 @@ int FileList(addr filename) {
       break;
     case LAVA_KEY_ENTER:
       filename[0] = '\0';
-      strncpy(filename, (char *)(dirbuf + fpos * LAVA_FILENAME_MAX),
+      strncpy(filename, (unsigned char *)(dirbuf + fpos * LAVA_FILENAME_MAX),
               LAVA_FILENAME_MAX - 1);
       filename[LAVA_FILENAME_MAX - 1] = '\0';
       lava_logf("filename: %s", filename);
@@ -2168,7 +2168,7 @@ void filelist_demo(void) {
   if (FileList(fn)) {
     ClearScreen();
     Refresh();
-    TextOut(0, 0, "ÎÄ¼şÃû£º", 0x81);
+    TextOut(0, 0, "æ–‡ä»¶åï¼š", 0x81);
     TextOut(0, 16, fn, 0x81);
     Refresh();
     lava_getchar();
@@ -2177,10 +2177,10 @@ void filelist_demo(void) {
   return;
 }
 
-char path[4][LAVA_FILENAME_MAX];
-char filename[LAVA_FILENAME_MAX];
-char pathpoint = 0;
-char fopen_fp() {
+unsigned char path[4][LAVA_FILENAME_MAX];
+    unsigned char filename[LAVA_FILENAME_MAX];
+unsigned char pathpoint = 0;
+unsigned char fopen_fp() {
   // char fp;
   while (1) {
     if (!FileList(filename)) {
@@ -2203,7 +2203,7 @@ char fopen_fp() {
   }
   ClearScreen();
   Refresh();
-  TextOut(0, 0, "ÎÄ¼şÃû£º", 0x01);
+  TextOut(0, 0, "æ–‡ä»¶åï¼š", 0x01);
   TextOut(0, 16, filename, 0x1);
   Refresh();
   lava_getchar();
@@ -2275,7 +2275,7 @@ void file_test_main(void) {
   //	lava_getchar();
 }
 
-// Ê±¼äÏÔÊ¾²âÊÔ
+// æ—¶é—´æ˜¾ç¤ºæµ‹è¯•
 void ShowTime() {
   uchar s[32];
   struct TIME t;
@@ -2288,7 +2288,7 @@ void ShowTime() {
   // SetTime(&t);
   ClearScreen();
 
-  char timeStr[] = {0xca,0xb1,'\0'};
+  unsigned char timeStr[] = {0xca,0xb1,'\0'};
   
   while (1) {
     SetScreen(0);
@@ -2304,7 +2304,7 @@ void ShowTime() {
   }
 }
 
-// »æÍ¼²âÊÔ
+// ç»˜å›¾æµ‹è¯•
 void DrawTest() {
   int i, n;
 
@@ -2325,7 +2325,7 @@ void DrawTest() {
 
   lava_getchar();
 
-  // XDraw²âÊÔ
+  // XDrawæµ‹è¯•
   for (n = 2; n < 4; n++) {
     Block(0, 0, 159, 79, 1);
     for (i = 0; i < 80; i++) {
@@ -2367,11 +2367,11 @@ void DrawTest() {
   }
 }
 
-// ÎÄ×ÖÏÔÊ¾²âÊÔ
+// æ–‡å­—æ˜¾ç¤ºæµ‹è¯•
 void CharTest() {
   int i, n;
 
-  char cnStr[] = {0xd6,0xd0,0xce,0xc4,'\0'};
+  unsigned char cnStr[] = {0xd6,0xd0,0xce,0xc4,'\0'};
 
   SetScreen(1);
   lava_show_cnchar(0, 1, 0xd6, 0xd0, 0x41);
@@ -2397,23 +2397,23 @@ void CharTest() {
   SetScreen(1);
   lava_printf("line134556\nline2\n");
   // lava_printf("\xD6\xD0\xCE\xC4\n");
-  // lava_printf("ÖĞÎÄ\n");
-  // lava_printf("long string testing,I am ÖĞÎÄ string,and you?\n");
-  // lava_printf("New line ÔÙÀ´Ò»¸öÖĞÎÄ\n");
+  // lava_printf("ä¸­æ–‡\n");
+  // lava_printf("long string testing,I am ä¸­æ–‡ string,and you?\n");
+  // lava_printf("New line å†æ¥ä¸€ä¸ªä¸­æ–‡\n");
   // lava_printf("long string testing,I am a long string,and you?\n");
-  // lava_printf("long string testing,I am ÖĞÎÄ?\n");
+  // lava_printf("long string testing,I am ä¸­æ–‡?\n");
   lava_getchar();
-  // lava_printf("²âÊÔ\n");
+  // lava_printf("æµ‹è¯•\n");
   lava_getchar();
   SetScreen(0);
-  // lava_printf("ÏÖÔÚÊÇ´ó×ÖÌå,²»ÖªµÀ´ó×ÖÌå»á²»»áÓĞÓÃ\n");
+  // lava_printf("ç°åœ¨æ˜¯å¤§å­—ä½“,ä¸çŸ¥é“å¤§å­—ä½“ä¼šä¸ä¼šæœ‰ç”¨\n");
   lava_getchar();
 }
 
 void lava_demo(void) {
   DrawTest();
   // CharTest();
-  // PrtScr_Init();//½ØÆÁ³õÊ¼»¯
+  // PrtScr_Init();//æˆªå±åˆå§‹åŒ–
   // ShowTime();
   // boshi_main();
 }
@@ -2427,7 +2427,7 @@ void lava_init(void) {
   t.hour = 11;
   t.minute = 14;
   t.second = 0;
-  SetTime(&t); // ³õÊ¼»¯Ê±ÖÓ
+  SetTime(&t); // åˆå§‹åŒ–æ—¶é’Ÿ
   lcd_clr(LAVA_NONE_COLOR);
 
   SetScreen(0);

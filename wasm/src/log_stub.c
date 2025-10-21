@@ -5,23 +5,23 @@
 #include <string.h>
 #include <emscripten/emscripten.h>
 
-EM_JS(void, lava_console_log_js, (const char *str), {
+EM_JS(void, lava_console_log_js, (const unsigned char *str), {
   console.log(UTF8ToString(str));
 });
 
-void lava_log(const char *message)
+void lava_log(const unsigned char *message)
 {
     if (!message) return;
     lava_console_log_js(message);
 }
 
-void lava_logf(const char *fmt, ...)
+void lava_logf(const unsigned char *fmt, ...)
 {
     if (!fmt) return;
-    char buffer[512];
+    unsigned char buffer[512];
     va_list args;
     va_start(args, fmt);
-    vsnprintf(buffer, sizeof(buffer), fmt, args);
+    vsnprintf((char *)buffer, sizeof(buffer), (const char *)fmt, args);
     va_end(args);
     buffer[sizeof(buffer) - 1] = '\0';
     lava_console_log_js(buffer);
@@ -30,10 +30,10 @@ void lava_logf(const char *fmt, ...)
 int printf(const char *fmt, ...)
 {
     if (!fmt) return 0;
-    char buffer[512];
+    unsigned char buffer[512];
     va_list args;
     va_start(args, fmt);
-    int len = vsnprintf(buffer, sizeof(buffer), fmt, args);
+    int len = vsnprintf((char *)buffer, sizeof(buffer), (const char *)fmt, args);
     va_end(args);
     if (len < 0) return len;
     buffer[sizeof(buffer) - 1] = '\0';

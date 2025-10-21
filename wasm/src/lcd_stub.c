@@ -2,7 +2,7 @@
 #include "display.h"
 #include <string.h>
 
-#define BIT_MASK(x) (0x80 >> ((x) % 8))  // MSB-first£¬×ó¡úÓÒ
+#define BIT_MASK(x) (0x80 >> ((x) % 8))  // MSB-firstï¼Œå·¦â†’å³
 
 static LCD_COLOR g_back_color = 0;
 
@@ -17,7 +17,7 @@ void lcd_clr(LCD_COLOR color)
     lava_display_clear();
 }
 
-//»­µã
+//ç”»ç‚¹
 void lcd_draw_point(unsigned int x0,unsigned int y0,LCD_COLOR color)
 {
     unsigned char *buf = lava_display_buffer();
@@ -29,7 +29,7 @@ void lcd_draw_point(unsigned int x0,unsigned int y0,LCD_COLOR color)
         buf[index] &= ~mask;
 }
 
-//»­ÊµĞÄ¾ØĞÎ
+//ç”»å®å¿ƒçŸ©å½¢
 void lcd_draw_block(unsigned int x0,unsigned int y0,unsigned int x1,unsigned int y1,LCD_COLOR color)
 {
     unsigned char *buf = lava_display_buffer();
@@ -48,17 +48,17 @@ void lcd_draw_block(unsigned int x0,unsigned int y0,unsigned int x1,unsigned int
 }
 
 /**
-    @bref   »­ÊµĞÄÕı·½ĞÎ
-    @param  x,yÕı·½ĞÎ×óÉÏ½ÇÎ»ÖÃ
-    @param  l Õı·½ĞÎ±ß³¤
-    @param  color Õı·½ĞÎÑÕÉ«
+    @bref   ç”»å®å¿ƒæ­£æ–¹å½¢
+    @param  x,yæ­£æ–¹å½¢å·¦ä¸Šè§’ä½ç½®
+    @param  l æ­£æ–¹å½¢è¾¹é•¿
+    @param  color æ­£æ–¹å½¢é¢œè‰²
 */
 void lcd_draw_square(unsigned int x,unsigned int y,unsigned int l,LCD_COLOR color)
 {
     lcd_draw_block(x,y,x+l-1,y+l-1,color);
 }
 
-// °´Ô­Çı¶¯µÄ 2 É«Í¼Ïñ»æÖÆ·½Ê½
+// æŒ‰åŸé©±åŠ¨çš„ 2 è‰²å›¾åƒç»˜åˆ¶æ–¹å¼
 void lcd_draw_bw(unsigned int x,unsigned int y,unsigned int w,unsigned int h,unsigned int scale,
                  const unsigned char *p,LCD_COLOR bcolor,LCD_COLOR fcolor)
 {

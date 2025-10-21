@@ -5,8 +5,8 @@
 extern "C" {
 #endif
 
-void lava_log(const char *message);
-void lava_logf(const char *fmt, ...);
+void lava_log(const unsigned char *message);
+void lava_logf(const unsigned char *fmt, ...);
 
 #ifdef __cplusplus
 }

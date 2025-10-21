@@ -1,6 +1,6 @@
 /**
   *
-  *  ÆÁÄ»½ØÍ¼
+  *  å±å¹•æˆªå›¾
   *
   **/
 
@@ -11,8 +11,8 @@
 static int fileID = 0;
 static LCD_INFO lcd_info;
 static uchar fileName[64];
-static const char PrtScrDir[]="Screenshot";
-const char BMPHead[54]={
+static const unsigned char PrtScrDir[]="Screenshot";
+const unsigned char BMPHead[54]={
     0x42,0x4d,0x36,0x28,0x00,0x00,0x00,0x00,0x00,0x00,
     0x36,0x00,0x00,0x00,0x28,0x00,0x00,0x00,0x40,0x01,
     0x00,0x00,0xf0,0x00,0x00,0x00,0x01,0x00,0x01,0x00,
@@ -20,32 +20,32 @@ const char BMPHead[54]={
     0x0b,0x00,0x00,0x13,0x0b,0x00,0x00,0x00,0x00,0x00,
     0x00,0x00,0x00,0x00};
 
-//¼ì²âÎÄ¼şÊÇ·ñ´æÔÚ,´æÔÚ·µ»Ø·Ç0£¬·ñÔò·µ»Ø0
-static int FileExist(const char * fileName)
+//æ£€æµ‹æ–‡ä»¶æ˜¯å¦å­˜åœ¨,å­˜åœ¨è¿”å›é0ï¼Œå¦åˆ™è¿”å›0
+static int FileExist(const unsigned char * fileName)
 {
-    char fp;
-    fp = fopen(fileName,"r");
-    fclose(fp);
+    unsigned char fp;
+    fp = lava_fopen((addr)fileName,(addr)"r");
+    lava_fclose(fp);
     return (fp?1:0);
 }
 
-static char *GetPrtScrFileName(void)
+static unsigned char *GetPrtScrFileName(void)
 {
     while(1)
     {
-        lava_sprintf((uchar *)fileName,(uchar *)"%s/%d.bmp",(uchar *)PrtScrDir,fileID);
-        if(FileExist((const char *)fileName)==0)break;
+        lava_sprintf(fileName,(unsigned char *)"%s/%d.bmp",(unsigned char *)PrtScrDir,fileID);
+        if(FileExist(fileName)==0)break;
         fileID++;
     }
-    return (char *)fileName;
+    return fileName;
 }
 
 /*
- * º¯ÊıÃû£ºPrtScr_Init
- * ÃèÊö  £ºÆÁÄ»½ØÍ¼³õÊ¼»¯
- * ÊäÈë  : ÎŞ
- * Êä³ö  £ºÎŞ
- * ·µ»Ø  £ºÎŞ
+ * å‡½æ•°åï¼šPrtScr_Init
+ * æè¿°  ï¼šå±å¹•æˆªå›¾åˆå§‹åŒ–
+ * è¾“å…¥  : æ— 
+ * è¾“å‡º  ï¼šæ— 
+ * è¿”å›  ï¼šæ— 
  */
 void PrtScr_Init(void)
 {
@@ -55,22 +55,22 @@ void PrtScr_Init(void)
 }
 
 /*
- * º¯ÊıÃû£ºPrtScr
- * ÃèÊö  £º½ØÈ¡¾ØĞÎÇøÓò£¬±£´æÎªbmpÎÄ¼ş
- * ÊäÈë  : (x0,y0)¾ØĞÎ×óÉÏ½Ç£¬(x1,y1)¾ØĞÎÓÒÏÂ½Ç
- * Êä³ö  £ºÎŞ
- * ·µ»Ø  £ºÎŞ
+ * å‡½æ•°åï¼šPrtScr
+ * æè¿°  ï¼šæˆªå–çŸ©å½¢åŒºåŸŸï¼Œä¿å­˜ä¸ºbmpæ–‡ä»¶
+ * è¾“å…¥  : (x0,y0)çŸ©å½¢å·¦ä¸Šè§’ï¼Œ(x1,y1)çŸ©å½¢å³ä¸‹è§’
+ * è¾“å‡º  ï¼šæ— 
+ * è¿”å›  ï¼šæ— 
  */
 void PrtScr(int x0,int y0,int x1,int y1)
 {
     int x,y;
     LCD_COLOR dat;
-    char fp;
+    unsigned char fp;
     const int rowLen = x1 - x0 + 1;
     LCD_COLOR dat_w[320];
-    fp = fopen(GetPrtScrFileName(),"w");
+    fp = lava_fopen((addr)GetPrtScrFileName(),(addr)"w");
     if(fp==0) return;
-    fwrite(BMPHead,1,sizeof(BMPHead),fp);
+    lava_fwrite((addr)BMPHead,1,sizeof(BMPHead),fp);
     for(y=y0;y<=y1;y++)
     {
         for(x=x0;x<=x1;x++)
@@ -78,17 +78,17 @@ void PrtScr(int x0,int y0,int x1,int y1)
             dat = lcd_get_point(x,y);
             dat_w[x-x0]=dat;
         }
-        fwrite((const char *)dat_w,1,rowLen*sizeof(LCD_COLOR),fp);
+        lava_fwrite((addr)dat_w,1,rowLen*sizeof(LCD_COLOR),fp);
     }
-    fclose(fp);
+    lava_fclose(fp);
 }
 
 /*
- * º¯ÊıÃû£ºPrtScr_All
- * ÃèÊö  £º½ØÈ¡È«ÆÁ£¬±£´æÎªbmpÎÄ¼ş
- * ÊäÈë  : ÎŞ
- * Êä³ö  £ºÎŞ
- * ·µ»Ø  £ºÎŞ
+ * å‡½æ•°åï¼šPrtScr_All
+ * æè¿°  ï¼šæˆªå–å…¨å±ï¼Œä¿å­˜ä¸ºbmpæ–‡ä»¶
+ * è¾“å…¥  : æ— 
+ * è¾“å‡º  ï¼šæ— 
+ * è¿”å›  ï¼šæ— 
  */
 void PrtScr_All(void)
 {

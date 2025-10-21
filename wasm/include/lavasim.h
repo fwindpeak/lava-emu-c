@@ -16,7 +16,7 @@
 
 
 
-//³£Á¿¶¨Òå
+//ç”¯æå™ºç€¹æ°«ç®Ÿ
 
 #define SEEK_SET 0
 #define SEEK_CUR 1
@@ -30,7 +30,7 @@
 #define LAVA_FILENAME_MAX 64
 #define LAVA_PATH_MAX 256
 
-//LAVAÆÁÄ»²ÎÊı
+//LAVAçå¿“ç®·é™å‚›æšŸ
 #define LAVA_X_START        0
 #define LAVA_Y_START        0
 #define LAVA_WIDTH          160
@@ -44,7 +44,7 @@ extern uchar TEXT_BUF[(LAVA_WIDTH/12)*(LAVA_HEIGHT/6)];
 #define _TEXT       TEXT_BUF
 #define _GRAPH      GRAPH_BUF
 
-//LAVAÀàĞÍ¶¨Òå
+//LAVAç»«è¯²ç€·ç€¹æ°«ç®Ÿ
 struct TIME
 {
     uint16_t year;
@@ -56,11 +56,11 @@ struct TIME
     uint8_t week;
 };
 
-//ÊıÑ§º¯Êı
+//éæ¿î„Ÿé‘èŠ¥æšŸ
 int lava_rand(void);
 void lava_srand(long x);
 
-//Í¼ĞÎÄ£Ê½ÏÂµÄÊ¸Á¿»æÍ¼º¯Êı
+//é¥æƒ§èˆ°å¦¯â€³ç´¡æ¶“å¬¬æ®‘é­ãˆ¤å™ºç¼æ¨ºæµ˜é‘èŠ¥æšŸ
 void Point(int x,int y,int type);
 int GetPoint(int x,int y);
 void Line(int x0,int y0,int x1,int y1,int type);
@@ -68,7 +68,7 @@ void Box(int x0,int y0,int x1,int y1,int fill,int type);
 void Circle(int x1,int y1,int r,int fill,int type);
 void Ellipse(long Center_x,long Center_y,long a,long b,int fill,int type);
 
-//Í¼ĞÎÄ£Ê½ÏÂµÄ¹âÕ¤»æÍ¼º¯Êı
+//é¥æƒ§èˆ°å¦¯â€³ç´¡æ¶“å¬¬æ®‘éå¤‹çˆ¡ç¼æ¨ºæµ˜é‘èŠ¥æšŸ
 void WriteBlock(int x,int y,int width,int height,int type,const addr data);
 void GetBlock(int x,int y,int width,int height,int type,addr data);
 void Block(int x0,int y0,int x1,int y1,int type);
@@ -78,14 +78,14 @@ void XDraw(int mode);
 void Fade(int bright);
 void Refresh(void);
 void ClearScreen(void);
-char lava_getchar(void);
-char Inkey(void);
-void ReleaseKey(char key);
-int CheckKey(char key);
-void lava_putchar(char ch);
-void SetScreen(char mode);
+unsigned char lava_getchar(void);
+unsigned char Inkey(void);
+void ReleaseKey(unsigned char key);
+int CheckKey(unsigned char key);
+void lava_putchar(unsigned char ch);
+void SetScreen(unsigned char mode);
 void Locate(int y,int x);
-void UpdateLCD(char mode);
+void UpdateLCD(unsigned char mode);
 void lava_sprintf(uchar *str,uchar *Data,...);
 void lava_printf(uchar *Data,...);
 void Delay(int ms);
@@ -95,16 +95,16 @@ void SetTime(struct TIME *t);
 long Crc16(addr mem,int len);
 void Secret(addr mem,int len,addr string);
 void Beep(void);
-char lava_fopen(const addr filename,const addr mode);
-void lava_fclose(char fp);
-int lava_fread(addr pt,int size,int n,char fp);
-int lava_fwrite(const addr pt,int size,int n,char fp);
-int lava_getc(char fp);
-int lava_putc(char ch,char fp);
-void lava_rewind(char fp);
-long lava_fseek(char fp,long offset,char base);
-long lava_ftell(char fp);
-int lava_feof(char fp);
+unsigned char lava_fopen(const addr filename,const addr mode);
+void lava_fclose(unsigned char fp);
+int lava_fread(addr pt,int size,int n,unsigned char fp);
+int lava_fwrite(const addr pt,int size,int n,unsigned char fp);
+int lava_getc(unsigned char fp);
+int lava_putc(unsigned char ch,unsigned char fp);
+void lava_rewind(unsigned char fp);
+long lava_fseek(unsigned char fp,long offset,unsigned char base);
+long lava_ftell(unsigned char fp);
+int lava_feof(unsigned char fp);
 int ChDir(addr path);
 int MakeDir(const addr path);
 int DeleteFile(addr filename);
