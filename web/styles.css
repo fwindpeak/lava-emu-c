@@ -53,16 +53,29 @@ body {
   color: var(--muted-color);
 }
 
+.display-container {
+  display: flex;
+  justify-content: center;
+}
+
+.lava-canvas-container {
+  display: inline-block;
+  padding: 8px;
+  border-radius: 8px;
+  background-color: #f0f0f0;
+}
+
 #lava-canvas {
   display: block;
   width: 480px;
   height: 240px;
   margin: 0 auto;
   background: #11161c;
-  border: 4px solid #0d1a24;
-  border-radius: 8px;
+  /* border: 1px solid #0d1a24; */
+  /* border-radius: 8px; */
   image-rendering: pixelated;
   image-rendering: crisp-edges;
+  /* outline: 4px solid #e3f2fd; */
 }
 
 .keyboard-panel h2 {
