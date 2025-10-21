@@ -319,52 +319,84 @@ void lava_buf_lineH(uint x0, uint y0, uint l, uint type) {
   uint bit_left, bit_right;
   uint i;
   uchar temp;
+  uchar *pG_end;
+
+  // 检查边界条件
+  // if (x0 >= LAVA_WIDTH_LOCAL || y0 >= LAVA_HEIGHT_LOCAL || l == 0)
+  //   return;
+  if(x0 >= LAVA_WIDTH_LOCAL){
+    x0 = LAVA_WIDTH_LOCAL - 1;
+  }
+  if(y0 >= LAVA_HEIGHT_LOCAL){
+    y0 = LAVA_HEIGHT_LOCAL - 1;
+  }
+  if(l == 0){
+    return;
+  }
+
+  // 确保不会超出屏幕宽度
+  if (x0 + l > LAVA_WIDTH_LOCAL)
+    l = LAVA_WIDTH_LOCAL - x0;
 
   pG = GRAPH_BUF + y0 * (LAVA_WIDTH_LOCAL / 8) + x0 / 8;
+  pG_end = GRAPH_BUF + LAVA_GBUF_BYTE; // 缓冲区结束位置
 
   bit_right = x0 % 8;
   if (bit_right)
     bit_left = 8 - bit_right;
+  else
+    bit_left = 8; // 当 bit_right 为 0 时，设置 bit_left 为 8
 
   // 处理第一字节
-  if (bit_right) {
+  if (bit_right && bit_right < 8) {
     if (bit_right + l < 8) {
       temp = 0xff >> (bit_right + l);
+    } else {
+      temp = 0;
     }
 
-    switch (type & 0x07) {
-    case 0:
-      *pG++ &= (0xff << bit_left) | temp;
-      break;
-    case 2:
-      *pG++ ^= (0xff >> bit_right) & (~temp);
-      break;
-    case 1:
-    default:
-      *pG++ |= (0xff >> bit_right) & (~temp);
-      break;
+    // 确保不会越界
+    if (pG < pG_end) {
+      switch (type & 0x07) {
+      case 0:
+        *pG &= (0xff << bit_left) | temp;
+        break;
+      case 2:
+        *pG ^= (0xff >> bit_right) & (~temp);
+        break;
+      case 1:
+      default:
+        *pG |= (0xff >> bit_right) & (~temp);
+        break;
+      }
+      pG++;
     }
   }
+  
   // 处理中间字节
-  i = (l - bit_left) / 8;
-  switch (type & 0x07) {
-  case 0:
-    while (i--)
-      *pG++ = 0;
-    break;
-  case 2:
-    while (i--)
-      *pG++ ^= 0xff;
-    break;
-  case 1:
-  default:
-    while (i--)
-      *pG++ = 0xff;
-    break;
+  if (l > bit_left) {
+    i = (l - bit_left) / 8;
+    // 确保不会越界
+    while (i-- && pG < pG_end) {
+      switch (type & 0x07) {
+      case 0:
+        *pG = 0;
+        break;
+      case 2:
+        *pG ^= 0xff;
+        break;
+      case 1:
+      default:
+        *pG = 0xff;
+        break;
+      }
+      pG++;
+    }
   }
+  
   // 处理最后一字节
   bit_right = (l - bit_left) % 8;
-  if (bit_right) {
+  if (bit_right && pG < pG_end) {
     bit_left = 8 - bit_right;
     switch (type & 0x07) {
     case 0:
@@ -391,8 +423,20 @@ void lava_buf_lineH(uint x0, uint y0, uint l, uint type) {
 void lava_buf_lineV(uint x0, uint y0, uint l, uint type) {
   int i;
   int dat = 0x80 >> (x0 % 8);
+  uchar *pG_end;
+  
+  // 检查边界条件
+  if (x0 >= LAVA_WIDTH_LOCAL || y0 >= LAVA_HEIGHT_LOCAL || l == 0)
+    return;
+
+  // 确保不会超出屏幕高度
+  if (y0 + l > LAVA_HEIGHT_LOCAL)
+    l = LAVA_HEIGHT_LOCAL - y0;
+
   pG = GRAPH_BUF + y0 * (LAVA_WIDTH_LOCAL / 8) + x0 / 8;
-  for (i = 0; i < l; i++) {
+  pG_end = GRAPH_BUF + LAVA_GBUF_BYTE; // 缓冲区结束位置
+  
+  for (i = 0; i < l && pG < pG_end; i++) {
     switch (type) {
     case 0:
       *pG &= ~dat;
