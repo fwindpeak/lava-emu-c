@@ -4,5 +4,6 @@
 void lvm_main(void);
 void lvm_set_base_path(const unsigned char *path);
 void lvm_request_restart(void);
+void lvm_set_prefetch_enabled(int enabled);
 
 #endif

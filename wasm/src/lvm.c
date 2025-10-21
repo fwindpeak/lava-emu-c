@@ -6,6 +6,7 @@
 
 #include "lavasim.h"
 #include <string.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include "lvm.h"
 #include "key.h"
@@ -30,12 +31,17 @@
 
 #define         LVM_FN_LENGTH_MAX   16
 
+#define         LVM_PREFETCH_THRESHOLD (128 * 1024)
 
 unsigned char lvm_run_flag;          //lvm运行状态
 
 unsigned char lvm_fp;                //执行.lav文件的句柄
 long lvm_fsize;             //.lav文件长度
 long lvm_pi;                //.lav文件位置
+
+static unsigned char *lvm_code_cache = NULL;
+static long lvm_code_cache_size = 0;
+static int lvm_prefetch_enabled = 1;
 
 int32_t lvm_stk[ LVM_STACK_SIZE];        //堆栈
 long lvm_stk_p;             //堆栈位置
@@ -51,6 +57,50 @@ int32_t lvm_buf[32];           //数据缓冲
 struct TIME tTime;
 static unsigned char lvm_base_path[64] = ".";
 static int lvm_restart_requested = 0;
+
+static void lvm_release_code_cache(void)
+{
+    if(lvm_code_cache)
+    {
+        free(lvm_code_cache);
+        lvm_code_cache = NULL;
+        lvm_code_cache_size = 0;
+    }
+}
+
+static void lvm_try_prefetch(void)
+{
+    lvm_release_code_cache();
+
+    if(!lvm_prefetch_enabled)
+    {
+        return;
+    }
+    if(lvm_fsize <= 0 || lvm_fsize > LVM_PREFETCH_THRESHOLD)
+    {
+        return;
+    }
+
+    lvm_code_cache = (unsigned char *)malloc((size_t)lvm_fsize);
+    if(!lvm_code_cache)
+    {
+        lava_log("lvm prefetch malloc failed, fallback to streaming");
+        return;
+    }
+
+    lava_fseek(lvm_fp, 0, SEEK_SET);
+    long n = lava_fread(lvm_code_cache, 1, (int)lvm_fsize, lvm_fp);
+    if(n != lvm_fsize)
+    {
+        lava_log("lvm prefetch read truncated, fallback to streaming");
+        lvm_release_code_cache();
+        lava_fseek(lvm_fp, 0, SEEK_SET);
+        return;
+    }
+
+    lvm_code_cache_size = lvm_fsize;
+    lava_fseek(lvm_fp, 0, SEEK_SET);
+}
 
 //lvm stk push
 void lvm_stk_push(int n)
@@ -81,8 +131,31 @@ void lvm_request_restart(void)
     lvm_restart_requested = 1;
 }
 
+void lvm_set_prefetch_enabled(int enabled)
+{
+    lvm_prefetch_enabled = enabled ? 1 : 0;
+    if(!lvm_prefetch_enabled)
+    {
+        lvm_release_code_cache();
+    }
+}
+
 int lvm_read(addr dat,int b)
 {
+    if(lvm_code_cache)
+    {
+        if(lvm_pi >= lvm_code_cache_size)
+        {
+            return 0;
+        }
+        if(lvm_pi + b > lvm_code_cache_size)
+        {
+            b = (int)(lvm_code_cache_size - lvm_pi);
+        }
+        memcpy(dat, lvm_code_cache + lvm_pi, (size_t)b);
+        lvm_pi += b;
+        return b;
+    }
     int n;
     lava_fseek(lvm_fp,lvm_pi,SEEK_SET);
     n=lava_fread(dat,1,b,lvm_fp);
@@ -100,6 +173,16 @@ int lvm_read(addr dat,int b)
 //读取lav文件1b
 unsigned char lvm_read1b(void)
 {
+    if(lvm_code_cache)
+    {
+        if(lvm_pi >= lvm_code_cache_size)
+        {
+            return 0;
+        }
+        unsigned char b = lvm_code_cache[lvm_pi];
+        lvm_pi += 1;
+        return b;
+    }
     int n;
     unsigned char b;
     lava_fseek(lvm_fp,lvm_pi,SEEK_SET);
@@ -111,6 +194,24 @@ unsigned char lvm_read1b(void)
 //读取lav文件2b
 unsigned short lvm_read2b(void)
 {
+    if(lvm_code_cache)
+    {
+        if(lvm_pi + 1 >= lvm_code_cache_size)
+        {
+            unsigned short value = 0;
+            int remain = (int)(lvm_code_cache_size - lvm_pi);
+            if(remain > 0)
+            {
+                memcpy(&value, lvm_code_cache + lvm_pi, (size_t)remain);
+                lvm_pi += remain;
+            }
+            return value;
+        }
+        unsigned short value;
+        memcpy(&value, lvm_code_cache + lvm_pi, sizeof(value));
+        lvm_pi += (long)sizeof(value);
+        return value;
+    }
     int n;
     unsigned short b;
     lava_fseek(lvm_fp,lvm_pi,SEEK_SET);
@@ -122,6 +223,24 @@ unsigned short lvm_read2b(void)
 //读取lav文件4b
 uint32_t lvm_read4b(void)
 {
+    if(lvm_code_cache)
+    {
+        if(lvm_pi + 3 >= lvm_code_cache_size)
+        {
+            uint32_t value = 0;
+            int remain = (int)(lvm_code_cache_size - lvm_pi);
+            if(remain > 0)
+            {
+                memcpy(&value, lvm_code_cache + lvm_pi, (size_t)remain);
+                lvm_pi += remain;
+            }
+            return value;
+        }
+        uint32_t value;
+        memcpy(&value, lvm_code_cache + lvm_pi, sizeof(value));
+        lvm_pi += (long)sizeof(value);
+        return value;
+    }
     int n;
     uint32_t b;
     lava_fseek(lvm_fp,lvm_pi,SEEK_SET);
@@ -1837,10 +1956,11 @@ int file_load(void)
                 SetScreen(0);
                 ClearScreen();
 
-                lvm_pi = 0x10;
                 lava_fseek(lvm_fp,0,SEEK_END);
                 lvm_fsize = lava_ftell(lvm_fp);
                 lava_fseek(lvm_fp,0,SEEK_SET);
+                lvm_try_prefetch();
+                lvm_pi = 0x10;
 
                 lava_logf("lavfile,file size: %dB",lvm_fsize);
                 return 1;
