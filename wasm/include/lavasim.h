@@ -10,8 +10,9 @@
 
 #include <stddef.h>
 
-#define addr  char *
 #define uchar unsigned char
+#define addr  uchar *
+
 
 
 

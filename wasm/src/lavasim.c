@@ -1780,26 +1780,28 @@ fread
       注意:fread和fwrite的参数size会被忽略，实际读写的字节数是参数n。之所以保留size是为了与c兼容。建议size值取1。
 
 */
-// f_read有bug，每次读512字节
-#define FREAD_EVERY_BYTE 512
+// 增加每次读取的字节数，但仍保持分块读取以避免内存问题
+#define FREAD_CHUNK_SIZE 4096
 int lava_fread(addr pt, int size, int n, char fp) {
   int i, num, byteleft;
   unsigned int byte_read, byte_read2 = 0;
   addr p = pt;
   fp--;
 
-  num = n / FREAD_EVERY_BYTE;
-  byteleft = n % FREAD_EVERY_BYTE;
+  num = n / FREAD_CHUNK_SIZE;
+  byteleft = n % FREAD_CHUNK_SIZE;
 
   for (i = 0; i < num; i++) {
-    if (f_read(&lava_fp[fp], p, FREAD_EVERY_BYTE, &byte_read) != FR_OK)
-      return 0;
-    p += FREAD_EVERY_BYTE;
+    if (f_read(&lava_fp[fp], p, FREAD_CHUNK_SIZE, &byte_read) != FR_OK)
+      return byte_read2; // 返回已读取的字节数，而不是0
+    p += FREAD_CHUNK_SIZE;
     byte_read2 += byte_read;
   }
-  if (f_read(&lava_fp[fp], p, byteleft, &byte_read) != FR_OK)
-    return 0;
-  byte_read2 += byte_read;
+  if (byteleft > 0) {
+    if (f_read(&lava_fp[fp], p, byteleft, &byte_read) != FR_OK)
+      return byte_read2; // 返回已读取的字节数，而不是0
+    byte_read2 += byte_read;
+  }
   return byte_read2;
 }
 
