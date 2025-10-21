@@ -1,78 +1,67 @@
 # Lava 模拟器 WebAssembly 迁移说明
 
-## 项目简介
-该仓库最初面向 STM32 平台，实现了一台名为 Lava 的学习机/掌机模拟环境。程序在上电后完成硬件初始化，加载存放在 SD 卡 `/LAVA` 目录中的 `.lav` 字节码程序，通过自行实现的虚拟机解释执行，并借助 LCD、键盘、文件系统等驱动模块完成图形展示与交互。当前目标是将这套模拟器迁移到浏览器端运行，核心逻辑继续使用 C 代码编译为 WASM，而所有直接依赖硬件的驱动层改写为 JavaScript。
+## 项目概览
+该仓库已完成从 STM32 开发板到浏览器环境的初步迁移：核心 Lava 虚拟机（`lvm.c`、`lavasim.c`、`boshi.c` 等）仍然使用 C 实现，经 Emscripten 编译为 WebAssembly；与硬件耦合的外设驱动改写为可在浏览器运行的“.stub”层，由 Web Worker 与主线程中的 Canvas、键盘、文件系统 API 协同完成显示与交互。
 
-## 目录与主要文件
-- `user/`
-  - `main.c`：嵌入式入口，负责 RCC/NVIC 等时钟中断初始化以及 `hw_init()`，随后循环执行 `lava_init()` 与 `lvm_main()`。迁移时需去除 MCU 初始化，只保留框架启动逻辑。
-  - `lvm.c`：字节码虚拟机内核。`lvm_run()` 实现指令解析与执行，`file_load()`/`file_select()` 等负责加载 `.lav` 文件与按键映射，`lvm_main()` 驱动主循环。
-  - `lavasim.c`：模拟器运行时，提供图形、文本、输入、时间、文件等高层 API，维护 `GRAPH_BUF`、`TEXT_BUF` 两块缓冲区，并将调用下沉至驱动层。
-  - `boshi.c`、`prtscr.c` 等：示例小游戏、截屏等附加功能，可选是否纳入 WASM 版本。
-  - 头文件对应于上述模块的对外声明。
-- `drivers/`
-  - `lcd.c/h`：通过 FSMC 操作 16 bit LCD 的底层驱动，提供 `lcd_init`、`lcd_draw_block`、`lcd_draw_bw`、`lcd_get_bw` 等接口。WASM 版本需由 JS Canvas/WebGL 重写。
-  - `key.c/h`：键盘 GPIO 扫描与去抖，维护按键映射表，封装 `key_get`、`key_read`、`key_check` 等调用。浏览器端应绑定 DOM 键盘事件。
-  - `delay.c`、`rtc.c`、`timer.c`、`usart.c`、`led.c`、`spi*.c`、`sdcard.*` 等：依赖 STM32 外设的延时、时钟、串口、存储驱动，迁移时需替换或封装为 JS 逻辑。
-  - `fonts.c/h`：字体点阵数据，可直接编译进 WASM。
-- `windgui/`
-  - `WindGUI.c/h`：建立在 LCD 驱动之上的彩色图形与控件库，提供线、矩形、图片、文本等绘制函数。
-  - `fonts.*`、`bmp24to16.c` 等：GUI 所需的字体与转换工具。
-- `wasm/`
-  - `src/`：收敛后的核心 C 源码，包含原 `user/` 的 `lvm.c`、`lavasim.c`、`boshi.c`、`prtscr.c`，以及 Canvas 显示适配器（`display_stub.c`、`main_stub.c`）等。
-  - `include/`：对应头文件（`lvm.h`、`lavasim.h`、`display.h`、`fonts.h`、`key.h` 等）以及后续需要的最小化硬件替代接口。
-  - `windgui/`：复制自原工程的 GUI 组件与字体数据，方便逐步裁剪或直接重用。
-- `wasm` 宿主替代层提供：
-  - `lcd_stub.c`（接入 `lava_display_buffer` 与 Canvas）
-  - `key_stub.c`（暴露 `lava_enqueue_key`，接收浏览器键盘事件）
-  - `delay_stub.c` / `rtc_stub.c`（基于 `emscripten_sleep` 与 `performance.now`）
-  - `spi_flash_stub.c`（当前返回空字体数据，可按需替换为实际资源）
-- `web/`：前端原型，包含 `index.html`（画布与控制台）、`styles.css`（暗色主题视觉）、`main.js`（刷新循环与虚拟键盘）。
-- `system/`、`stm32lib/`：包含芯片底层库与启动文件，仅服务于嵌入式版本，WASM 迁移可忽略。
-- 其他文件夹（如 `project/`、`tools/`、`screenshot/`、`bakup/`、`不用/` 等）多为工程配置、历史备份或资源文件，可按需参阅。
+## 当前代码结构
+### C / WASM 层（`wasm/`）
+- `src/main.c`：WASM 入口，执行初始化、事件循环桥接以及调用 VM 主控函数。
+- `src/lvm.c`、`src/lavasim.c`、`src/boshi.c`、`src/prtscr.c`：虚拟机调度、系统服务、小游戏及截图逻辑，基本保持嵌入式版本的代码结构。
+- `src/display_stub.c`、`src/lcd_stub.c`：提供与原 LCD 驱动一致的接口，最终将帧缓冲暴露给 JS 侧的 Canvas。
+- `src/key_stub.c`：维护一个键盘 FIFO，与浏览器传来的键码交互。
+- `src/delay_stub.c`、`src/rtc_stub.c`、`src/log_stub.c`、`src/spi_flash_stub.c`、`src/ff_stub.c`：替换硬件相关函数，使用 Emscripten/JS 提供的时间、日志、文件系统能力。
+- `include/`：面向上述模块的精简头文件，去除了 STM32 专用类型与宏，只暴露 WASM 需要的声明。
+- `build.sh`：集中编译脚本，设置导出符号、运行时方法、Asyncify、safe-heap 等调试选项，输出 `web/lava.js` 与 `web/lava.wasm`。
 
-## 运行流程概述
-1. **启动阶段**：`main.c` 初始化外设，调用 `hw_init()` 完成 RTC、串口、LCD、LED、按键、字体、虚拟机等模块准备工作，并检测 SD 卡。
-2. **虚拟机调度**：通过 `lvm_main()` 循环关闭遗留文件句柄，调用 `file_load()` 进入文件浏览界面，读取 `.lav` 字节码与对应的 `keymap`，最后执行 `lvm_run()`。
-3. **LavaSim 服务**：`lavasim.c` 提供图形绘制（矢量/光栅）、文本输出、按键读取、时间相关、文件读写等函数，供虚拟机在执行过程中调用，实现与“操作系统”类似的运行环境。
-4. **驱动层交互**：所有硬件操作最终落在 `drivers/` 中的具体实现，例如 `lcd_*`, `key_*`, `delay_ms`, `get_time_rtc`, `f_open`, `f_read` 等。
+### 浏览器宿主（`web/`）
+- `index.html`：提供 Canvas、虚拟键盘、控制按钮与日志区域。
+- `styles.css`：暗色主题样式以及屏幕缩放布局。
+- `main.js`：主线程逻辑，负责拉起 Worker、响应 UI 操作、将 Display Buffer 绘制到 Canvas，并将用户操作（键盘、目录选择、截屏）传给 Worker。
+- `wasm-worker.js`：加载 `lava.js`，管理 Emscripten 虚拟文件系统、同步 `.lav` 目录内容、驱动 VM 的循环以及向主线程回传帧缓冲。
+- `tools/`：包含构建后处理或调试脚本，可逐步整理。
 
-## 迁移到 WASM 的注意点
-- **保留的 C 模块**：`user/` 与 `windgui/` 下的大部分逻辑无需改写，只要提供与原始驱动同名的接口即可继续使用。
-- **必须重写的模块**：所有直接访问硬件寄存器的文件（LCD、键盘、SD/FatFs、RTC、延时等）需改写为 JS，与浏览器提供的 Canvas、键盘、存储 API 对接。
-- **头文件替换**：将 `stm32f10x.h`、`sys.h` 等 MCU 相关头替换为最小化的类型定义，确保 WASM 端能顺利编译。
-- **文件系统**：原工程使用 FatFs 访问 SD 卡，浏览器端可使用 Emscripten 的 MEMFS/IDBFS 或自定义虚拟文件系统，并保持 `fopen`、`fread` 等接口语义不变。
-- **时间与延时**：`delay_ms`、`get_time_rtc` 等函数应改为基于浏览器 `performance.now()`、`Date` 或 `setTimeout` 的实现，保证与虚拟机期望的节奏一致。
+## 构建与运行
+1. 激活 EMSDK 环境，确保 `emcc` 可用。
+2. 执行 `./wasm/build.sh`，脚本会在仓库根目录创建 `.emcache/` 作为 Emscripten 缓存，并将编译产物写入 `web/`。
+3. 使用任何静态服务器发布 `web/`（`python -m http.server 8080` 或 `npx serve web`），在支持 File System Access API 的浏览器中打开 `index.html`。
+4. 点击“选择程序目录”挂载本地 `.lav` 资源，Worker 会把文件复制到 Emscripten FS 的 `/app`，随后调用 `_lvm_request_restart` 重新进入 Lava 主菜单。
+5. Canvas 默认以 1× 显示 160×80 的单色帧缓冲，可通过顶部滑块调节缩放；虚拟键盘支持鼠标和物理键交互。
 
-## 迁移任务清单
-1. **定义兼容头文件**：为 STM32 专用头创建精简替代，提供常用类型（如 `uint32_t`、`GPIO_TypeDef` 的空结构等）和必要的宏。
-2. **图形后端**：用 JS 实现 LCD 接口，管理 Canvas 像素，提供 `lcd_draw_block`、`lcd_draw_bw`、`lcd_get_bw`、`lcd_draw_square` 等方法，并与 `GRAPH_BUF`、`TEXT_BUF` 同步。
-3. **输入后端**：监听键盘事件，将按键映射到 Lava 键值，完成 `key_init`、`key_read`、`key_get`、`key_release` 等函数。
-4. **文件系统桥接**：确定 `.lav` 文件的来源（本地上传或在线仓库），实现与 `fopen/fread/fseek/feof` 兼容的读写行为。
-5. **时间/RTC**：重新实现 `delay_ms`、`get_time_rtc`、`set_time_rtc`、`Getms` 等函数。
-6. **Emscripten 构建**：配置编译脚本，将选中的 C 源码编译为 WASM，导出主入口与必要的 API（如 `lava_init`、`lvm_main`、`Point` 等）。
-7. **调试验证**：在浏览器中装载示例 `.lav` 程序，检查图形、输入、文件、时间等是否与原平台一致，逐步修复差异。
-8. **文档补充与示例**：完善迁移后的使用说明，提供加载/运行示例，方便后续开发测试。
+## 运行时链路
+1. 主线程通过 `wasm-worker.js` 创建 Worker，并发送 `init` 指令。
+2. Worker 加载 `createLavaModule`，完成后向主线程发送 `wasmLoaded`。
+3. 当用户选择 `.lav` 目录时，主线程递归读取文件并传给 Worker，Worker 将其写入 Emscripten FS。
+4. Worker 调用导出的 `_lvm_set_base_path` 与 `_lvm_request_restart` 启动/重启 VM。
+5. VM 运行过程中，`lcd_stub.c` 将图像缓冲区写入共享内存；Worker 通过 `HEAPU8` 读取并把 `displayUpdate` 消息发回主线程，主线程再绘制到 Canvas。
+6. 任何按键或控制指令都会经主线程转发至 Worker，并调用 `_lava_enqueue_key` 等 C 接口。
 
-## 附加说明
-- 虚拟机默认访问 `/LAVA` 目录，浏览器端可模拟该路径或在 UI 中提示用户选择文件。
-- `lvm_run` 会直接操作 WASM 内存中的缓冲区，需要在 JS 侧通过 `HEAPU8` 读取以同步画面。
-- 示例程序如 `boshi.c` 会调用更多图形接口，可根据产品需求决定是否一并迁移。
+## 已完成 & 待完善事项
+| 状态 | 项目 | 说明 |
+|------|------|------|
+| ✅   | VM 核心编译到 WASM | `lvm`、`lavasim`、字体、截图等模块可在浏览器运行。 |
+| ✅   | 显示与输入桥接     | Canvas 渲染、虚拟键盘、箭头/功能键映射已打通。 |
+| ✅   | Worker + FS 同步   | 使用 File System Access API 加载 `.lav` 资源并写入虚拟文件系统。 |
+| ⚠️   | 字体/资源加载      | `spi_flash_stub.c` 暂返回空数据，后续可改为从宿主读取或内置资源。 |
+| ⚠️   | 性能优化           | 当前编译配置以调试为主（`-O0`、`SAFE_HEAP`），需要增加 release 选项。 |
+| ⚠️   | 自动化测试         | 仍依赖人工加载 `.lav` 验证，后续可考虑录制回放或截图对比。 |
+| 🚧   | 错误处理 & 日志    | `log_stub.c` 仅输出到浏览器控制台，建议补充分级日志和用户可见提示。 |
 
-## 浏览器原型使用说明
-1. 启动本地静态服务器（例如 `npx serve web` 或 `python -m http.server` 后切换到 `web/` 目录），在浏览器中打开 `index.html`。
-2. 画布会尝试调用 WASM 导出的 `lava_display_buffer` 与 `lava_display_fill_demo`，若未加载模块，则退回 JS 内置的条纹动画，方便验证刷新链路。
-3. 点击“选择程序目录”按钮授权 File System Access API，浏览器会将所选目录与其子目录同步到虚拟文件系统根路径，虚拟机即可直接访问、读写这些文件。
-4. 使用顶部滑块可将 160×80 的单色画布放大到 1×–8×；虚拟键盘支持鼠标点击或物理键盘映射，键值会通过 `lava_enqueue_key()` 注入到虚拟机的输入缓冲。
+## 下一步规划
+1. **资源加载**：完善 `spi_flash_stub.c`，提供字体/图片等只读资源的真实来源（内置数据或网络请求）。
+2. **发布流程**：为 `wasm/build.sh` 新增 `--release` 选项，关闭调试宏、启用更高优化级别，并生成版本化产物。
+3. **文件系统增强**：支持 IDBFS 缓存、增量同步以及大文件传输提示。
+4. **自动化验证**：设计最小化端到端测试（例如在 Node 环境中运行 `lava.wasm` 并比对帧缓冲），或引入截图基准。
+5. **UI/UX 改进**：完善虚拟键盘布局、提供状态提示（加载中/运行中/错误），并考虑国际化。
+6. **文档维护**：持续更新 `docs/`，补充开发者指南、常见问题以及移植到其他宿主环境（Electron、桌面）的经验。
 
-## Emscripten 构建与调试链路
-1. 安装并激活 Emscripten（参考官方 `emsdk` 指南），确保 `emcc` 命令可用。
-2. 在仓库根目录执行：
-   ```bash
-   chmod +x wasm/build.sh   # 首次需要授予执行权限
-   ./wasm/build.sh
-   ```
-   该脚本会编译 `wasm/src/` 下的核心虚拟机与宿主适配代码（头文件位于 `wasm/include/`），生成 `web/lava.js` 与同目录下的 `lava.wasm`（以 ES Module 形式暴露 `createLavaModule` 工厂函数）。
-3. 重新刷新 `web/index.html`，浏览器会通过 ES Module 方式加载 `lava.js`，`main.js` 内的 top-level await 会等待 `createLavaModule()` 完成，随后开始调用 WASM 的显示缓冲接口。
-4. 在开发者工具的 `Console` 中可看到模块加载日志；若需要进一步调试，可在 `wasm/src/` 中扩展导出函数（如 `lava_enqueue_key`），并在 `main.js` 里通过 `wasmModule.cwrap` 调用。
-5. 后续接入真实虚拟机时，只需在构建脚本里加入新的 C 源文件，并保持导出接口不变，即可沿用当前前端刷新链路。
+## 调试提示
+- `wasm/build.sh` 导出的函数包含 `_lava_display_fill_demo`，可在 Worker 中手动调用，用于检测渲染通路。
+- 若帧缓冲未刷新，确认 Worker 是否收到 `displayUpdate` 消息；必要时打印 `HEAPU8.subarray` 的前几个字节判定 VM 状态。
+- `.lav` 目录同步失败通常是文件名或路径过长导致，主线程侧已过滤超过 16 个字符的文件名，仍需与真实资源保持一致。
+- 浏览器端可通过 `chrome://inspect` 或 Edge DevTools 观察 Worker 控制台输出，定位 C 层 `printf`/`EM_ASM` 日志。
+
+## 附录：术语对照
+- **Lava VM**：嵌入式版本的虚拟机核心，现由 `wasm/src/lvm.c` 提供。
+- **LavaSim**：为 VM 提供的“系统调用”层，负责图形、文本、文件、输入。
+- **Stub Drivers**：在 STM32 上与外设交互的驱动，这里用 JS/Worker 提供等价接口。
+- **File System Access API**：Chrome 系列浏览器提供的本地目录授权机制，本项目用来导入 `.lav` 数据集。
