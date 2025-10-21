@@ -33,7 +33,7 @@ function initWorker() {
         
       case 'wasmError':
         console.error('WASM模块加载失败:', error);
-        alert('加载WASM模块失败: ' + error);
+        // alert('加载WASM模块失败: ' + error);
         break;
         
       case 'displayUpdate':

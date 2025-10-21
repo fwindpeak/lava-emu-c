@@ -1124,11 +1124,13 @@
                     const byteIndex = Math.floor(i / 8);
                     const bitIndex = i % 8;
                     const pixelIndex = i * 4;
-                    const isWhite = data[pixelIndex] > 128;
+                    const isWhite = data[pixelIndex] < 128;
 
                     if (isWhite) {
                         // 设置对应的bit（bit0是最左边的像素）
-                        charmap[byteIndex] |= (1 << bitIndex);
+                        // charmap[byteIndex] |= (1 << bitIndex);
+
+                        charmap[byteIndex] |= (1 << (7 - bitIndex));  // 修正位序
                     }
                 }
 
